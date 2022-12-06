@@ -50,7 +50,7 @@ async function createWindow() {
       contextIsolation: false,
     },
   })
-  win.webContents.openDevTools()
+  win.setMenu(null)
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
     // Open devTool if the app is not packaged
