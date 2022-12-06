@@ -4,7 +4,7 @@
   "main": "dist-electron/main/index.js",
   "description": "Really simple Electron + Vue + Vite boilerplate.",
   "author": "",
-  "license": "MIT",
+  "license": "",
   "private": true,
   "scripts": {
     "dev": "vite",
