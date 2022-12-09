@@ -12,7 +12,7 @@ process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_ELECTRON, '../public')
 
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 
@@ -73,7 +73,29 @@ async function createWindow() {
   win.webContents.openDevTools()
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  createWindow()
+  // 创建托盘
+  const icon = nativeImage.createFromPath('resources/logo.png')
+  let tray = new Tray(icon)
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '打开应用',
+      icon: 'resources/icons/icon1.png',
+      click: () => {
+      }
+    },
+    {
+      label: '退出',
+      icon: 'resources/icons/icon2.png',
+      click: () => {
+      }
+    },
+  ])
+  tray.setContextMenu(contextMenu)
+  tray.setToolTip('basic app')
+  tray.setTitle('This is my title')
+})
 
 app.on('window-all-closed', () => {
   win = null
