@@ -40,7 +40,7 @@ const indexHtml = join(process.env.DIST, 'index.html')
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Main window',
-    icon: join(process.env.PUBLIC, 'favicon.ico'),
+    icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
@@ -69,8 +69,6 @@ async function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
-  // 
-  win.webContents.openDevTools()
 }
 // 托盘对象
 let tray;
@@ -115,7 +113,7 @@ app.whenReady().then(() => {
     }
   }, 500)
 })
-
+// 当所有的窗口都被关闭时触发
 app.on('window-all-closed', () => {
   win = null
   if (process.platform !== 'darwin') app.quit()
@@ -128,7 +126,7 @@ app.on('second-instance', () => {
     win.focus()
   }
 })
-
+// 当应用被激活时发出。
 app.on('activate', () => {
   const allWindows = BrowserWindow.getAllWindows()
   if (allWindows.length) {
@@ -137,9 +135,16 @@ app.on('activate', () => {
     createWindow()
   }
 })
+// 接收num change改变的通信
+ipcMain.on('num_change', (event, arg) => {
+  const allWindows = BrowserWindow.getAllWindows()
+  console.log(arg, 'allWindows')
+  event.sender.send('b', 'main to you msg')
+})
 
 // New window example arg: new windows url
 ipcMain.handle('open-win', (event, arg) => {
+  console.log('新建窗口++')
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload,

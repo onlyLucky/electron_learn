@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
+const electron = require("electron");
 
-defineProps<{ msg: string }>()
+defineProps<{ msg: string }>();
 
-const count = ref(0)
+const count = ref(0);
+
+const add = () => {
+  count.value++;
+  electron.ipcRenderer.send("num_change", count.value);
+};
+
+//获取主进程返回的数据
+electron.ipcRenderer.on("b", (e, data) => {
+  console.log(data);
+});
 </script>
 
 <template>
   <h1>{{ msg }}</h1>
 
   <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
+    <button type="button" @click="add">count is {{ count }}</button>
     <p>
       Edit
       <code>components/HelloWorld.vue</code> to test HMR

@@ -2,6 +2,11 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from "./components/HelloWorld.vue";
+import { ipcRenderer } from "electron";
+const addWindows = async () => {
+  const result = await ipcRenderer.invoke("open-win");
+  console.log(result);
+};
 </script>
 
 <template>
@@ -11,6 +16,11 @@ import HelloWorld from "./components/HelloWorld.vue";
     <img class="logo vue" src="./assets/vue.svg" />
   </div>
   <HelloWorld msg="Hello Vue 3 + TypeScript + Vite hello world" />
+  <div class="optBox">
+    <button @click="addWindows">新增一个窗口</button>
+    <button>图标闪动</button>
+    <button>取消闪动</button>
+  </div>
   <div class="static-public">
     Place static files into the <code>/public</code> folder
     <img style="width: 77px" :src="'./node.png'" />
@@ -64,5 +74,8 @@ import HelloWorld from "./components/HelloWorld.vue";
 
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+.optBox button {
+  margin-right: 10px;
 }
 </style>
