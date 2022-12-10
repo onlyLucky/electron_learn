@@ -100,18 +100,7 @@ app.whenReady().then(() => {
   tray.setContextMenu(contextMenu)
   tray.setToolTip('basic app')
   tray.setTitle('This is my title')
-  let icon_space = nativeImage.createFromPath('resources/logo_space.png')
-  let icon_active = nativeImage.createFromPath('resources/logo_active.png')
-  let flag = true;
-  setInterval(() => {
-    if (flag) {
-      tray.setImage(icon_active);
-      flag = false;
-    } else {
-      tray.setImage(icon_space);
-      flag = true;
-    }
-  }, 500)
+
 })
 // 当所有的窗口都被关闭时触发
 app.on('window-all-closed', () => {
@@ -137,14 +126,40 @@ app.on('activate', () => {
 })
 // 接收num change改变的通信
 ipcMain.on('num_change', (event, arg) => {
-  const allWindows = BrowserWindow.getAllWindows()
-  console.log(arg, 'allWindows')
-  event.sender.send('b', 'main to you msg')
+  console.log(arg, 'num_change')
+  BrowserWindow.getAllWindows().forEach(v => {
+    v.send('num_change', arg)
+  })
+})
+// 监听图标闪动事件
+let iconShakeTimer = null;
+ipcMain.on('icon_shake', (event, arg: boolean) => {
+  console.log(arg, 'icon_shake')
+  if (arg) {
+    let icon_space = nativeImage.createFromPath('resources/logo_space.png')
+    let icon_active = nativeImage.createFromPath('resources/logo_active.png')
+    let flag = true;
+    iconShakeTimer = setInterval(() => {
+      if (flag) {
+        tray.setImage(icon_active);
+        flag = false;
+      } else {
+        tray.setImage(icon_space);
+        flag = true;
+      }
+    }, 500)
+  } else {
+    let icon_logo = nativeImage.createFromPath('resources/logo.png')
+    clearInterval(iconShakeTimer)
+    tray.setImage(icon_logo)
+  }
+  // event.sender.send('icon_shake_suc')
+
 })
 
 // New window example arg: new windows url
 ipcMain.handle('open-win', (event, arg) => {
-  console.log('新建窗口++')
+  console.log('new win ++')
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload,

@@ -3,9 +3,15 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from "./components/HelloWorld.vue";
 import { ipcRenderer } from "electron";
+import { ref } from "vue";
 const addWindows = async () => {
   const result = await ipcRenderer.invoke("open-win");
   console.log(result);
+};
+const sharkFlag = ref<boolean>(false);
+const handleSharkChange = () => {
+  sharkFlag.value = !sharkFlag.value;
+  ipcRenderer.send("icon_shake", sharkFlag.value);
 };
 </script>
 
@@ -18,8 +24,8 @@ const addWindows = async () => {
   <HelloWorld msg="Hello Vue 3 + TypeScript + Vite hello world" />
   <div class="optBox">
     <button @click="addWindows">新增一个窗口</button>
-    <button>图标闪动</button>
-    <button>取消闪动</button>
+    <button v-show="!sharkFlag" @click="handleSharkChange">图标闪动</button>
+    <button v-show="sharkFlag" @click="handleSharkChange">取消闪动</button>
   </div>
   <div class="static-public">
     Place static files into the <code>/public</code> folder

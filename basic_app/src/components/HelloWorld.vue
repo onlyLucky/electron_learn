@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-const electron = require("electron");
+// const electron = require("electron");
+import { ipcRenderer } from "electron";
 
 defineProps<{ msg: string }>();
 
@@ -8,12 +9,13 @@ const count = ref(0);
 
 const add = () => {
   count.value++;
-  electron.ipcRenderer.send("num_change", count.value);
+  ipcRenderer.send("num_change", count.value);
 };
 
 //获取主进程返回的数据
-electron.ipcRenderer.on("b", (e, data) => {
-  console.log(data);
+ipcRenderer.on("num_change", (e, data) => {
+  count.value = data;
+  console.log(data, "data");
 });
 </script>
 
