@@ -72,12 +72,13 @@ async function createWindow() {
   // 
   win.webContents.openDevTools()
 }
-
+// 托盘对象
+let tray;
 app.whenReady().then(() => {
   createWindow()
   // 创建托盘
   const icon = nativeImage.createFromPath('resources/logo.png')
-  let tray = new Tray(icon)
+  tray = new Tray(icon)
   const contextMenu = Menu.buildFromTemplate([
     {
       label: '打开应用',
@@ -87,7 +88,13 @@ app.whenReady().then(() => {
     },
     {
       label: '退出',
-      icon: 'resources/icons/icon2.png',
+      icon: 'resources/icons/icon1.png',
+      click: () => {
+      }
+    },
+    {
+      label: '退出应用',
+      icon: 'resources/icons/icon1.png',
       click: () => {
       }
     },
@@ -95,6 +102,18 @@ app.whenReady().then(() => {
   tray.setContextMenu(contextMenu)
   tray.setToolTip('basic app')
   tray.setTitle('This is my title')
+  let icon_space = nativeImage.createFromPath('resources/logo_space.png')
+  let icon_active = nativeImage.createFromPath('resources/logo_active.png')
+  let flag = true;
+  setInterval(() => {
+    if (flag) {
+      tray.setImage(icon_active);
+      flag = false;
+    } else {
+      tray.setImage(icon_space);
+      flag = true;
+    }
+  }, 500)
 })
 
 app.on('window-all-closed', () => {
