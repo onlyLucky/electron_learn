@@ -1,15 +1,21 @@
-# electron-vite-vue
+<div align="center">
+  <h1>electron-vite-vue</h1>
+  <p>🥳 Really simple `Electron` + `Vue` + `Vite` boilerplate.</p>
+</div>
 
-🥳 Really simple `Electron` + `Vue` + `Vite` boilerplate.
+## 目录
 
-<!-- [![awesome-vite](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite) -->
-<!-- [![Netlify Status](https://api.netlify.com/api/v1/badges/ae3863e3-1aec-4eb1-8f9f-1890af56929d/deploy-status)](https://app.netlify.com/sites/electron-vite/deploys) -->
-<!-- [![GitHub license](https://img.shields.io/github/license/caoxiemeihao/electron-vite-vue)](https://github.com/electron-vite/electron-vite-vue/blob/main/LICENSE) -->
-<!-- [![GitHub stars](https://img.shields.io/github/stars/caoxiemeihao/electron-vite-vue?color=fa6470)](https://github.com/electron-vite/electron-vite-vue) -->
-<!-- [![GitHub forks](https://img.shields.io/github/forks/caoxiemeihao/electron-vite-vue)](https://github.com/electron-vite/electron-vite-vue) -->
-
-[![GitHub Build](https://github.com/electron-vite/electron-vite-vue/actions/workflows/build.yml/badge.svg)](https://github.com/electron-vite/electron-vite-vue/actions/workflows/build.yml)
-[![GitHub Discord](https://img.shields.io/badge/chat-discord-blue?logo=discord)](https://discord.gg/sRqjYpEAUK)
+- [目录](#目录)
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Debug](#debug)
+- [Directory](#directory)
+- [FAQ](#faq)
+- [配置](#配置)
+  - [托盘部分](#托盘部分)
+  - [通信](#通信)
+- [提交规范](#提交规范)
+- [参考链接](#参考链接)
 
 ## Features
 
@@ -70,6 +76,108 @@ npm create electron-vite
 
 3. [Electron 打包优化](https://cloud.tencent.com/developer/article/1547891)
 
+## 配置
+
+### 托盘部分
+
+- 托盘右击菜单的 icon 的大小尺寸规范： 20 \* 20 左右
+- 托盘资源地址默认引用的是项目根目录,如下
+
+```ts
+let icon_space = nativeImage.createFromPath("resources/logo_space.png");
+let icon_active = nativeImage.createFromPath("resources/logo_active.png");
+```
+
+### 通信
+
+vue 项目中不需要预加载的时候向渲染层页面 window 环境中暴露 electron 调用对象
+
+1. 主程序进行监听
+
+```javascript
+// 主程序监听窗口改变数据传过来的数据
+ipcMain.on("num_change", (event, arg) => {
+  console.log(arg, "num_change");
+  // 这里是便利所有窗口发送num_change的时间
+  BrowserWindow.getAllWindows().forEach((v) => {
+    v.send("num_change", arg);
+  });
+  // 这里监听到之后发送给渲染层数据
+  event.sender.send("num_change_suc", arg);
+});
+```
+
+2. 主程序发送通讯
+
+```javascript
+const { app, BrowserWindow } = require("electron");
+let win = null;
+
+app.whenReady().then(() => {
+  win = new BrowserWindow({ width: 800, height: 600 });
+  win.loadURL(`file://${__dirname}/index.html`);
+  win.webContents.on("did-finish-load", () => {
+    win.webContents.send("ping", "whoooooooh!");
+  });
+});
+```
+
+3. 渲染页面发送监听的实践
+
+```ts
+// HelloWorld.vue
+<script setup lang="ts">
+import { ref } from "vue";
+// const electron = require("electron");
+import { ipcRenderer } from "electron";
+
+defineProps<{ msg: string }>();
+
+const count = ref(0);
+
+const add = () => {
+  count.value++;
+  ipcRenderer.send("num_change", count.value);
+};
+
+//获取主进程返回的数据
+ipcRenderer.on("num_change", (e, data) => {
+  count.value = data;
+  console.log(data, "data");
+});
+</script>
+```
+
+4. 双向通信
+
+下面是主程序进行创建新子窗口
+
+```ts
+ipcMain.handle("open-win", (event, arg) => {
+  console.log("new win ++");
+  const childWindow = new BrowserWindow({
+    webPreferences: {
+      preload,
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
+
+  if (process.env.VITE_DEV_SERVER_URL) {
+    childWindow.loadURL(`${url}#${arg}`);
+  } else {
+    childWindow.loadFile(indexHtml, { hash: arg });
+  }
+});
+```
+
+```ts
+const addWindows = async () => {
+  const result = await ipcRenderer.invoke("open-win");
+  console.log(result);
+};
+```
+
 ## 提交规范
 
 - `feat` 增加新功能
@@ -86,3 +194,5 @@ npm create electron-vite
 - `ci` 持续集成
 - `types` 类型定义文件更改
 - `wip` 开发中
+
+## 参考链接

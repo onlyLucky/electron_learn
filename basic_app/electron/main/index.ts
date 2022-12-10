@@ -124,6 +124,7 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
 // 接收num change改变的通信
 ipcMain.on('num_change', (event, arg) => {
   console.log(arg, 'num_change')
@@ -154,7 +155,6 @@ ipcMain.on('icon_shake', (event, arg: boolean) => {
     tray.setImage(icon_logo)
   }
   // event.sender.send('icon_shake_suc')
-
 })
 
 // New window example arg: new windows url
