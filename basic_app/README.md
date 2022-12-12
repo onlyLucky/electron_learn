@@ -14,6 +14,7 @@
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
+  - [路径别名](#路径别名)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -177,6 +178,47 @@ const addWindows = async () => {
   console.log(result);
 };
 ```
+
+### 路径别名
+
+```ts
+// vite.config.ts
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import { resolve } from "path";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  // ...
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "src"), // 设置@指向src
+      _c: path.resolve(__dirname, "src/components"),
+      _v: path.resolve(__dirname, "src/views"),
+    },
+  },
+  //...
+});
+```
+
+修改 tsconfig.json，输入@/ 之后就会有补充提示了
+
+```json
+{
+  "compilerOptions": {
+    // ...
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"],
+      "_c/*": ["./src/components/*"],
+      "_v/*": ["./src/views/*"]
+    }
+  }
+  // ...
+}
+```
+
+后面在页面中引入试一下就可以了。
 
 ## 提交规范
 
