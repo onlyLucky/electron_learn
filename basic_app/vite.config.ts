@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 import pkg from './package.json'
+const path = require('path')
 
 rmSync('dist-electron', { recursive: true, force: true })
 const sourcemap = !!process.env.VSCODE_DEBUG
@@ -59,6 +60,14 @@ export default defineConfig({
       nodeIntegration: true,
     }),
   ],
+  // 设置别名
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '_c': path.resolve(__dirname, 'src/components'),
+      '_v': path.resolve(__dirname, 'src/views'),
+    },
+  },
   server: process.env.VSCODE_DEBUG ? (() => {
     const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
     return {
