@@ -4,6 +4,8 @@
 import HelloWorld from "_c/HelloWorld.vue";
 import { ipcRenderer } from "electron";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+
 const addWindows = async () => {
   const result = await ipcRenderer.invoke("open-win");
   console.log(result);
@@ -12,6 +14,13 @@ const sharkFlag = ref<boolean>(false);
 const handleSharkChange = () => {
   sharkFlag.value = !sharkFlag.value;
   ipcRenderer.send("icon_shake", sharkFlag.value);
+};
+
+const { locale } = useI18n();
+
+const changeLang = (lang: string) => {
+  locale.value = lang;
+  localStorage.setItem("lang", lang); // 重要！下面遇到问题里解释
 };
 </script>
 
@@ -31,9 +40,17 @@ const handleSharkChange = () => {
     Place static files into the <code>/public</code> folder
     <img style="width: 77px" :src="'./node.png'" />
   </div>
+
+  <Button>Default</Button>
+  <Input placeholder="Enter something..." style="width: 300px" />
+  <div class="menu">
+    <Button class="menu-item" @click="changeLang('en-US')">English</Button>
+    <Button class="menu-item" @click="changeLang('zh-CN')">中文</Button>
+  </div>
+  <div v-t="'home'"></div>
 </template>
 
-<style>
+<style lang="less">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
