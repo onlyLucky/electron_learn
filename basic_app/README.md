@@ -15,6 +15,8 @@
   - [托盘部分](#托盘部分)
   - [通信](#通信)
   - [路径别名](#路径别名)
+  - [UI 框架引入](#ui-框架引入)
+  - [国际化配置](#国际化配置)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -217,6 +219,16 @@ export default defineConfig({
   // ...
 }
 ```
+
+### UI 框架引入
+
+[view-ui-plus](http://v4.iviewui.com/docs/guide/start)
+
+### 国际化配置
+
+[UI 框架国际化](https://www.iviewui.com/view-ui-plus/guide/i18n)
+
+[vue3 vue-i18n](https://blog.csdn.net/laishaojiang/article/details/124634764)
 
 后面在页面中引入试一下就可以了。
 
