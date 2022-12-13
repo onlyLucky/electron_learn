@@ -220,6 +220,8 @@ export default defineConfig({
 }
 ```
 
+后面在页面中引入试一下就可以了。
+
 ### UI 框架引入
 
 [view-ui-plus](http://v4.iviewui.com/docs/guide/start)
@@ -230,7 +232,7 @@ export default defineConfig({
 
 [vue3 vue-i18n](https://blog.csdn.net/laishaojiang/article/details/124634764)
 
-后面在页面中引入试一下就可以了。
+具体参考`src/locale`文件下面的配置
 
 ## 提交规范
 

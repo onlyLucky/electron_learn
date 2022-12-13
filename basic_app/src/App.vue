@@ -48,6 +48,7 @@ const changeLang = (lang: string) => {
     <Button class="menu-item" @click="changeLang('zh-CN')">中文</Button>
   </div>
   <div v-t="'home'"></div>
+  <Tag>标签一</Tag>
 </template>
 
 <style lang="less">
