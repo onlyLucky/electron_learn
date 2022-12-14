@@ -39,6 +39,8 @@ const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 async function createWindow() {
   win = new BrowserWindow({
+    width: 1024,
+    height: 640,
     title: 'Main window',
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
@@ -49,6 +51,8 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
+    frame: false
   })
   win.setMenu(null)
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298

@@ -18,13 +18,13 @@ pre,
 form,
 fieldset,
 legend,
-button,w
+button,
 input,
 textarea,
 th,
 td {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 // body,
@@ -41,7 +41,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-size: 100%;
+  font-size: 100%;
 }
 
 address,
@@ -49,95 +49,94 @@ cite,
 dfn,
 em,
 var {
-    font-style: normal;
+  font-style: normal;
 }
 
 code,
 kbd,
 pre,
 samp {
-    font-family: couriernew, courier, monospace;
+  font-family: couriernew, courier, monospace;
 }
 
 small {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 ul,
 ol {
-    list-style: none;
+  list-style: none;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 sup {
-    vertical-align: text-top;
+  vertical-align: text-top;
 }
 
 sub {
-    vertical-align: text-bottom;
+  vertical-align: text-bottom;
 }
 
 legend {
-    color: #000;
+  color: #000;
 }
 
 fieldset,
 img {
-    border: 0;
+  border: 0;
 }
 
 button,
 input,
 select,
 textarea {
-    font-size: 100%;
+  font-size: 100%;
 }
 
 //自定义弹出框
 .toast {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, .2);
-    z-index: 9999;
-    .toast-content {
-        .loadImg {
-            width: .6rem;
-            -webkit-animation: myRotate 2s infinite linear;
-            animation: myRotate 2s infinite linear;
-            margin-bottom: .2rem;
-        }
-
-        text-align: center;
-        background: #fff;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        font-size: .26rem;
-        padding: .6rem 1rem;
-        border-radius: .1rem;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  .toast-content {
+    .loadImg {
+      width: 0.6rem;
+      -webkit-animation: myRotate 2s infinite linear;
+      animation: myRotate 2s infinite linear;
+      margin-bottom: 0.2rem;
     }
+
+    text-align: center;
+    background: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.26rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.1rem;
+  }
 }
 
 @keyframes myRotate {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
 
-    100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }

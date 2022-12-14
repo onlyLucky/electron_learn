@@ -2,17 +2,30 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-14 15:52:31
+ * @LastEditTime: 2022-12-14 19:58:51
  * @Description: header
 -->
 <template>
-  <div class="header">header</div>
+  <div class="header">
+    <div class="headerLeft"></div>
+    <div class="headerRight">
+      <SystemOpt></SystemOpt>
+    </div>
+  </div>
 </template>
-<script></script>
+<script setup lang="ts">
+import SystemOpt from "@/commons/system_opt/index";
+</script>
 <style scoped lang="less">
 .header {
   width: 100vw;
-  height: 2rem;
-  background-color: pink;
+  height: 48px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  /* 值为no-drag时不可拖拽 */
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>
