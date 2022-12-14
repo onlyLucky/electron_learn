@@ -15,6 +15,7 @@
       "_c/*": ["./src/components/*"],
       "_v/*": ["./src/views/*"]
     },
+    "lib": ["esnext", "dom"],
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true
   },
