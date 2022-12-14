@@ -1,6 +1,7 @@
 import { rmSync } from 'fs'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 import pkg from './package.json'
@@ -14,6 +15,7 @@ const isBuild = process.argv.slice(2).includes('build')
 export default defineConfig({
   plugins: [
     vue(),
+    vueJsx(),
     electron([
       {
         // Main-Process entry file of the Electron App.

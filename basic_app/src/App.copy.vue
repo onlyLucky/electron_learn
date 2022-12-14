@@ -1,7 +1,6 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup ./components/HelloWorld.vue
-import HelloWorld from "_c/HelloWorld.vue";
 import { ipcRenderer } from "electron";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -30,7 +29,7 @@ const changeLang = (lang: string) => {
     <img class="logo electron" src="./assets/electron.svg" />
     <img class="logo vue" src="./assets/vue.svg" />
   </div>
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite hello world" />
+  <!-- <HelloWorld msg="Hello Vue 3 + TypeScript + Vite hello world" /> -->
   <div class="optBox">
     <button @click="addWindows">新增一个窗口</button>
     <button v-show="!sharkFlag" @click="handleSharkChange">图标闪动</button>

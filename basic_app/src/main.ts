@@ -1,7 +1,10 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import App from './App'
 import './samples/node-api'
 
+
+// 路由引入
+import router from './router';
 // 国际化
 import ViewUIPlus from 'view-ui-plus';
 import i18n from '@/locale'
@@ -15,7 +18,7 @@ import axios from './libs/axiosTool'
 
 const app = createApp(App);
 
-
+app.use(router)
 app.use(i18n)
 app.use(ViewUIPlus, {
   i18n
