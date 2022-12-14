@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App'
 import './samples/node-api'
+import 'amfe-flexible'
 
 
 // 路由引入
