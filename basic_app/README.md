@@ -18,6 +18,8 @@
   - [路径别名](#路径别名)
   - [UI 框架引入](#ui-框架引入)
   - [国际化配置](#国际化配置)
+  - [rem 适配](#rem-适配)
+  - [iconfont 引入(未尝试)](#iconfont-引入未尝试)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -83,6 +85,41 @@ npm create electron-vite
 ### 开发中遇到的问题
 
 - [Electron failed to install correctly, please delete node_modules/electron and try installing again](https://blog.csdn.net/qq_42789068/article/details/106401830)
+
+- tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法
+
+```tsx
+// index.tsx
+import { ref } from "vue";
+import style from "./style.module.less";
+
+type Props = {
+  isShowChangeSize: boolean;
+};
+
+console.log(style, "style");
+
+const SystemOpt = (props: Props) => {
+  return (
+    <div class={style.tss}>
+      123
+      <p>SystemOpt</p>
+    </div>
+  );
+};
+
+export default SystemOpt;
+```
+
+```less
+// style.module.less
+.tss {
+  color: pink;
+  p {
+    color: lightblue;
+  }
+}
+```
 
 ## 配置
 
@@ -238,6 +275,14 @@ export default defineConfig({
 [vue3 vue-i18n](https://blog.csdn.net/laishaojiang/article/details/124634764)
 
 具体参考`src/locale`文件下面的配置
+
+### rem 适配
+
+[Vue3+Vite 利用 postcss-pxtorem 移动端适配](https://blog.csdn.net/m0_54089303/article/details/128100595)
+
+### iconfont 引入(未尝试)
+
+[Vue3 + Vite + TS 项目引入 iconfont 图标](https://developer.aliyun.com/article/975701)
 
 ## 提交规范
 
