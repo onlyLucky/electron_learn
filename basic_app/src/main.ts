@@ -14,7 +14,7 @@ import { Button, Input } from 'view-ui-plus'
 import "@/styles/index"
 
 import config from '@/config'
-import axios from './libs/axiosTool'
+// import axios from './libs/axiosTool'
 
 const app = createApp(App);
 
