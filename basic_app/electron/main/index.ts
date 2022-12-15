@@ -136,6 +136,25 @@ ipcMain.on('num_change', (event, arg) => {
     v.send('num_change', arg)
   })
 })
+
+// 窗口最小化
+ipcMain.on('window_min', (event, arg) => {
+  win.minimize();
+})
+// 窗口 最大化、恢复
+ipcMain.on('window_max', function () {
+  if (win.isMaximized()) { // 为true表示窗口已最大化
+    win.restore();// 将窗口恢复为之前的状态.
+  } else {
+    win.maximize();
+  }
+})
+// 关闭窗口
+ipcMain.on('window_close', function () {
+  win.close();
+})
+
+
 // 监听图标闪动事件
 let iconShakeTimer = null;
 ipcMain.on('icon_shake', (event, arg: boolean) => {
