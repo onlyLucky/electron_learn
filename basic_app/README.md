@@ -17,6 +17,7 @@
     - [Q3: electron 顶部允许拖动，hover 等 css 样式效果失效](#q3-electron-顶部允许拖动hover-等-css-样式效果失效)
     - [Q4: \[tsx\]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）](#q4-tsx的写法对于目前的问题总结或许是自己未找到解决的方案或配置后面使用-react-的格式会进行解决)
     - [Q5: document.getElementById("app").className = "test" 编译器报错](#q5-documentgetelementbyidappclassname--test-编译器报错)
+    - [Q6: \[@vue/compiler-sfc\] the ＞＞＞ and /deep/ combinators have been deprecated. Use :deep() instead.](#q6-vuecompiler-sfc-the--and-deep-combinators-have-been-deprecated-use-deep-instead)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -150,6 +151,26 @@ export default SystemOpt;
 
 ```ts
 document.getElementById("app")!.className = "test";
+```
+
+#### Q6: [@vue/compiler-sfc] the ＞＞＞ and /deep/ combinators have been deprecated. Use :deep() instead.
+
+使用原本的样式穿透写法会报 warning
+
+原本的写法，也能实现
+
+```less
+/deep/ .ivu-menu-vertical .ivu-menu-submenu-title {
+  padding: 14px;
+}
+```
+
+更改后的
+
+```less
+:deep(.ivu-menu-vertical .ivu-menu-submenu-title) {
+  padding: 14px;
+}
 ```
 
 ## 配置
