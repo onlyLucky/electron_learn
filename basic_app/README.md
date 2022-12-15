@@ -333,7 +333,7 @@ TODO: 这里貌似不需要适配像素，直接检测设备的像素比进行�
 2. 全局变量文件,将变量文件导入 main.ts 中。
 3. vite 配置全局变量
 4. 通过修改#app 的 class 修改全局变量
- 
+
 详细内容参考 `theme.less` `variables.less` `vite.config.less`
 
 ## 提交规范

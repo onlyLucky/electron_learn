@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:05:24
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 14:10:26
+ * @LastEditTime: 2022-12-15 16:06:10
  * @Description: Index
 -->
 <template>
@@ -25,20 +25,20 @@ import Header from "./Header.vue";
   .appContent {
     width: 100%;
     height: calc(100% - 48px);
-    background-color: #f5f7f9;
+    background-color: @bg;
     position: relative;
     z-index: 1;
     .menuBox {
       width: 200px;
       height: 100%;
-      background-color: pink;
+      background-color: @bg;
     }
     .contentBox {
       width: calc(100% - 200px);
       height: 100%;
       padding: 10px;
       box-sizing: border-box;
-      background-color: #fff;
+      background-color: @content_bg;
     }
   }
 }
