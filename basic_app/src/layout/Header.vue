@@ -2,12 +2,14 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-14 19:58:51
+ * @LastEditTime: 2022-12-15 13:45:32
  * @Description: header
 -->
 <template>
   <div class="header">
-    <div class="headerLeft"></div>
+    <div class="headerLeft">
+      <HLogo></HLogo>
+    </div>
     <div class="headerRight">
       <SystemOpt></SystemOpt>
     </div>
@@ -15,6 +17,7 @@
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
+import HLogo from "./comps/HLogo.vue";
 </script>
 <style scoped lang="less">
 .header {
