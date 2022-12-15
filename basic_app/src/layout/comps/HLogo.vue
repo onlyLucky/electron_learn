@@ -2,11 +2,11 @@
  * @Author: fg
  * @Date: 2022-12-14 16:53:53
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 13:53:39
+ * @LastEditTime: 2022-12-15 14:04:21
  * @Description: header logo
 -->
 <template>
-  <div class="logo f-row-e-c">
+  <div class="logo f-row-c-c">
     <img src="@/assets/images/logo.png" alt="" />
   </div>
 </template>
@@ -15,8 +15,6 @@
 .logo {
   width: 200px;
   height: 48px;
-  padding-left: 16px;
-  box-sizing: border-box;
   img {
     width: 150px;
     height: auto;

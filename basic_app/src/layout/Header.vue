@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 13:45:32
+ * @LastEditTime: 2022-12-15 14:35:26
  * @Description: header
 -->
 <template>
@@ -29,6 +29,8 @@ import HLogo from "./comps/HLogo.vue";
   -webkit-app-region: drag;
   display: flex;
   align-items: center;
+  z-index: 2;
+  position: relative;
   justify-content: space-between;
 }
 </style>
