@@ -24,6 +24,7 @@
   - [国际化配置](#国际化配置)
   - [rem 适配](#rem-适配)
   - [iconfont 引入(未尝试)](#iconfont-引入未尝试)
+  - [自定义顶部菜单栏开关等](#自定义顶部菜单栏开关等)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -300,9 +301,17 @@ export default defineConfig({
 
 [Vue3+Vite 利用 postcss-pxtorem 移动端适配](https://blog.csdn.net/m0_54089303/article/details/128100595)
 
+TODO: 这里貌似不需要适配像素，直接检测设备的像素比进行缩放展示
+
+[electron-vue 打包后样式变大以及不同分辨率屏幕适配问题](https://blog.csdn.net/Zx_SSSS/article/details/82286503)
+
 ### iconfont 引入(未尝试)
 
 [Vue3 + Vite + TS 项目引入 iconfont 图标](https://developer.aliyun.com/article/975701)
+
+### 自定义顶部菜单栏开关等
+
+[Electron 中自定义窗口导航条](https://blog.csdn.net/weixin_40629244/article/details/116332270)
 
 ## 提交规范
 
