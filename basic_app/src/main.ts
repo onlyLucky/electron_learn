@@ -10,7 +10,7 @@ import router from './router';
 import ViewUIPlus from 'view-ui-plus';
 import i18n from '@/locale'
 // iview 
-import { Button, Input } from 'view-ui-plus'
+import { Button, Input, Icon } from 'view-ui-plus'
 // 样式文件引入
 import "@/styles/index"
 
@@ -28,6 +28,7 @@ app.config.globalProperties.$config = config;
 
 app.component('Button', Button);
 app.component('Input', Input);
+app.component('Icon', Icon);
 app.mount('#app').$nextTick(() => {
   postMessage({ payload: 'removeLoading' }, '*')
 });
