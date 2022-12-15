@@ -26,6 +26,7 @@
   - [rem 适配](#rem-适配)
   - [iconfont 引入(未尝试)](#iconfont-引入未尝试)
   - [自定义顶部菜单栏开关等](#自定义顶部菜单栏开关等)
+  - [vite vue3 主题切换功能配置](#vite-vue3-主题切换功能配置)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -321,6 +322,19 @@ TODO: 这里貌似不需要适配像素，直接检测设备的像素比进行�
 ### 自定义顶部菜单栏开关等
 
 [Electron 中自定义窗口导航条](https://blog.csdn.net/weixin_40629244/article/details/116332270)
+
+### vite vue3 主题切换功能配置
+
+[vue3+vite+less 实现简单换肤](https://juejin.cn/post/7032175248355115015)
+
+实现的原理：主要通过切换 class 改变全局变量，实现更换变量
+
+1. 实现主题函数的编写
+2. 全局变量文件,将变量文件导入 main.ts 中。
+3. vite 配置全局变量
+4. 通过修改#app 的 class 修改全局变量
+ 
+详细内容参考 `theme.less` `variables.less` `vite.config.less`
 
 ## 提交规范
 
