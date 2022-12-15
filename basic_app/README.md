@@ -12,6 +12,9 @@
 - [Directory](#directory)
 - [FAQ](#faq)
   - [开发中遇到的问题](#开发中遇到的问题)
+    - [Q1. Electron failed to install correctly, please delete node\_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
+    - [Q2. tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法](#q2-tsx-写法引用样式文件没有样式隔离可以使用-vite-内部的-css-module-css-in-js-的解决方法)
+    - [Q3: electron 顶部允许拖动，hover 等 css 样式效果失效](#q3-electron-顶部允许拖动hover-等-css-样式效果失效)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -84,9 +87,9 @@ npm create electron-vite
 
 ### 开发中遇到的问题
 
-- [Electron failed to install correctly, please delete node_modules/electron and try installing again](https://blog.csdn.net/qq_42789068/article/details/106401830)
+#### Q1. [Electron failed to install correctly, please delete node_modules/electron and try installing again](https://blog.csdn.net/qq_42789068/article/details/106401830)
 
-- tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法
+#### Q2. tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法
 
 ```tsx
 // index.tsx
@@ -119,6 +122,14 @@ export default SystemOpt;
     color: lightblue;
   }
 }
+```
+
+#### Q3: electron 顶部允许拖动，hover 等 css 样式效果失效
+
+解决方法是在点击 hover 的 dom 添加 不允许拖拽
+
+```less
+-webkit-app-region: no-drag;
 ```
 
 ## 配置
