@@ -15,6 +15,7 @@
     - [Q1. Electron failed to install correctly, please delete node\_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
     - [Q2. tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法](#q2-tsx-写法引用样式文件没有样式隔离可以使用-vite-内部的-css-module-css-in-js-的解决方法)
     - [Q3: electron 顶部允许拖动，hover 等 css 样式效果失效](#q3-electron-顶部允许拖动hover-等-css-样式效果失效)
+    - [Q4: \[tsx\]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）](#q4-tsx的写法对于目前的问题总结或许是自己未找到解决的方案或配置后面使用-react-的格式会进行解决)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -131,6 +132,14 @@ export default SystemOpt;
 ```less
 -webkit-app-region: no-drag;
 ```
+
+#### Q4: [tsx]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）
+
+- class 的绑定如果是多个怎么办
+- 外部引用的 less class 怎么调用
+- 样式隔离虽然有解决方案，但是感觉好麻烦
+- 多种其他事件绑定，冒泡处理，事件监听等，好麻烦
+- 引用外部图片资源对路径别名的处理会找不到，只能使用 import 的形式去引入。
 
 ## 配置
 
@@ -313,3 +322,5 @@ export default defineConfig({
 - `wip` 开发中
 
 ## 参考链接
+
+[封装 flex 布局（Less）](https://blog.csdn.net/zxBlogs/article/details/125127322)
