@@ -3,8 +3,8 @@ import type { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: '_home',
-    redirect: '/home',
+    name: '_index',
+    redirect: '/meeting',
     component: () => import('@/layout/Index.vue'),
     meta: {
       hideInMenu: false,
@@ -12,15 +12,15 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: '/home',
-        name: 'home',
+        path: '/meeting',
+        name: 'meeting',
         meta: {
           hideInMenu: false,
-          title: '首页',
+          title: '会议',
           notCache: true,
           icon: 'md-home'
         },
-        component: () => import('@/layout/Index.vue')
+        component: () => import('_v/meeting/index.vue')
       }
     ]
   }
