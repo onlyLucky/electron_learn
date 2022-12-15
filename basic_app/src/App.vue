@@ -6,7 +6,7 @@
 import { onMounted } from "vue";
 
 onMounted(() => {
-  // 初始化主题
+  // 主题初始化
   document.getElementById("app")!.className = "theme_basic";
 });
 </script>

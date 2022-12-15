@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 14:35:26
+ * @LastEditTime: 2022-12-15 14:57:02
  * @Description: header
 -->
 <template>
@@ -23,7 +23,7 @@ import HLogo from "./comps/HLogo.vue";
 .header {
   width: 100vw;
   height: 48px;
-  background-color: #fff;
+  background-color: @bg;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   /* 值为no-drag时不可拖拽 */
   -webkit-app-region: drag;

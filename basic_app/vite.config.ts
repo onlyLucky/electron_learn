@@ -65,6 +65,13 @@ export default defineConfig({
     }),
   ],
   css: {
+    preprocessorOptions: {
+      less: {
+        charset: false,
+        javascriptEnabled: true,
+        additionalData: `@import "${path.resolve(__dirname, 'src/styles/variables.less')}";`
+      }
+    },
     postcss: {
       plugins: [
         autoprefixer({
