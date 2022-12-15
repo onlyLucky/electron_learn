@@ -16,6 +16,7 @@
     - [Q2. tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法](#q2-tsx-写法引用样式文件没有样式隔离可以使用-vite-内部的-css-module-css-in-js-的解决方法)
     - [Q3: electron 顶部允许拖动，hover 等 css 样式效果失效](#q3-electron-顶部允许拖动hover-等-css-样式效果失效)
     - [Q4: \[tsx\]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）](#q4-tsx的写法对于目前的问题总结或许是自己未找到解决的方案或配置后面使用-react-的格式会进行解决)
+    - [Q5: document.getElementById("app").className = "test" 编译器报错](#q5-documentgetelementbyidappclassname--test-编译器报错)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -141,6 +142,14 @@ export default SystemOpt;
 - 样式隔离虽然有解决方案，但是感觉好麻烦
 - 多种其他事件绑定，冒泡处理，事件监听等，好麻烦
 - 引用外部图片资源对路径别名的处理会找不到，只能使用 import 的形式去引入。
+
+#### Q5: document.getElementById("app").className = "test" 编译器报错
+
+!非 null 断言操作符，可以使用（document.getElementById("app")可能为空）
+
+```ts
+document.getElementById("app")!.className = "test";
+```
 
 ## 配置
 
