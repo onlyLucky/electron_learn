@@ -18,6 +18,7 @@
     - [Q4: \[tsx\]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）](#q4-tsx的写法对于目前的问题总结或许是自己未找到解决的方案或配置后面使用-react-的格式会进行解决)
     - [Q5: document.getElementById("app").className = "test" 编译器报错](#q5-documentgetelementbyidappclassname--test-编译器报错)
     - [Q6: \[@vue/compiler-sfc\] the ＞＞＞ and /deep/ combinators have been deprecated. Use :deep() instead.](#q6-vuecompiler-sfc-the--and-deep-combinators-have-been-deprecated-use-deep-instead)
+    - [Q7: 安装 electron 项目的时候，在下载包的时候报错](#q7-安装-electron-项目的时候在下载包的时候报错)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -172,6 +173,67 @@ document.getElementById("app")!.className = "test";
   padding: 14px;
 }
 ```
+
+#### Q7: 安装 electron 项目的时候，在下载包的时候报错
+
+错误 1：socket hang up
+
+```txt
+error D:\coder\@running\electron_learn\basic_app\node_modules\electron: Command failed.
+Exit code: 1
+Command: node install.js
+Arguments:
+Directory: D:\coder\@running\electron_learn\basic_app\node_modules\electron
+Output:
+RequestError: socket hang up
+...
+...
+
+```
+
+错误 2： Client network socket disconnected before secure TLS connection was established
+
+```txt
+error D:\coder\@running\electron_learn\basic_app\node_modules\electron: Command failed.
+Exit code: 1
+Command: node install.js
+Arguments:
+Directory: D:\coder\@running\electron_learn\basic_app\node_modules\electron
+Output:
+RequestError: Client network socket disconnected before secure TLS connection was established
+...
+...
+
+```
+
+错误 3： connect ETIMEDOUT 20.205.243.166:443
+
+```txt
+error D:\coder\@running\electron_learn\basic_app\node_modules\electron: Command failed.
+Exit code: 1
+Command: node install.js
+Arguments:
+Directory: D:\coder\@running\electron_learn\basic_app\node_modules\electron
+Output:
+RequestError: connect ETIMEDOUT 20.205.243.166:443
+...
+...
+
+```
+
+大概率是镜像问题，通过设置 electron 代理解决,终端执行下面的代码
+
+```shell
+npm config set electron_mirror https://npm.taobao.org/mirrors/electron/
+```
+
+yarn 的话可以使用
+
+```shell
+yarn config set electron_mirror https://npm.taobao.org/mirrors/electron/
+```
+
+[解决安装 electron 卡在 node install.js 不动问题](https://www.jianshu.com/p/28a0305ac187)
 
 ## 配置
 
