@@ -2,29 +2,65 @@
  * @Author: fg
  * @Date: 2022-12-15 16:43:56
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 17:47:34
+ * @LastEditTime: 2022-12-16 17:03:39
  * @Description: content
 -->
 <template>
   <div class="menu">
-    <Menu active-name="1-2" :open-names="['4']">
-      <Submenu name="4">
+    <Menu :active-name="activeRouteName">
+      <!-- <Submenu name="1">
         <template #title>
           <Icon type="ios-cog" />
           Navigation Three
         </template>
-        <MenuItem name="4-1">Option 9</MenuItem>
-        <MenuItem name="4-2">Option 10</MenuItem>
-        <MenuItem name="4-3">Option 11</MenuItem>
-        <MenuItem name="4-4">Option 12</MenuItem>
-      </Submenu>
+      </Submenu> -->
+      <MenuItem
+        :name="(item.name as string)"
+        v-for="(item, index) in menuList"
+        :key="index"
+        @click="handleMenuTap(item)"
+      >
+        <div class="menuItem f-row-s-c">
+          <!-- ios-construct ios-people -->
+          <div class="iconBox">
+            <Icon :type="item.meta?.icon" size="20" />
+          </div>
+
+          <span>{{ item.meta?.title }}</span>
+        </div>
+      </MenuItem>
     </Menu>
   </div>
 </template>
 <script setup lang="ts">
+import { RouteRecordRaw, useRoute, useRouter } from "vue-router";
 import routes from "@/router/routes";
-import { Menu, Submenu, MenuItem } from "view-ui-plus";
-console.log(routes, "routes");
+// Submenu
+import { Menu, MenuItem } from "view-ui-plus";
+import { ref, watch } from "vue";
+let menuList: RouteRecordRaw[] | undefined = [] as RouteRecordRaw[];
+let activeRouteName = ref<string>("");
+const route = useRoute();
+const router = useRouter();
+routes.map((item) => {
+  if (item.name == "_index") {
+    menuList = item.children;
+  }
+});
+
+const handleMenuTap = (item: any) => {
+  router.push({ name: item.name });
+};
+
+// 监听路由
+watch(
+  () => route.name,
+  (n, o) => {
+    console.log(n, o);
+    activeRouteName.value = <string>n;
+  },
+  { immediate: true }
+);
 </script>
 <style scoped lang="less">
 :deep(.ivu-menu) {
@@ -34,12 +70,23 @@ console.log(routes, "routes");
   padding: 14px;
 }
 :deep(.ivu-menu-item:hover) {
-  background-color: #f4f4f4;
+  background-color: @menu_item_hover;
 }
 :deep(.ivu-menu-vertical.ivu-menu-light:after) {
   display: none;
 }
 .menu {
   width: 100%;
+  user-select: none;
+  .menuItem {
+    .iconBox {
+      width: 20px;
+      height: 20px;
+    }
+    span {
+      margin-left: 10px;
+      font-size: 16px;
+    }
+  }
 }
 </style>

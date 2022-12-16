@@ -7,7 +7,7 @@ const routes: RouteRecordRaw[] = [
     redirect: '/meeting',
     component: () => import('@/layout/Index.vue'),
     meta: {
-      hideInMenu: false,
+      hideInMenu: true,
       notCache: true
     },
     children: [
@@ -17,10 +17,21 @@ const routes: RouteRecordRaw[] = [
         meta: {
           hideInMenu: false,
           title: '会议',
-          notCache: true,
-          icon: 'md-home'
+          notCache: false,
+          icon: 'ios-people'
         },
         component: () => import('_v/meeting/index.vue')
+      },
+      {
+        path: '/equipment',
+        name: 'equipment',
+        meta: {
+          hideInMenu: false,
+          title: '设备',
+          notCache: false,
+          icon: 'ios-construct'
+        },
+        component: () => import('_v/equipment/index.vue')
       }
     ]
   }

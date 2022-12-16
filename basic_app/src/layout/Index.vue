@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:05:24
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 16:45:13
+ * @LastEditTime: 2022-12-16 17:05:34
  * @Description: Index
 -->
 <template>
@@ -14,7 +14,11 @@
       </div>
       <div class="contentBox">
         <div class="content">
-          <router-view />
+          <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+              <component :is="Component" />
+            </transition>
+          </router-view>
         </div>
       </div>
     </div>
@@ -25,6 +29,15 @@ import Header from "./Header.vue";
 import Menu from "./Menu.vue";
 </script>
 <style scoped lang="less">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 ._app {
   width: 100vw;
   height: 100vh;
