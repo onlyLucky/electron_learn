@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 17:24:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 13:27:41
+ * @LastEditTime: 2022-12-19 18:04:42
  * @Description: content
  */
 import { ref } from "vue";
@@ -41,6 +41,7 @@ const SystemOpt = (props: Props) => {
       <div class={style.sIconBox} onClick={onMinTap}>
         <img src={icon_min} alt="" />
       </div>
+      {/* props.isShowChangeSize */}
       {smallSizeFlag.value ? (
         <div class={style.sIconBox} onClick={onMaxTap.bind(this, false)}>
           <img src={icon_max} alt="" />

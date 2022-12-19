@@ -84,6 +84,8 @@ function createLoginWin() {
     width: 710,
     height: 426,
     resizable: false,
+    title: 'login',
+    icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
       nodeIntegration: true,
@@ -97,11 +99,13 @@ function createLoginWin() {
   if (process.env.VITE_DEV_SERVER_URL) {
     loginWin.webContents.openDevTools()
   }
+  loginWin.focus()
 }
 // 托盘对象
 let tray;
 app.whenReady().then(() => {
-  createWindow()
+  // createWindow()
+  createLoginWin()
   // 创建托盘
   const icon = nativeImage.createFromPath('resources/logo.png')
   tray = new Tray(icon)
@@ -163,19 +167,19 @@ ipcMain.on('num_change', (event, arg) => {
 
 // 窗口最小化
 ipcMain.on('window_min', (event, arg) => {
-  win.minimize();
+  BrowserWindow.getFocusedWindow().minimize();
 })
 // 窗口 最大化、恢复
 ipcMain.on('window_max', function () {
-  if (win.isMaximized()) { // 为true表示窗口已最大化
-    win.restore();// 将窗口恢复为之前的状态.
+  if (BrowserWindow.getFocusedWindow().isMaximized()) { // 为true表示窗口已最大化
+    BrowserWindow.getFocusedWindow().restore();// 将窗口恢复为之前的状态.
   } else {
-    win.maximize();
+    BrowserWindow.getFocusedWindow().maximize();
   }
 })
 // 关闭窗口
 ipcMain.on('window_close', function () {
-  win.close();
+  BrowserWindow.getFocusedWindow().close();
 })
 ipcMain.on('win_size', function (event, arg) {
   // console.log(url, arg)
