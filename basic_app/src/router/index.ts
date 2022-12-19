@@ -27,6 +27,7 @@ router.beforeEach((to, from, next) => {
 });
 router.afterEach((to, from, next) => {
   ViewUIPlus.LoadingBar.finish()
+  console.log(to, 'to')
   window.scrollTo(0, 0)
 })
 

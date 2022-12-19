@@ -12,7 +12,7 @@ process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_ELECTRON, '../public')
 
-import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, remote } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 
@@ -31,8 +31,12 @@ if (!app.requestSingleInstanceLock()) {
 // This warning only shows in development mode
 // Read more on https://www.electronjs.org/docs/latest/tutorial/security
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
-
+// 主窗口
 let win: BrowserWindow | null = null
+// 登录窗口
+let loginWin: BrowserWindow | null = null
+// 弹出层窗口
+let modelWin: BrowserWindow | null = null
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
@@ -73,6 +77,26 @@ async function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
+}
+
+function createLoginWin() {
+  loginWin = new BrowserWindow({
+    width: 710,
+    height: 426,
+    resizable: false,
+    webPreferences: {
+      preload,
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+    // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
+    frame: false
+  })
+  loginWin.setMenu(null)
+  loginWin.loadURL(`${url}login`)
+  if (process.env.VITE_DEV_SERVER_URL) {
+    loginWin.webContents.openDevTools()
+  }
 }
 // 托盘对象
 let tray;
@@ -152,6 +176,10 @@ ipcMain.on('window_max', function () {
 // 关闭窗口
 ipcMain.on('window_close', function () {
   win.close();
+})
+ipcMain.on('win_size', function (event, arg) {
+  // console.log(url, arg)
+  createLoginWin()
 })
 
 
