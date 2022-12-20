@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 17:24:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-19 18:04:42
+ * @LastEditTime: 2022-12-20 13:48:31
  * @Description: content
  */
 import { ref } from "vue";
@@ -41,18 +41,22 @@ const SystemOpt = (props: Props) => {
       <div class={style.sIconBox} onClick={onMinTap}>
         <img src={icon_min} alt="" />
       </div>
-      {/* props.isShowChangeSize */}
-      {smallSizeFlag.value ? (
-        <div class={style.sIconBox} onClick={onMaxTap.bind(this, false)}>
-          <img src={icon_max} alt="" />
-        </div>
-      ) : (
-        <Tooltip content="还原">
-          <div class={style.sIconBox} onClick={onMaxTap.bind(this, true)}>
-            <img src={icon_restore} alt="" />
+      {props.isShowChangeSize ? (
+        smallSizeFlag.value ? (
+          <div class={style.sIconBox} onClick={onMaxTap.bind(this, false)}>
+            <img src={icon_max} alt="" />
           </div>
-        </Tooltip>
+        ) : (
+          <Tooltip content="还原">
+            <div class={style.sIconBox} onClick={onMaxTap.bind(this, true)}>
+              <img src={icon_restore} alt="" />
+            </div>
+          </Tooltip>
+        )
+      ) : (
+        ""
       )}
+
       <div class={style.sIconBox} onClick={onCloseTap}>
         <img src={icon_close} alt="" />
       </div>
