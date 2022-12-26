@@ -19,6 +19,7 @@
     - [Q5: document.getElementById("app").className = "test" 编译器报错](#q5-documentgetelementbyidappclassname--test-编译器报错)
     - [Q6: \[@vue/compiler-sfc\] the ＞＞＞ and /deep/ combinators have been deprecated. Use :deep() instead.](#q6-vuecompiler-sfc-the--and-deep-combinators-have-been-deprecated-use-deep-instead)
     - [Q7: 安装 electron 项目的时候，在下载包的时候报错](#q7-安装-electron-项目的时候在下载包的时候报错)
+  - [Q8：vue3 项目中 less 函数无法全局使用，如何解决？](#q8vue3-项目中-less-函数无法全局使用如何解决)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -234,6 +235,22 @@ yarn config set electron_mirror https://npm.taobao.org/mirrors/electron/
 ```
 
 [解决安装 electron 卡在 node install.js 不动问题](https://www.jianshu.com/p/28a0305ac187)
+
+### Q8：vue3 项目中 less 函数无法全局使用，如何解决？
+
+之前配置过全局的变量文件`variables.less`,将 less 函数文件引入进入`variables.less`中，可以全局使用
+
+```less
+// 主题函数
+@import "./theme.less";
+// 全局less函数处理
+@import "./global.less";
+
+// 默认主题
+.theme_basic {
+  .theme_basic();
+}
+```
 
 ## 配置
 
