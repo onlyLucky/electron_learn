@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 17:24:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-20 13:48:31
+ * @LastEditTime: 2022-12-26 10:03:58
  * @Description: content
  */
 import { ref } from "vue";
@@ -26,7 +26,7 @@ const onMinTap = () => {
   ipcRenderer.send("window_min");
 };
 
-const onMaxTap = (flag) => {
+const onMaxTap = (flag: boolean) => {
   console.log(flag, "flag");
   smallSizeFlag.value = flag;
   ipcRenderer.send("window_max");

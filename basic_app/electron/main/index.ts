@@ -12,7 +12,7 @@ process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_ELECTRON, '../public')
 
-import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, remote } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 
@@ -41,7 +41,7 @@ let modelWin: BrowserWindow | null = null
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
-async function createWindow() {
+function createWindow() {
   win = new BrowserWindow({
     width: 1024,
     height: 640,
@@ -132,7 +132,6 @@ app.whenReady().then(() => {
   tray.setContextMenu(contextMenu)
   tray.setToolTip('basic app')
   tray.setTitle('This is my title')
-
 })
 // 当所有的窗口都被关闭时触发
 app.on('window-all-closed', () => {
@@ -160,9 +159,9 @@ app.on('activate', () => {
 // 接收num change改变的通信
 ipcMain.on('num_change', (event, arg) => {
   console.log(arg, 'num_change')
-  BrowserWindow.getAllWindows().forEach(v => {
+  /* BrowserWindow.getAllWindows().forEach(v => {
     v.send('num_change', arg)
-  })
+  }) */
 })
 
 // 窗口最小化
@@ -175,6 +174,15 @@ ipcMain.on('window_max', function () {
     BrowserWindow.getFocusedWindow().restore();// 将窗口恢复为之前的状态.
   } else {
     BrowserWindow.getFocusedWindow().maximize();
+  }
+})
+
+ipcMain.on('on_login', (event, callback) => {
+  BrowserWindow.getFocusedWindow().close();
+  createWindow()
+  console.log(callback, 'callback')
+  if (callback) {
+    callback();
   }
 })
 // 关闭窗口
