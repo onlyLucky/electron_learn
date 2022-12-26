@@ -177,13 +177,9 @@ ipcMain.on('window_max', function () {
   }
 })
 
-ipcMain.on('on_login', (event, callback) => {
+ipcMain.on('on_login', (event, arg) => {
   BrowserWindow.getFocusedWindow().close();
   createWindow()
-  console.log(callback, 'callback')
-  if (callback) {
-    callback();
-  }
 })
 // 关闭窗口
 ipcMain.on('window_close', function () {
