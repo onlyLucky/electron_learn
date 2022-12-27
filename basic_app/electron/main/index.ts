@@ -45,6 +45,8 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1024,
     height: 640,
+    minWidth: 1024,
+    minHeight: 640,
     title: 'Main window',
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
