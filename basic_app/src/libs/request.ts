@@ -2,11 +2,12 @@
  * @Author: fg
  * @Date: 2022-12-26 16:10:58
  * @LastEditors: fg
- * @LastEditTime: 2022-12-26 17:34:45
+ * @LastEditTime: 2022-12-27 11:36:48
  * @Description: 请求接口封装
  */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from "axios"
 import { Message } from "view-ui-plus"
+import Config from "@/config/index"
 
 // 响应数据结构
 interface Result {
@@ -24,8 +25,8 @@ enum RequestEnums {
   SUCCESS = 200,//请求成功
   TIMEOUT = 20000,//超时时间
 }
-
-const URL: string = ''
+// Config.baseUrl
+const URL: string = '/api'
 const config = {
   // 默认地址
   baseURL: URL as string,
