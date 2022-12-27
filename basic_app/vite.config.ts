@@ -8,6 +8,7 @@ import pkg from './package.json'
 import autoprefixer from 'autoprefixer';
 import postCssPxToRem from 'postcss-pxtorem';
 const path = require('path')
+import Config from "./src/config/index"
 
 rmSync('dist-electron', { recursive: true, force: true })
 const sourcemap = !!process.env.VSCODE_DEBUG
@@ -94,12 +95,30 @@ export default defineConfig({
       '_v': path.resolve(__dirname, 'src/views'),
     },
   },
-  server: process.env.VSCODE_DEBUG ? (() => {
+  server: {
+    host: "0.0.0.0",
+    proxy: {
+      '/api': {
+        target: Config.baseUrl, //跨域地址
+        changeOrigin: true, //支持跨域
+        rewrite: (path) => path.replace(/^\/api/, "")//重写路径,替换/api
+      }
+    }
+  },
+  /* server: process.env.VSCODE_DEBUG ? (() => {
     const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
     return {
       host: url.hostname,
       port: +url.port,
+      proxy: {
+        '/api': {
+          target: Config.baseUrl, //跨域地址
+          changeOrigin: true, //支持跨域
+          rewrite: (path) => path.replace(/^\/api/, "")//重写路径,替换/api
+        }
+      }
+
     }
-  })() : undefined,
+  })() : undefined, */
   clearScreen: false,
 })
