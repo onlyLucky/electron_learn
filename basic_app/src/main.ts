@@ -26,12 +26,13 @@ app.use(ViewUIPlus, {
   i18n
 })
 app.use(vDebounce)
+
 app.config.globalProperties.$config = config;
 app.config.globalProperties.$http = http
 
-app.component('Button', Button);
-app.component('Input', Input);
-app.component('Icon', Icon);
+app.component('Button', Button)
+  .component('Input', Input)
+  .component('Icon', Icon);
 app.mount('#app').$nextTick(() => {
   postMessage({ payload: 'removeLoading' }, '*')
 });

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 17:24:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-26 10:03:58
+ * @LastEditTime: 2022-12-27 17:49:37
  * @Description: content
  */
 import { ref } from "vue";
@@ -16,9 +16,9 @@ import icon_max from "@/assets/icons/system/icon_sys_maximize.png";
 import icon_min from "@/assets/icons/system/icon_sys_minimize.png";
 import icon_restore from "@/assets/icons/system/icon_sys_restore.png";
 
-type Props = {
-  isShowChangeSize: boolean;
-};
+interface Props {
+  isShowChangeSize?: boolean;
+}
 
 let smallSizeFlag = ref<boolean>(true);
 
@@ -27,7 +27,6 @@ const onMinTap = () => {
 };
 
 const onMaxTap = (flag: boolean) => {
-  console.log(flag, "flag");
   smallSizeFlag.value = flag;
   ipcRenderer.send("window_max");
 };
@@ -35,7 +34,11 @@ const onCloseTap = () => {
   ipcRenderer.send("window_close");
 };
 
-const SystemOpt = (props: Props) => {
+const SystemOpt = (props: Props = { isShowChangeSize: true }) => {
+  // 上面给默认值的方式不接受，不知道为什么tsx
+  if (props.isShowChangeSize == undefined) {
+    props.isShowChangeSize = true;
+  }
   return (
     <div class={style.sOpt_Box}>
       <div class={style.sIconBox} onClick={onMinTap}>
