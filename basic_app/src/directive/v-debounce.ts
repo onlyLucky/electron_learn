@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-27 15:01:42
  * @LastEditors: fg
- * @LastEditTime: 2022-12-27 15:23:27
+ * @LastEditTime: 2022-12-27 15:55:41
  * @Description: 防抖自定义指令
  */
 import _ from 'lodash';
@@ -11,10 +11,7 @@ import { App, Directive, DirectiveBinding } from "vue"
 
 const vDebounce: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
-    console.log(el, binding, 'console.log(el, binding)')
-    el.addEventListener('click', () => {
-      console.log(el, binding)
-    })
+    el.addEventListener('click', _.debounce(function () { binding.value() }, 300))
   }
 }
 
