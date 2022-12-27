@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:05:24
  * @LastEditors: fg
- * @LastEditTime: 2022-12-16 17:05:34
+ * @LastEditTime: 2022-12-27 13:54:25
  * @Description: Index
 -->
 <template>
@@ -15,7 +15,7 @@
       <div class="contentBox">
         <div class="content">
           <router-view v-slot="{ Component }">
-            <transition name="fade" mode="out-in">
+            <transition name="slide-right" mode="out-in">
               <component :is="Component" />
             </transition>
           </router-view>
@@ -29,7 +29,7 @@ import Header from "./Header.vue";
 import Menu from "./Menu.vue";
 </script>
 <style scoped lang="less">
-.fade-enter-active,
+/* .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.4s ease;
 }
@@ -37,7 +37,7 @@ import Menu from "./Menu.vue";
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
+} */
 ._app {
   width: 100vw;
   height: 100vh;

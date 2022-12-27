@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-26 16:10:58
  * @LastEditors: fg
- * @LastEditTime: 2022-12-27 11:36:48
+ * @LastEditTime: 2022-12-27 16:21:14
  * @Description: 请求接口封装
  */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from "axios"
@@ -16,7 +16,7 @@ interface Result {
 }
 
 // 请求响应参数，包含data
-interface ResultData<T = any> extends Result {
+interface ResultData<T> extends Result {
   data?: T;
 }
 
@@ -33,8 +33,13 @@ const config = {
   // 设置超时时间
   timeout: RequestEnums.TIMEOUT as number,
   // 跨域时候允许携带凭证
-  withCredentials: true
+  withCredentials: true,
+  headers: {
+    "Content-Type": "multipart/form-data"
+  }
 }
+
+
 
 class Http {
   service: AxiosInstance;
@@ -47,12 +52,10 @@ class Http {
     this.service.interceptors.request.use(
       (config: AxiosRequestConfig): AxiosRequestConfig => {
         const token = localStorage.getItem('token') || '';
-        return {
-          ...config,
-          headers: {
-            'x-access-token': token, // 请求头中携带token信息
-          }
+        if (token) {
+          config.headers!['x-access-token'] = token
         }
+        return config
       },
       (err: AxiosError) => {
         Promise.reject(err)
@@ -70,7 +73,7 @@ class Http {
         }
         // 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
         if (data.code && data.code !== RequestEnums.SUCCESS) {
-          Message.error(data);
+          Message.error(data.msg || '请求失败');
           return Promise.reject(data)
         }
         return data
@@ -142,7 +145,18 @@ class Http {
     return this.service.get(url, { params, ...config });
   }
   post<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {
-    return this.service.post(url, params, config);
+    let tempConfig: any = ''
+    if (!config) {
+      tempConfig = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }
+    } else {
+      tempConfig = config
+    }
+    console.log(tempConfig)
+    return this.service.post(url, params, tempConfig);
   }
   put<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {
     return this.service.put(url, params, config);

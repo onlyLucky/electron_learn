@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2022-12-26 15:13:48
+ * @LastEditTime: 2022-12-27 16:43:28
  * @Description: content
 -->
 <template>
@@ -26,47 +26,96 @@
             <img src="@/assets/icons/login/icon_username.png" alt="" />
             <span>用户名</span>
           </div>
-          <Input placeholder="请输入用户名"></Input>
+          <Input placeholder="请输入用户名" v-model="userName"></Input>
         </div>
         <div class="loginItem">
           <div class="labelTitle f-row-s-c">
             <img src="@/assets/icons/login/icon_pwa.png" alt="" />
             <span>密码</span>
           </div>
-          <Input placeholder="请输入密码"></Input>
+          <Input
+            placeholder="请输入密码"
+            type="password"
+            v-model="password"
+          ></Input>
         </div>
-        <div
-          class="remember rememberMe f-row-s-c"
-          @click="isRememberMe = !isRememberMe"
-          v-show="isRememberMe"
-        >
-          <img src="@/assets/icons/login/icon_rememberme.png" alt="" />
+        <div class="remember rememberMe f-row-s-c" v-show="isRememberMe">
+          <img
+            @click="isRememberMe = !isRememberMe"
+            src="@/assets/icons/login/icon_rememberme.png"
+            alt=""
+          />
           <span>记住密码</span>
         </div>
-        <div
-          class="remember noRememberMe f-row-s-c"
-          @click="isRememberMe = !isRememberMe"
-          v-show="!isRememberMe"
-        >
-          <img src="@/assets/icons/login/icon_unselector.png" alt="" />
+        <div class="remember noRememberMe f-row-s-c" v-show="!isRememberMe">
+          <img
+            @click="isRememberMe = !isRememberMe"
+            src="@/assets/icons/login/icon_unselector.png"
+            alt=""
+          />
           <span>记住密码</span>
         </div>
-        <div class="loginBtn f-row-c-c" @click="loginTo">登录</div>
+        <!--  @click="loginTo" -->
+        <div class="loginBtn f-row-c-c" v-debounce="loginTo">登录</div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
-import { ref } from "vue";
+import { getCurrentInstance, onMounted, ref } from "vue";
+import { goLogin } from "@/apis/login";
 import { ipcRenderer } from "electron";
-const isShowChangeSize = false;
+import { ObjectMember } from "@babel/types";
 
+const { proxy } = getCurrentInstance() as any;
+const isShowChangeSize = false;
 const isRememberMe = ref<boolean>(true);
+
+const userName = ref<string>("");
+const password = ref<string>("");
+
+type RmeType = {
+  isRememberMe: boolean;
+  userName?: string;
+  password?: string;
+};
+
+onMounted(() => {
+  if (localStorage.getItem("remember")) {
+    const tempRem: RmeType = JSON.parse(localStorage.getItem("remember")!);
+    isRememberMe.value = tempRem.isRememberMe;
+    // 空值合并，可选链的写法
+    userName.value = tempRem.userName ?? "";
+    password.value = tempRem.password || "";
+  }
+});
 
 const loginTo = () => {
   // localStorage.setItem("token", "test")
-  ipcRenderer.send("on_login", "test");
+  // ipcRenderer.send("on_login", "test");
+  if (userName.value == "" || password.value == "") {
+    proxy.$Message.error("请补全用户名或密码");
+    return false;
+  }
+  goLogin({
+    userName: userName.value,
+    password: password.value,
+  })
+    .then((res) => {
+      localStorage.setItem("token", res.data!.token);
+      // 判断当前是否记住我
+      let tempRme: RmeType = {
+        isRememberMe: isRememberMe.value,
+      };
+      if (isRememberMe.value) {
+        tempRme.userName = userName.value;
+        tempRme.password = password.value;
+      }
+      localStorage.setItem("remember", JSON.stringify(tempRme));
+      ipcRenderer.send("on_login");
+    })
+    .catch((err) => {});
 };
 </script>
 <style scoped lang="less">
