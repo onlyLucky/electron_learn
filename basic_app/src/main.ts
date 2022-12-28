@@ -13,7 +13,7 @@ import { Button, Input, Icon } from 'view-ui-plus'
 // 样式文件引入
 import "@/styles/index"
 // 自定义指令引入
-import { vDebounce } from "./directive/index"
+import { vDebounce, vMove } from "./directive/index"
 import config from '@/config'
 import http from './libs/request'
 
@@ -25,7 +25,7 @@ app.use(i18n)
 app.use(ViewUIPlus, {
   i18n
 })
-app.use(vDebounce)
+app.use(vDebounce).use(vMove)
 
 app.config.globalProperties.$config = config;
 app.config.globalProperties.$http = http
