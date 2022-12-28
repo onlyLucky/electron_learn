@@ -19,7 +19,9 @@
     - [Q5: document.getElementById("app").className = "test" 编译器报错](#q5-documentgetelementbyidappclassname--test-编译器报错)
     - [Q6: \[@vue/compiler-sfc\] the ＞＞＞ and /deep/ combinators have been deprecated. Use :deep() instead.](#q6-vuecompiler-sfc-the--and-deep-combinators-have-been-deprecated-use-deep-instead)
     - [Q7: 安装 electron 项目的时候，在下载包的时候报错](#q7-安装-electron-项目的时候在下载包的时候报错)
-  - [Q8：vue3 项目中 less 函数无法全局使用，如何解决？](#q8vue3-项目中-less-函数无法全局使用如何解决)
+    - [Q8：vue3 项目中 less 函数无法全局使用，如何解决？](#q8vue3-项目中-less-函数无法全局使用如何解决)
+  - [vue3 的问题](#vue3-的问题)
+    - [Q1 vue3 reactive 对象数组重置，dom 不更新问题](#q1-vue3-reactive-对象数组重置dom-不更新问题)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -238,7 +240,7 @@ yarn config set electron_mirror https://npm.taobao.org/mirrors/electron/
 
 [解决安装 electron 卡在 node install.js 不动问题](https://www.jianshu.com/p/28a0305ac187)
 
-### Q8：vue3 项目中 less 函数无法全局使用，如何解决？
+#### Q8：vue3 项目中 less 函数无法全局使用，如何解决？
 
 之前配置过全局的变量文件`variables.less`,将 less 函数文件引入进入`variables.less`中，可以全局使用
 
@@ -252,6 +254,40 @@ yarn config set electron_mirror https://npm.taobao.org/mirrors/electron/
 .theme_basic {
   .theme_basic();
 }
+```
+
+### vue3 的问题
+
+#### Q1 vue3 reactive 对象数组重置，dom 不更新问题
+
+```ts
+// 数组，处理方案1 push
+let tempArr1 = reactive<number[]>([]);
+let arr = [1, 2, 3, 0, 0, 0];
+tempArr1.push(...arr);
+
+// 处理方案2 包裹一个属性
+type TempArr = {
+  list?: Array<number>;
+};
+let tempArr2 = reactive<TempArr>({
+  list: [],
+});
+tempArr2.list = [1, 2, 3, 4, 5, 6];
+
+// 对象类型处理
+let searchForm = reactive<SearchType>({
+  name: "",
+  dataValue: [],
+  deviceId: "",
+});
+
+let temp = {
+  name: "",
+  dataValue: [],
+  deviceId: "",
+};
+Object.assign(searchForm, temp);
 ```
 
 ## 配置
@@ -477,7 +513,7 @@ app.use(vDebounce)
 
 ### Vue3 自动引入插件
 
-需要安装插件 `unplugin-auto-import`
+需要安装插件 `unplugin-auto-import` -D
 
 文件配置如下
 
