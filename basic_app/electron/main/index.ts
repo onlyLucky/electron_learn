@@ -12,7 +12,7 @@ process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_ELECTRON, '../public')
 
-import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, webFrame } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 
@@ -157,6 +157,7 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
 
 // 接收num change改变的通信
 ipcMain.on('num_change', (event, arg) => {

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-26 16:10:58
  * @LastEditors: fg
- * @LastEditTime: 2022-12-27 16:56:04
+ * @LastEditTime: 2022-12-28 14:19:54
  * @Description: 请求接口封装
  */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from "axios"
