@@ -31,6 +31,7 @@
   - [自定义顶部菜单栏开关等](#自定义顶部菜单栏开关等)
   - [vite vue3 主题切换功能配置](#vite-vue3-主题切换功能配置)
   - [vue3 自定义指令尝试](#vue3-自定义指令尝试)
+  - [Vue3 自动引入插件](#vue3-自动引入插件)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -473,6 +474,38 @@ app.use(vDebounce)
 ```
 
 在 vue 页面中使用`v-debounce="loginTo"` 进行调用，推荐一个 js 的库，lodash,不错的函数拓展工具库
+
+### Vue3 自动引入插件
+
+需要安装插件 `unplugin-auto-import`
+
+文件配置如下
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import DefineOptions from 'unplugin-vue-define-options/vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import { resolve } from "path";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    DefineOptions(),
+    vue(),
+    vueJsx(),
+    AutoImport({
+      imports: ['vue'],
+      dts: "src/auto-import.d.ts"
+    })
+  ],
+  ...
+})
+```
+
+配置完成之后使用 ref reactive watch 等 无须 import 导入 可以直接使用
 
 ## 提交规范
 
