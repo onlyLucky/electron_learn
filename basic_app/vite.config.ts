@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
+import AutoImport from 'unplugin-auto-import/vite'
 import pkg from './package.json'
 import autoprefixer from 'autoprefixer';
 import postCssPxToRem from 'postcss-pxtorem';
@@ -64,6 +65,10 @@ export default defineConfig({
     renderer({
       nodeIntegration: true,
     }),
+    AutoImport({
+      imports: ['vue'],
+      dts: "src/auto-import.d.ts"
+    })
   ],
   css: {
     preprocessorOptions: {
