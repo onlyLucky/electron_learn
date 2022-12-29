@@ -22,6 +22,8 @@
     - [Q8：vue3 项目中 less 函数无法全局使用，如何解决？](#q8vue3-项目中-less-函数无法全局使用如何解决)
   - [vue3 的问题](#vue3-的问题)
     - [Q1 vue3 reactive 对象数组重置，dom 不更新问题](#q1-vue3-reactive-对象数组重置dom-不更新问题)
+  - [TS 问题](#ts-问题)
+    - [Q1 ts 中引入 js 文件未找到，怎么解决](#q1-ts-中引入-js-文件未找到怎么解决)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -289,6 +291,13 @@ let temp = {
 };
 Object.assign(searchForm, temp);
 ```
+
+### TS 问题
+
+#### Q1 ts 中引入 js 文件未找到，怎么解决
+
+- `const xx:any = require('package')` 当 js 来写，弹警告就屏蔽警告
+- 或者自己写声明文件 xxx.d.ts（仅限目标模块是自己写的情况，xxx 必须和目标文件同名）
 
 ## 配置
 
