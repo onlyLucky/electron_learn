@@ -9,7 +9,7 @@ import router from './router';
 import ViewUIPlus from 'view-ui-plus';
 import i18n from '@/locale'
 // iview 
-import { Button, Input, Icon, DatePicker, Table, Row, Col, Poptip, Page } from 'view-ui-plus'
+import { Button, Input, Icon, DatePicker, Table, Row, Col, Poptip, Page, Tooltip, Tag } from 'view-ui-plus'
 // 样式文件引入
 import "@/styles/index"
 // 自定义指令引入
@@ -23,23 +23,25 @@ const app = createApp(App);
 
 app.use(router)
 app.use(i18n)
-app.use(ViewUIPlus, {
+/* app.use(ViewUIPlus, {
   i18n
-})
+}) */
 app.use(vDebounce).use(vMove)
 
 app.config.globalProperties.$config = config;
 app.config.globalProperties.$http = http
 
 app.component('Button', Button)
-  .component('Input', Input)
-  .component('DatePicker', DatePicker)
-  .component('Table', Table)
-  .component('Row', Row)
-  .component('Col', Col)
-  .component('Poptip', Poptip)
-  .component('Page', Page)
-  .component('Icon', Icon);
+app.component('Input', Input)
+app.component('DatePicker', DatePicker)
+app.component('Table', Table)
+app.component('Row', Row)
+app.component('Col', Col)
+app.component('Poptip', Poptip)
+app.component('Tooltip', Tooltip)
+app.component('Page', Page)
+app.component('Tag', Tag)
+app.component('Icon', Icon);
 app.mount('#app').$nextTick(() => {
   postMessage({ payload: 'removeLoading' }, '*')
 });

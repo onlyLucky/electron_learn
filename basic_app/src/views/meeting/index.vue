@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2022-12-28 17:58:38
+ * @LastEditTime: 2022-12-29 19:38:24
  * @Description: content
 -->
 <template>
@@ -50,10 +50,14 @@
       class="listBox"
       :style="{ height: 'calc(100% - ' + refHeaderHeight + 'px)' }"
     >
-      <Row justify="center" align="middle" class="">
-        <Row class="tableBox">
-          <Table></Table>
-        </Row>
+      <Row justify="center" class="contentBody">
+        <div class="tableBox" ref="refTable">
+          <MListTable
+            ref="mtable"
+            :size="refTableSize"
+            @uploadData="uploadTableData"
+          ></MListTable>
+        </div>
         <!-- 底部 -->
         <Row
           type="flex"
@@ -76,15 +80,19 @@
               </Poptip>
             </Row>
           </Col>
-          <Col span="10">
+          <!--  <Col span="10">
             <Row type="flex" justify="center" class="mainFooterC">
-              <!-- 文字描述 -->
-              <!-- -->
+              文字描述
             </Row>
-          </Col>
-          <Col span="4">
+          </Col> -->
+          <Col span="14">
             <Row type="flex" justify="end" class="mainFooterR">
-              <Page></Page>
+              <Page
+                show-sizer
+                show-total
+                :total="total"
+                :page-size-opts="[5, 10, 15, 20]"
+              ></Page>
             </Row>
           </Col>
         </Row>
@@ -96,19 +104,23 @@
 import { Select, Option } from "view-ui-plus";
 import { ipcRenderer } from "electron";
 import { getDeviceList } from "@/apis/meet";
+import { MListTable, SearchType, SizeType } from "./comps/mListTable/index";
 
 const refTHeader = ref<HTMLElement>();
+const refTable = ref<HTMLElement>();
 let refHeaderHeight = ref<number>(0);
+let refTableSize = reactive<SizeType>({
+  width: 0,
+  height: 0,
+});
 let deviceList = reactive<any[]>([]);
-type SearchType = {
-  name?: string;
-  dataValue?: any[];
-  deviceId?: string | number;
-};
+
 let searchForm = reactive<SearchType>({
   name: "",
   dataValue: [],
   deviceId: "",
+  pageNum: 1,
+  pageSize: 10,
 });
 
 // 设备 TODO: 可选为多个设备
@@ -126,25 +138,65 @@ const resetSearch = () => {
     name: "",
     dataValue: [],
     deviceId: "",
+    pageNum: 1,
+    pageSize: 10,
   };
   Object.assign(searchForm, temp);
   console.log(searchForm, "searchForm");
 };
+
+// table ref object
+const mtable = ref<InstanceType<typeof MListTable>>();
+let total = ref<number>(0);
+const uploadTableData = async () => {
+  // 设置总页
+  await nextTick();
+  console.log(mtable.value?.total, "mtable.value?.total");
+  total.value = mtable.value?.total || 0;
+};
+
 onMounted(() => {
+  // 获取顶部的高度
   refHeaderHeight.value = refTHeader.value?.clientHeight || 0;
+
+  setTimeout(() => {
+    // 获取表格的宽高
+    refTableSize.width = refTable.value?.clientWidth || 0;
+    refTableSize.height = refTable.value?.clientHeight || 0;
+  });
+  // 设置总页
+  total.value = mtable.value?.total || 0;
+
+  console.log(total.value, "total.value");
+
   window.onresize = () => {
     refHeaderHeight.value = refTHeader.value?.clientHeight || 0;
+    refTableSize.width = refTable.value?.clientWidth || 0;
+    refTableSize.height = refTable.value?.clientHeight || 0;
+    console.log(refTableSize);
   };
   getDeviceList().then((res) => {
     deviceList = res.data || [];
   });
 });
-
-const getData = () => {};
+onUpdated(() => {
+  console.log("onUpdated");
+});
 </script>
 <style scoped lang="less">
 :deep(.formInput .ivu-input) {
   width: 160px;
+}
+:deep(.mainFooterL .ivu-poptip-popper) {
+  min-width: 180px;
+}
+:deep(.ivu-table-cell) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:deep(.ivu-table-cell .meetName) {
+  color: pink;
 }
 .meeting {
   .size(100%,100%);
@@ -177,6 +229,17 @@ const getData = () => {};
     border-top: 1px solid @search_bottom_border;
     box-sizing: border-box;
     padding: 10px;
+    .contentBody {
+      .size(100%,100%);
+      .tableBox {
+        width: 100%;
+        height: calc(100% - 60px);
+        user-select: none;
+      }
+      .footerBox {
+        .size(100%, 60px);
+      }
+    }
   }
 }
 </style>
