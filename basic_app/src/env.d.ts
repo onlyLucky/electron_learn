@@ -18,3 +18,7 @@ declare module '*.bmp'
 declare module '*.tiff'
 
 declare module 'lodash';
+
+// lang handle
+declare module 'view-ui-plus/dist/locale/zh-CN'
+declare module 'view-ui-plus/dist/locale/en-US'

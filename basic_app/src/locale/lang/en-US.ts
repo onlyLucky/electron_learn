@@ -1,9 +1,19 @@
 export default {
   home: 'Home',
-  login: 'Login',
-  table:"Table",
-  baseTable:"BaseTable",
-  dragableTable:"SortTable",
+  // 
+  login: {
+    name: 'Login',
+    username_t: 'Username',
+    password_t: 'Password',
+    psw_placeholder: 'Please enter a password',
+    user_placeholder: 'Please enter a username',
+    remember: 'Remember the password',
+    h1_title: 'Hello,welcome to use',
+    h3_title: 'Account login'
+  },
+  table: "Table",
+  baseTable: "BaseTable",
+  dragableTable: "SortTable",
   components: 'Components',
   count_to_page: 'Count-to',
   tables_page: 'Table',

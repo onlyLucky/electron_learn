@@ -1,9 +1,18 @@
 export default {
   home: '首页',
-  login: '登录',
-  table:"表格",
-  baseTable:"基本表格",
-  dragableTable:"拖拽表格",
+  login: {
+    name: '登录',
+    username_t: '用户名',
+    password_t: '密码',
+    psw_placeholder: '请输入密码',
+    user_placeholder: '请输入用户名',
+    remember: '记住密码',
+    h1_title: '您好，欢迎使用',
+    h3_title: '账号登录'
+  },
+  table: "表格",
+  baseTable: "基本表格",
+  dragableTable: "拖拽表格",
   components: '组件',
   count_to_page: '数字渐变',
   tables_page: '多功能表格',

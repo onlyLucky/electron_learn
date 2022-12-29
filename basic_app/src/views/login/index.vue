@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2022-12-27 16:43:28
+ * @LastEditTime: 2022-12-29 11:51:13
  * @Description: content
 -->
 <template>
@@ -13,28 +13,32 @@
     <div class="loginContent f-row-b">
       <div class="loginLeft">
         <img class="logo" src="@/assets/images/login/logo.png" alt="" />
-        <h3>您好，欢迎使用</h3>
+        <h3>{{ t("login.h1_title") }}</h3>
         <img class="imgCon" src="@/assets/images/login/login_img.png" alt="" />
       </div>
       <div class="loginLine"></div>
       <div class="loginRight">
         <div class="rHeader">
-          <h1>账号登录</h1>
+          <h1>{{ t("login.h3_title") }}</h1>
         </div>
         <div class="loginItem">
           <div class="labelTitle f-row-s-c">
             <img src="@/assets/icons/login/icon_username.png" alt="" />
-            <span>用户名</span>
+            <span>{{ t("login.username_t") }}</span>
           </div>
-          <Input placeholder="请输入用户名" v-model="userName"></Input>
+          <Input
+            :placeholder="t('login.user_placeholder')"
+            v-model="userName"
+          ></Input>
         </div>
         <div class="loginItem">
           <div class="labelTitle f-row-s-c">
             <img src="@/assets/icons/login/icon_pwa.png" alt="" />
-            <span>密码</span>
+            <span>{{ t("login.password_t") }}</span>
           </div>
+          <!-- :placeholder="请输入密码" -->
           <Input
-            placeholder="请输入密码"
+            :placeholder="t('login.psw_placeholder')"
             type="password"
             v-model="password"
           ></Input>
@@ -45,7 +49,7 @@
             src="@/assets/icons/login/icon_rememberme.png"
             alt=""
           />
-          <span>记住密码</span>
+          <span>{{ t("login.remember") }}</span>
         </div>
         <div class="remember noRememberMe f-row-s-c" v-show="!isRememberMe">
           <img
@@ -53,10 +57,12 @@
             src="@/assets/icons/login/icon_unselector.png"
             alt=""
           />
-          <span>记住密码</span>
+          <span>{{ t("login.remember") }}</span>
         </div>
         <!--  @click="loginTo" -->
-        <div class="loginBtn f-row-c-c" v-debounce="loginTo">登录</div>
+        <div class="loginBtn f-row-c-c" v-debounce="loginTo">
+          {{ t("login.name") }}
+        </div>
       </div>
     </div>
   </div>
@@ -67,6 +73,9 @@ import { getCurrentInstance, onMounted, ref } from "vue";
 import { goLogin } from "@/apis/login";
 import { ipcRenderer } from "electron";
 import { ObjectMember } from "@babel/types";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const { proxy } = getCurrentInstance() as any;
 const isShowChangeSize = false;
