@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2022-12-29 19:38:24
+ * @LastEditTime: 2022-12-30 16:39:10
  * @Description: content
 -->
 <template>
@@ -195,8 +195,9 @@ onUpdated(() => {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-:deep(.ivu-table-cell .meetName) {
-  color: pink;
+:deep(.ivu-table-header thead tr th) {
+  color: @tHeader_color;
+  cursor: default;
 }
 .meeting {
   .size(100%,100%);

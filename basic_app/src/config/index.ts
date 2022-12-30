@@ -16,5 +16,5 @@ export default {
   /**
    * @description api请求基础路径 dev开发请求地址   pro生产请求地址
    */
-  baseUrl: 'http://192.168.19.161:8888'
+  baseUrl: 'http://192.168.19.89:8888'
 }

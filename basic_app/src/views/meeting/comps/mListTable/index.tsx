@@ -2,125 +2,138 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2022-12-29 19:59:18
+ * @LastEditTime: 2022-12-30 18:19:11
  * @Description: 会议列表数据表格组件
  */
 
 import { Table } from "view-ui-plus";
 import { PropType, defineExpose } from "vue";
 import { getMeetingById } from "@/apis/meet";
+import style from "./style.module.less";
 
 const columns = reactive<any[]>([
   {
     title: "设备名称",
     key: "deviceName",
-    width: 200,
-    render: (h: any, params: any) => {
-      if (params.row.deviceName.length > 10) {
-        return h(
-          resolveComponent("Tooltip"),
-          {
-            content: params.row.deviceName,
-            placement: "top",
-          },
-          [
-            h(
-              "div",
-              {
-                // title: params.row.deviceName,
-                style: {
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                },
-              },
-              params.row.deviceName
-            ),
-          ]
-        );
-      } else {
-        return h(
-          "div",
-          {
-            // title: params.row.deviceName,
-            style: {
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            },
-          },
-          params.row.deviceName
-        );
-      }
-    },
+    minWidth: 100,
+    tooltip: true,
   },
   {
     title: "会议名称",
     key: "name",
-    width: 300,
-    render: (h: any, params: any) => {
-      return h(
-        "div",
-        {
-          // title: params.row.deviceName,
-          style: {
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            color: "var(--f_color_active)",
-            cursor: "pointer",
-            onClick: () => {
-              goDetail(params.row);
-            },
-          },
-          class: "meetingName",
-        },
-        params.row.name
-      );
-    },
+    minWidth: 200,
+    tooltip: true,
+    className: style.meetingName,
   },
   {
     title: "状态",
     key: "state",
-    minWidth: 80,
+    width: 100,
+    align: "center",
     render: (h: any, params: any) => {
       let state = [
         {
           name: "进行中",
-          color: "pink",
+          color: "var(--success)",
         },
         {
           name: "已结束",
-          color: "#999",
+          color: "var(--fontColor)",
         },
       ];
-      h(
-        resolveComponent("Tag"),
+      return h(
+        "div",
         {
-          type: "border",
-          color: state[params.row.state].color,
+          class: "f-row-c-c",
           style: {
             cursor: "default",
           },
         },
-        state[params.row.state].name
+        [
+          h("span", {
+            style: {
+              width: "10px",
+              height: "10px",
+              background: state[params.row.state].color,
+              borderRadius: "50%",
+              marginRight: "4px",
+            },
+          }),
+          h(
+            "span",
+            {
+              style: {
+                fontSize: "14px",
+                color: state[params.row.state].color,
+              },
+            },
+            state[params.row.state].name
+          ),
+        ]
+      );
+    },
+  },
+
+  {
+    title: "会议保密",
+    key: "secrecy",
+    align: "center",
+    width: 100,
+    render: (h: any, params: any) => {
+      let state = [
+        {
+          name: "非保密",
+          color: "var(--fontColor)",
+        },
+        {
+          name: "保密",
+          color: "var(--f_color_active)",
+        },
+      ];
+      return h(
+        resolveComponent("Switch"),
+        {
+          "model-value": params.row.secrecy,
+          size: "large",
+          "true-value": 1,
+          "false-value": 0,
+        },
+        {
+          open: () => h("span", {}, "保密"),
+          close: () => h("span", {}, "公开"),
+        }
+      );
+    },
+  },
+  {
+    title: "会议分享",
+    key: "meetShare",
+    width: 100,
+    align: "center",
+    render: (h: any, params: any) => {
+      return h(
+        resolveComponent("Switch"),
+        {
+          "model-value": params.row.meetShare,
+          size: "large",
+          "true-value": 0,
+          "false-value": 1,
+          onChange: (value: any) => {
+            console.log(value);
+          },
+        },
+        {
+          open: () => h("span", {}, "允许"),
+          close: () => h("span", {}, "禁止"),
+        }
       );
     },
   },
   {
     title: "创建人",
-    key: "originatorName",
-    minWidth: 120,
-  },
-  {
-    title: "保密会议",
-    key: "createName",
-    minWidth: 80,
-  },
-  {
-    title: "会议分享",
-    key: "createName",
-    minWidth: 80,
+    key: "createUserName",
+    tooltip: true,
+    width: 120,
   },
   {
     title: "会议时间",
@@ -131,8 +144,120 @@ const columns = reactive<any[]>([
     title: "操作",
     key: "action",
     align: "center",
-    minWidth: 200,
+    minWidth: 160,
     fixed: "right",
+    render: (h: any, params: any) => {
+      return h(
+        "div",
+        {
+          style: {
+            width: "100%",
+            height: "100%",
+          },
+        },
+        [
+          h(
+            resolveComponent("Tooltip"),
+            {
+              content: "分享列表",
+              placement: "top",
+              transfer: true,
+            },
+            {
+              default: () => [
+                h(resolveComponent("Button"), {
+                  type: "success",
+                  icon: "ios-share-alt",
+                  size: "small",
+                  shape: "circle",
+                  style: {
+                    margin: "0 2px",
+                  },
+                  onClick: () => {
+                    console.log(params.row);
+                  },
+                }),
+              ],
+            }
+          ),
+          h(
+            resolveComponent("Tooltip"),
+            {
+              content: "文件列表",
+              placement: "top",
+              transfer: true,
+            },
+            {
+              default: () => [
+                h(resolveComponent("Button"), {
+                  type: "warning",
+                  icon: "ios-folder",
+                  size: "small",
+                  shape: "circle",
+                  style: {
+                    margin: "0 2px",
+                  },
+                  onClick: () => {
+                    console.log(params.row);
+                  },
+                }),
+              ],
+            }
+          ),
+          h(
+            resolveComponent("Tooltip"),
+            {
+              content: "会议纪要",
+              placement: "top",
+              transfer: true,
+            },
+            {
+              default: () => [
+                h(resolveComponent("Button"), {
+                  type: "error",
+                  icon: "ios-bookmark",
+                  size: "small",
+                  shape: "circle",
+                  style: {
+                    margin: "0 2px",
+                  },
+                  onClick: () => {
+                    console.log(params.row);
+                  },
+                }),
+              ],
+            }
+          ),
+          h(
+            resolveComponent("Tooltip"),
+            {
+              content: "视频播放",
+              placement: "top",
+              transfer: true,
+            },
+            {
+              default: () => [
+                h(resolveComponent("Button"), {
+                  type: "primary",
+                  icon: "ios-videocam",
+                  size: "small",
+                  shape: "circle",
+                  style: {
+                    margin: "0 2px",
+                  },
+                  onClick: () => {
+                    console.log(params.row);
+                  },
+                }),
+              ],
+            }
+          ),
+        ],
+        {
+          default: () => {},
+        }
+      );
+    },
   },
 ]);
 
