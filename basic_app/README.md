@@ -12,7 +12,7 @@
 - [Directory](#directory)
 - [FAQ](#faq)
   - [开发中遇到的问题](#开发中遇到的问题)
-    - [Q1. Electron failed to install correctly, please delete node\_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
+    - [Q1. Electron failed to install correctly, please delete node_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
     - [Q2. tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法](#q2-tsx-写法引用样式文件没有样式隔离可以使用-vite-内部的-css-module-css-in-js-的解决方法)
     - [Q3: electron 顶部允许拖动，hover 等 css 样式效果失效](#q3-electron-顶部允许拖动hover-等-css-样式效果失效)
     - [Q4: \[tsx\]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）](#q4-tsx的写法对于目前的问题总结或许是自己未找到解决的方案或配置后面使用-react-的格式会进行解决)
@@ -36,6 +36,8 @@
   - [vite vue3 主题切换功能配置](#vite-vue3-主题切换功能配置)
   - [vue3 自定义指令尝试](#vue3-自定义指令尝试)
   - [Vue3 自动引入插件](#vue3-自动引入插件)
+- [技术点总结](#技术点总结)
+  - [T1: vue3 使用 render 函数 h](#t1-vue3-使用-render-函数-h)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -551,6 +553,65 @@ export default defineConfig({
 ```
 
 配置完成之后使用 ref reactive watch 等 无须 import 导入 可以直接使用
+
+## 技术点总结
+
+### T1: vue3 使用 render 函数 h
+
+这个是我在配置`view-ui-plus` Table 组件的时候遇到的，顺便做了个总结，后续的话会增加补充
+
+下面是简单的函数结构，以`view-ui-plus`UI 框架为例设置
+
+```ts
+render: (h: any, params: any) => {
+  return h(
+    "div", //html 标签
+
+    {
+      //这里可以为html标签上面的属性值
+      style: {
+        //样式遇到中间有-的，下面两种都可，驼峰也即可
+        color: "pink",
+        backgroundColor: "pink",
+        "background-color": "pink",
+      },
+      "data-index": 1,
+    },
+    "文字" //这里是标签里面展示的文字
+  );
+};
+```
+
+tips: 这里渲染出来的组件可以在开发者工具里面细看
+
+如何你想渲染内部组件的话，可以用下面的栗子 🌰 ,以 Switch 组件为例
+
+```ts
+import { resolveComponent } from "vue";
+
+// ...
+
+render: (h: any, params: any) => {
+  return h(
+    resolveComponent("Switch"), //组件引入
+    {
+      //组件属性使用
+      "model-value": params.row.meetShare,
+      size: "large",
+      "true-value": 0,
+      "false-value": 1,
+      on: {
+        change: () => {},
+      },
+    },
+    {
+      //插槽配置
+      open: () => h("span", {}, "允许"),
+      close: () => h("span", {}, "禁止"),
+    }
+  );
+};
+```
 
 ## 提交规范
 
