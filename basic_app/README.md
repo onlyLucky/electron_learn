@@ -614,6 +614,15 @@ render: (h: any, params: any) => {
 };
 ```
 
+tip [解决控制台黄色警告: Non-function value encountered for default slot. Prefer function slots](https://blog.csdn.net/weixin_45743541/article/details/126640335)
+
+Vue3 使用 h 函数 推荐使用函数式插槽，以便获得更佳的性能。
+
+- 第一种
+  return h(xxx, { xxx }, { default: () => xxx });
+- 第二种：多个插槽
+  return h( xxx, { xxx }, { default: () => [xxx, xxx], });
+
 ## 提交规范
 
 - `feat` 增加新功能

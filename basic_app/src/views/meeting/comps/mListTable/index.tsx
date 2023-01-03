@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2022-12-30 18:19:11
+ * @LastEditTime: 2023-01-03 14:26:51
  * @Description: 会议列表数据表格组件
  */
 
@@ -252,10 +252,7 @@ const columns = reactive<any[]>([
               ],
             }
           ),
-        ],
-        {
-          default: () => {},
-        }
+        ]
       );
     },
   },
