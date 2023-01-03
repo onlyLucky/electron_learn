@@ -12,7 +12,7 @@
 - [Directory](#directory)
 - [FAQ](#faq)
   - [开发中遇到的问题](#开发中遇到的问题)
-    - [Q1. Electron failed to install correctly, please delete node_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
+    - [Q1. Electron failed to install correctly, please delete node\_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
     - [Q2. tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法](#q2-tsx-写法引用样式文件没有样式隔离可以使用-vite-内部的-css-module-css-in-js-的解决方法)
     - [Q3: electron 顶部允许拖动，hover 等 css 样式效果失效](#q3-electron-顶部允许拖动hover-等-css-样式效果失效)
     - [Q4: \[tsx\]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）](#q4-tsx的写法对于目前的问题总结或许是自己未找到解决的方案或配置后面使用-react-的格式会进行解决)
@@ -577,6 +577,7 @@ render: (h: any, params: any) => {
       },
       "data-index": 1,
     },
+    [h('span',{},'文字')]
     "文字" //这里是标签里面展示的文字
   );
 };
