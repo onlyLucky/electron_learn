@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-03 18:16:12
+ * @LastEditTime: 2023-01-03 19:59:35
  * @Description: 会议列表数据表格组件
  */
 
@@ -310,7 +310,7 @@ const columns = reactive<any[]>([
 // 获取数据
 let tableData = ref<any[]>([]);
 let total = ref<number>(0);
-const getTableData = (params: SearchType, emit: any) => {
+const getTableData = (params: SearchType, emit?: any) => {
   getMeetingById(params).then((res) => {
     res.data?.records.map((item) => {
       if (item.state == 0) {
@@ -321,12 +321,15 @@ const getTableData = (params: SearchType, emit: any) => {
     tableData.value = res.data?.records || [];
     total.value = res.data?.total || 0;
     console.log(tableData.value, "tableData.value");
-    emit("uploadData", total.value);
+    if (emit) {
+      emit("uploadData", total.value);
+    }
   });
 };
 // 去详情
-const goDetail = (item: any) => {
-  console.log(item);
+const goDetail = (item?: any) => {
+  // console.log(item);
+  console.log("goDetail");
 };
 
 // 全选删除 功能
@@ -369,26 +372,44 @@ export const MListTable = defineComponent({
       },
     },
   },
-  data() {
+  /* data() {
     return {
       total,
       tableData,
     };
-  },
+  }, */
   // 这里居然还可以使用data method
   setup(props, ctx) {
     const { expose, emit } = ctx;
     // 导出属性，ref 中可以使用
-    expose({
+    /* expose({
       total,
       tableData,
-    });
+      getTableData,
+      goDetail,
+    }); */
     getTableData(props.search, emit);
-    return () => (
+    /* return () => (
       <Table
         width={props.size.width}
         height={props.size.height}
         data={tableData.value}
+        columns={columns}
+      ></Table>
+    ); */
+    return {
+      total,
+      tableData,
+      getTableData,
+      goDetail,
+    };
+  },
+  render() {
+    return (
+      <Table
+        width={this.size.width}
+        height={this.size.height}
+        data={this.tableData}
         columns={columns}
       ></Table>
     );

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2022-12-30 16:39:10
+ * @LastEditTime: 2023-01-03 20:00:55
  * @Description: content
 -->
 <template>
@@ -16,7 +16,7 @@
         <!-- <span class="label">会议时间</span> -->
         <DatePicker
           :clearable="false"
-          :value="searchForm.dataValue"
+          :model-value="searchForm.dataValue"
           format="yyyy/MM/dd"
           type="daterange"
           placement="bottom-end"
@@ -70,8 +70,8 @@
               <Poptip
                 confirm
                 title="是否删除所选会议？"
-                @on-ok="ok"
-                @on-cancel="cancel"
+                @on-ok="delMeeting"
+                @on-cancel="onDelCancel"
                 placement="top-start"
               >
                 <Button type="error" class="meetingListDelete" icon="trash-a"
@@ -105,6 +105,7 @@ import { Select, Option } from "view-ui-plus";
 import { ipcRenderer } from "electron";
 import { getDeviceList } from "@/apis/meet";
 import { MListTable, SearchType, SizeType } from "./comps/mListTable/index";
+import _ from "lodash";
 
 const refTHeader = ref<HTMLElement>();
 const refTable = ref<HTMLElement>();
@@ -127,7 +128,6 @@ let searchForm = reactive<SearchType>({
 const equipmentChange = (date?: any) => {
   searchForm.deviceId = date || "";
 };
-
 const timeValueChange = (date?: any) => {
   searchForm.dataValue = date || [];
 };
@@ -144,6 +144,16 @@ const resetSearch = () => {
   Object.assign(searchForm, temp);
   console.log(searchForm, "searchForm");
 };
+watch(
+  () => searchForm,
+  (value) => {
+    _.debounce(() => {}, 300);
+    // refTable.value.goDetail();
+    mtable.value?.goDetail();
+    console.log(value, "&&&&---****");
+  },
+  { deep: true }
+);
 
 // table ref object
 const mtable = ref<InstanceType<typeof MListTable>>();
@@ -154,6 +164,9 @@ const uploadTableData = async () => {
   console.log(mtable.value?.total, "mtable.value?.total");
   total.value = mtable.value?.total || 0;
 };
+// 表格删除，取消
+const delMeeting = () => {};
+const onDelCancel = () => {};
 
 onMounted(() => {
   // 获取顶部的高度
