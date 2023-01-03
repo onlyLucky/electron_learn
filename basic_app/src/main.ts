@@ -9,7 +9,7 @@ import router from './router';
 import ViewUIPlus from 'view-ui-plus';
 import i18n from '@/locale'
 // iview 
-import { Button, Input, Icon, DatePicker, Table, Row, Col, Poptip, Page, Tooltip, Tag, Switch } from 'view-ui-plus'
+import { Button, Input, Icon, DatePicker, Table, Row, Col, Poptip, Page, Tooltip, Tag, Switch, Checkbox } from 'view-ui-plus'
 // 样式文件引入
 import "@/styles/index"
 // 自定义指令引入
@@ -42,6 +42,7 @@ app.component('Tooltip', Tooltip)
 app.component('Page', Page)
 app.component('Tag', Tag)
 app.component('Switch', Switch)
+app.component('Checkbox', Checkbox)
 app.component('Icon', Icon);
 app.mount('#app').$nextTick(() => {
   postMessage({ payload: 'removeLoading' }, '*')

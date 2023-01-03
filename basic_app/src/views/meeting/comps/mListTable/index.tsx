@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-03 14:26:51
+ * @LastEditTime: 2023-01-03 18:16:12
  * @Description: 会议列表数据表格组件
  */
 
@@ -12,6 +12,55 @@ import { getMeetingById } from "@/apis/meet";
 import style from "./style.module.less";
 
 const columns = reactive<any[]>([
+  {
+    renderHeader: (h: any, params: any) => {
+      return h(resolveComponent("Checkbox"), {
+        disabled: false,
+        modelValue: selAll.value,
+        ["onUpdate:model-value"]: (value: boolean) => {
+          selAll.value = value;
+        },
+        onOnChange: (c: boolean) => {
+          let tempData = tableData.value;
+          tempData.map((item) => {
+            if (item.state != 0) {
+              item.select = c;
+              selectNum = c ? tableData.value.length - disabledNum : 0;
+            }
+          });
+          tableData.value = tempData;
+        },
+      });
+    },
+    width: 60,
+    align: "center",
+    render: (h: any, params: any) => {
+      return h(
+        resolveComponent("Tooltip"),
+        {
+          placement: "right-end",
+          content: "该会议正在进行中",
+          disabled: params.row.state == 0 ? false : true,
+        },
+        {
+          default: () => [
+            h(resolveComponent("Checkbox"), {
+              disabled: params.row.state == 0 ? true : false,
+              modelValue: params.row.select,
+              ["onUpdate:model-value"]: (value: boolean) => {
+                params.row.select = value;
+              },
+              onOnChange: (c: boolean) => {
+                c ? selectNum++ : selectNum--;
+                selAll.value =
+                  selectNum + disabledNum == tableData.value.length;
+              },
+            }),
+          ],
+        }
+      );
+    },
+  },
   {
     title: "设备名称",
     key: "deviceName",
@@ -263,8 +312,15 @@ let tableData = ref<any[]>([]);
 let total = ref<number>(0);
 const getTableData = (params: SearchType, emit: any) => {
   getMeetingById(params).then((res) => {
+    res.data?.records.map((item) => {
+      if (item.state == 0) {
+        disabledNum++;
+      }
+      item.select = false;
+    });
     tableData.value = res.data?.records || [];
     total.value = res.data?.total || 0;
+    console.log(tableData.value, "tableData.value");
     emit("uploadData", total.value);
   });
 };
@@ -272,6 +328,11 @@ const getTableData = (params: SearchType, emit: any) => {
 const goDetail = (item: any) => {
   console.log(item);
 };
+
+// 全选删除 功能
+let selAll = ref<boolean>(false);
+let selectNum = 0; //选中数量
+let disabledNum = 0; //禁止选择的数量
 
 export type SearchType = {
   name?: string;
