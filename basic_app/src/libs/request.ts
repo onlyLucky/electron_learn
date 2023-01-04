@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-26 16:10:58
  * @LastEditors: fg
- * @LastEditTime: 2022-12-28 14:19:54
+ * @LastEditTime: 2023-01-04 16:47:07
  * @Description: 请求接口封装
  */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from "axios"
@@ -143,20 +143,24 @@ class Http {
   }
   post<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {
     let tempConfig: any = ''
-    if (!config) {
-      tempConfig = {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
+    tempConfig = {
+      headers: {
+        "Content-Type": "multipart/form-data"
       }
-    } else {
-      tempConfig = config
     }
+    Object.assign(tempConfig, config)
     console.log(tempConfig)
     return this.service.post(url, params, tempConfig);
   }
   put<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {
-    return this.service.put(url, params, config);
+    let tempConfig: any = ''
+    tempConfig = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+    Object.assign(tempConfig, config)
+    return this.service.put(url, params, tempConfig);
   }
   delete<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {
     return this.service.delete(url, { params, ...config });

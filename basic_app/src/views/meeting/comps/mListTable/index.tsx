@@ -2,13 +2,13 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-04 15:58:41
+ * @LastEditTime: 2023-01-04 17:00:29
  * @Description: 会议列表数据表格组件
  */
 
 import { Table, Message } from "view-ui-plus";
 import { PropType } from "vue";
-import { getMeetingById, deleteByIds } from "@/apis/meet";
+import { getMeetingById, deleteByIds, reviseMeetDetail } from "@/apis/meet";
 import style from "./style.module.less";
 
 const columns = reactive<any[]>([
@@ -133,16 +133,6 @@ const columns = reactive<any[]>([
     align: "center",
     width: 100,
     render: (h: any, params: any) => {
-      let state = [
-        {
-          name: "非保密",
-          color: "var(--fontColor)",
-        },
-        {
-          name: "保密",
-          color: "var(--f_color_active)",
-        },
-      ];
       return h(
         resolveComponent("Switch"),
         {
@@ -150,6 +140,28 @@ const columns = reactive<any[]>([
           size: "large",
           "true-value": 1,
           "false-value": 0,
+          loading: params.row.isSecrecyLoading,
+          "before-change": () => {
+            return new Promise((resolve: Function, reject: Function) => {
+              params.row.isSecrecyLoading = true;
+              reviseMeetDetail({
+                id: params.row.id,
+                secrecy: params.row.secrecy ? 0 : 1,
+              })
+                .then((res) => {
+                  params.row.isSecrecyLoading = false;
+                  resolve();
+                })
+                .catch((err) => {
+                  params.row.isSecrecyLoading = false;
+                  reject();
+                });
+            });
+          },
+          onOnChange: (val: number) => {
+            params.row.secrecy = val;
+            tableData.value[params.index].secrecy = val;
+          },
         },
         {
           open: () => h("span", {}, "保密"),
@@ -171,8 +183,27 @@ const columns = reactive<any[]>([
           size: "large",
           "true-value": 0,
           "false-value": 1,
-          onChange: (value: any) => {
-            console.log(value);
+          loading: params.row.isMeetShareLoading,
+          "before-change": () => {
+            return new Promise((resolve: Function, reject: Function) => {
+              params.row.isMeetShareLoading = true;
+              reviseMeetDetail({
+                id: params.row.id,
+                meetShare: params.row.meetShare ? 0 : 1,
+              })
+                .then((res) => {
+                  params.row.isMeetShareLoading = false;
+                  resolve();
+                })
+                .catch((err) => {
+                  params.row.isMeetShareLoading = false;
+                  reject();
+                });
+            });
+          },
+          onOnChange: (val: number) => {
+            params.row.meetShare = val;
+            tableData.value[params.index].meetShare = val;
           },
         },
         {
@@ -336,6 +367,8 @@ const getTableData = (params: SearchType) => {
           disabledNum++;
         }
         item.select = false;
+        item.isSecrecyLoading = false;
+        item.isMeetShareLoading = false;
       });
 
       tableData.value = res.data?.records || [];

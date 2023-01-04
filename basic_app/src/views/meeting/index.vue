@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-04 15:08:01
+ * @LastEditTime: 2023-01-04 16:04:40
  * @Description: content
 -->
 <template>
@@ -102,6 +102,7 @@
                 show-sizer
                 show-total
                 :total="total"
+                :page-size="searchForm.pageSize"
                 :page-size-opts="[8, 16, 24]"
                 @on-page-size-change="pSizeChange"
                 @on-change="pageChange"
