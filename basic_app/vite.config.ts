@@ -14,7 +14,6 @@ import Config from "./src/config/index"
 rmSync('dist-electron', { recursive: true, force: true })
 const sourcemap = !!process.env.VSCODE_DEBUG
 const isBuild = process.argv.slice(2).includes('build')
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [

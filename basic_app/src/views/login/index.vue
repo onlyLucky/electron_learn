@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2022-12-29 11:51:13
+ * @LastEditTime: 2023-01-04 13:22:19
  * @Description: content
 -->
 <template>
@@ -29,6 +29,7 @@
           <Input
             :placeholder="t('login.user_placeholder')"
             v-model="userName"
+            clearable
           ></Input>
         </div>
         <div class="loginItem">
@@ -41,6 +42,7 @@
             :placeholder="t('login.psw_placeholder')"
             type="password"
             v-model="password"
+            clearable
           ></Input>
         </div>
         <div class="remember rememberMe f-row-s-c" v-show="isRememberMe">
@@ -69,15 +71,14 @@
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
-import { getCurrentInstance, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { goLogin } from "@/apis/login";
 import { ipcRenderer } from "electron";
-import { ObjectMember } from "@babel/types";
 import { useI18n } from "vue-i18n";
+import { Message } from "view-ui-plus";
 
 const { t } = useI18n();
 
-const { proxy } = getCurrentInstance() as any;
 const isShowChangeSize = false;
 const isRememberMe = ref<boolean>(true);
 
@@ -104,7 +105,7 @@ const loginTo = () => {
   // localStorage.setItem("token", "test")
   // ipcRenderer.send("on_login", "test");
   if (userName.value == "" || password.value == "") {
-    proxy.$Message.error("请补全用户名或密码");
+    Message.error("请补全用户名或密码");
     return false;
   }
   goLogin({

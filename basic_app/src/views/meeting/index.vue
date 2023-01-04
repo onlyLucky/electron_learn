@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-03 20:00:55
+ * @LastEditTime: 2023-01-04 15:08:01
  * @Description: content
 -->
 <template>
@@ -10,12 +10,16 @@
     <div ref="refTHeader" class="searchBox f-w f-row-e-c">
       <div class="formItem formInput f-row-c-c">
         <!-- <span class="label">会议名称</span> -->
-        <Input placeholder="请输入会议名称" v-model="searchForm.name"></Input>
+        <Input
+          placeholder="请输入会议名称"
+          clearable
+          v-model="searchForm.name"
+        ></Input>
       </div>
       <div class="formItem f-row-c-c">
         <!-- <span class="label">会议时间</span> -->
         <DatePicker
-          :clearable="false"
+          :clearable="true"
           :model-value="searchForm.dataValue"
           format="yyyy/MM/dd"
           type="daterange"
@@ -55,7 +59,9 @@
           <MListTable
             ref="mtable"
             :size="refTableSize"
+            :search="searchForm"
             @uploadData="uploadTableData"
+            @delChange="delChange"
           ></MListTable>
         </div>
         <!-- 底部 -->
@@ -73,8 +79,13 @@
                 @on-ok="delMeeting"
                 @on-cancel="onDelCancel"
                 placement="top-start"
+                :disabled="delDisabledFlag"
               >
-                <Button type="error" class="meetingListDelete" icon="trash-a"
+                <Button
+                  type="error"
+                  class="meetingListDelete"
+                  v-debounce="delTap"
+                  icon="trash-a"
                   >删除</Button
                 >
               </Poptip>
@@ -85,13 +96,15 @@
               文字描述
             </Row>
           </Col> -->
-          <Col span="14">
+          <Col span="20">
             <Row type="flex" justify="end" class="mainFooterR">
               <Page
                 show-sizer
                 show-total
                 :total="total"
-                :page-size-opts="[5, 10, 15, 20]"
+                :page-size-opts="[8, 16, 24]"
+                @on-page-size-change="pSizeChange"
+                @on-change="pageChange"
               ></Page>
             </Row>
           </Col>
@@ -101,7 +114,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Select, Option } from "view-ui-plus";
+import { Select, Option, Message } from "view-ui-plus";
 import { ipcRenderer } from "electron";
 import { getDeviceList } from "@/apis/meet";
 import { MListTable, SearchType, SizeType } from "./comps/mListTable/index";
@@ -121,7 +134,8 @@ let searchForm = reactive<SearchType>({
   dataValue: [],
   deviceId: "",
   pageNum: 1,
-  pageSize: 10,
+  isDel: 0,
+  pageSize: 8,
 });
 
 // 设备 TODO: 可选为多个设备
@@ -139,7 +153,8 @@ const resetSearch = () => {
     dataValue: [],
     deviceId: "",
     pageNum: 1,
-    pageSize: 10,
+    isDel: 0,
+    pageSize: 8,
   };
   Object.assign(searchForm, temp);
   console.log(searchForm, "searchForm");
@@ -147,26 +162,47 @@ const resetSearch = () => {
 watch(
   () => searchForm,
   (value) => {
-    _.debounce(() => {}, 300);
-    // refTable.value.goDetail();
-    mtable.value?.goDetail();
-    console.log(value, "&&&&---****");
+    if (searchForm.dataValue?.length == 2 && searchForm.dataValue[0] == "") {
+      searchForm.dataValue = [];
+    }
+    // 添加防抖使用
+    watchSearchForm();
   },
   { deep: true }
 );
+const watchSearchForm = _.debounce(function () {
+  mtable.value?.getTableData(searchForm);
+}, 500);
 
 // table ref object
 const mtable = ref<InstanceType<typeof MListTable>>();
 let total = ref<number>(0);
-const uploadTableData = async () => {
+const uploadTableData = () => {
   // 设置总页
-  await nextTick();
-  console.log(mtable.value?.total, "mtable.value?.total");
   total.value = mtable.value?.total || 0;
 };
+// 分页更改
+const pageChange = (page: number) => {
+  searchForm.pageNum = page;
+};
+const pSizeChange = (size: number) => {
+  searchForm.pageSize = size;
+};
+
 // 表格删除，取消
-const delMeeting = () => {};
+let delDisabledFlag = ref<boolean>(true);
+const delMeeting = () => {
+  mtable.value?.delFun();
+};
 const onDelCancel = () => {};
+const delTap = () => {
+  if (mtable.value?.selectNum! <= 0) {
+    Message.info("暂未选择需要删除的会议");
+  }
+};
+const delChange = () => {
+  delDisabledFlag.value = mtable.value?.selectNum! == 0;
+};
 
 onMounted(() => {
   // 获取顶部的高度
@@ -192,9 +228,13 @@ onMounted(() => {
     deviceList = res.data || [];
   });
 });
-onUpdated(() => {
-  console.log("onUpdated");
+onUnmounted(() => {
+  // 取消防抖
+  watchSearchForm.cancel();
 });
+/* onUpdated(() => {
+  console.log("onUpdated");
+}); */
 </script>
 <style scoped lang="less">
 :deep(.formInput .ivu-input) {
@@ -214,6 +254,7 @@ onUpdated(() => {
 }
 .meeting {
   .size(100%,100%);
+  user-select: none;
   .searchBox {
     width: 100%;
     padding: 10px;

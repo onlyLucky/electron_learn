@@ -2,16 +2,21 @@
  * @Author: fg
  * @Date: 2022-12-27 15:01:42
  * @LastEditors: fg
- * @LastEditTime: 2022-12-27 15:55:41
+ * @LastEditTime: 2023-01-04 14:40:51
  * @Description: 防抖自定义指令
  */
 import _ from 'lodash';
 
 import { App, Directive, DirectiveBinding } from "vue"
 
+let deHandle: any;
 const vDebounce: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
-    el.addEventListener('click', _.debounce(function () { binding.value() }, 300))
+    deHandle = _.debounce(function () { binding.value() }, 300)
+    el.addEventListener('click', deHandle)
+  },
+  unmounted() {
+    deHandle.cancel()
   }
 }
 

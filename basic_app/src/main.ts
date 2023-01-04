@@ -18,6 +18,8 @@ import config from '@/config'
 import http from './libs/request'
 import { webFrame } from "electron"
 
+import 'default-passive-events'
+
 // webFrame.setZoomFactor(0.5) 设置适配窗口分辨率缩放
 const app = createApp(App);
 

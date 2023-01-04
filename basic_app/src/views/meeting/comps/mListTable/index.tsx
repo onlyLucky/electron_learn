@@ -2,13 +2,13 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-03 19:59:35
+ * @LastEditTime: 2023-01-04 15:58:41
  * @Description: 会议列表数据表格组件
  */
 
-import { Table } from "view-ui-plus";
-import { PropType, defineExpose } from "vue";
-import { getMeetingById } from "@/apis/meet";
+import { Table, Message } from "view-ui-plus";
+import { PropType } from "vue";
+import { getMeetingById, deleteByIds } from "@/apis/meet";
 import style from "./style.module.less";
 
 const columns = reactive<any[]>([
@@ -22,13 +22,16 @@ const columns = reactive<any[]>([
         },
         onOnChange: (c: boolean) => {
           let tempData = tableData.value;
+
           tempData.map((item) => {
             if (item.state != 0) {
               item.select = c;
-              selectNum = c ? tableData.value.length - disabledNum : 0;
+              selectNum.value = c ? tableData.value.length - disabledNum : 0;
             }
           });
-          tableData.value = tempData;
+          // 引用对象不进行强赋值dom不会更新
+          tableData.value = JSON.parse(JSON.stringify(tempData));
+          emit("delChange");
         },
       });
     },
@@ -48,12 +51,13 @@ const columns = reactive<any[]>([
               disabled: params.row.state == 0 ? true : false,
               modelValue: params.row.select,
               ["onUpdate:model-value"]: (value: boolean) => {
-                params.row.select = value;
+                tableData.value[params.index].select = value;
               },
               onOnChange: (c: boolean) => {
-                c ? selectNum++ : selectNum--;
+                c ? selectNum.value++ : selectNum.value--;
                 selAll.value =
-                  selectNum + disabledNum == tableData.value.length;
+                  selectNum.value + disabledNum == tableData.value.length;
+                emit("delChange");
               },
             }),
           ],
@@ -307,24 +311,41 @@ const columns = reactive<any[]>([
   },
 ]);
 
+// 全局设置setup，emit
+let emit: any;
+let searchTemp = reactive<SearchType>({
+  pageNum: 1,
+  pageSize: 8,
+  isDel: 0,
+});
+
 // 获取数据
 let tableData = ref<any[]>([]);
 let total = ref<number>(0);
-const getTableData = (params: SearchType, emit?: any) => {
-  getMeetingById(params).then((res) => {
-    res.data?.records.map((item) => {
-      if (item.state == 0) {
-        disabledNum++;
-      }
-      item.select = false;
+let loading = ref<boolean>(false);
+const getTableData = (params: SearchType) => {
+  loading.value = true;
+  getMeetingById(params)
+    .then((res) => {
+      selectNum.value = 0;
+      disabledNum = 0;
+      emit("delChange");
+      selAll.value = false;
+      res.data?.records.map((item) => {
+        if (item.state == 0) {
+          disabledNum++;
+        }
+        item.select = false;
+      });
+
+      tableData.value = res.data?.records || [];
+      total.value = res.data?.total || 0;
+      emit("uploadData");
+      loading.value = false;
+    })
+    .catch((err) => {
+      loading.value = false;
     });
-    tableData.value = res.data?.records || [];
-    total.value = res.data?.total || 0;
-    console.log(tableData.value, "tableData.value");
-    if (emit) {
-      emit("uploadData", total.value);
-    }
-  });
 };
 // 去详情
 const goDetail = (item?: any) => {
@@ -334,13 +355,33 @@ const goDetail = (item?: any) => {
 
 // 全选删除 功能
 let selAll = ref<boolean>(false);
-let selectNum = 0; //选中数量
+let selectNum = ref<number>(0); //选中数量
 let disabledNum = 0; //禁止选择的数量
+// 删除功能调用
+const delFun = () => {
+  if (selectNum.value == 0) {
+    Message.info("暂未选择需要删除的会议");
+    return false;
+  }
+  let temp: any[] = [];
+  tableData.value.map((item) => {
+    console.log(item.state, item.select);
+    if (item.state != 0 && item.select == true) {
+      temp.push(item.id);
+    }
+  });
+  deleteByIds({
+    ids: temp.toString(),
+  }).then((res) => {
+    getTableData(searchTemp);
+  });
+};
 
 export type SearchType = {
   name?: string;
   dataValue?: any[];
   deviceId?: string | number;
+  isDel: number;
   pageNum: number;
   pageSize: number;
 };
@@ -361,7 +402,8 @@ export const MListTable = defineComponent({
       type: Object as PropType<SearchType>, //Props["search"]
       default: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 8,
+        isDel: 0,
       },
     },
     size: {
@@ -372,36 +414,25 @@ export const MListTable = defineComponent({
       },
     },
   },
-  /* data() {
-    return {
-      total,
-      tableData,
-    };
-  }, */
   // 这里居然还可以使用data method
   setup(props, ctx) {
-    const { expose, emit } = ctx;
-    // 导出属性，ref 中可以使用
-    /* expose({
-      total,
-      tableData,
-      getTableData,
-      goDetail,
-    }); */
-    getTableData(props.search, emit);
-    /* return () => (
-      <Table
-        width={props.size.width}
-        height={props.size.height}
-        data={tableData.value}
-        columns={columns}
-      ></Table>
-    ); */
+    // const { expose, emit } = ctx;
+    emit = ctx.emit;
+    Object.assign(searchTemp, props.search);
+    getTableData(props.search);
+    // 监听搜索项的改变
+    watch(props.search, (val) => {
+      Object.assign(searchTemp, props.search);
+    });
+    // 导出属性，ref 中可以使用 ,属性需要响应式的数据
     return {
       total,
       tableData,
+      selectNum,
       getTableData,
       goDetail,
+      delFun,
+      props,
     };
   },
   render() {
@@ -410,6 +441,7 @@ export const MListTable = defineComponent({
         width={this.size.width}
         height={this.size.height}
         data={this.tableData}
+        loading={loading.value}
         columns={columns}
       ></Table>
     );

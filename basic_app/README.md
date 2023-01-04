@@ -24,6 +24,8 @@
     - [Q1 vue3 reactive 对象数组重置，dom 不更新问题](#q1-vue3-reactive-对象数组重置dom-不更新问题)
   - [TS 问题](#ts-问题)
     - [Q1 ts 中引入 js 文件未找到，怎么解决](#q1-ts-中引入-js-文件未找到怎么解决)
+  - [报错处理](#报错处理)
+    - [E1: 控制台： \[Violation\] Added non-passive event listener to a scroll-blocking 'mousewheel' event](#e1-控制台-violation-added-non-passive-event-listener-to-a-scroll-blocking-mousewheel-event)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -300,6 +302,21 @@ Object.assign(searchForm, temp);
 
 - `const xx:any = require('package')` 当 js 来写，弹警告就屏蔽警告
 - 或者自己写声明文件 xxx.d.ts（仅限目标模块是自己写的情况，xxx 必须和目标文件同名）
+
+### 报错处理
+
+#### E1: [控制台： [Violation] Added non-passive event listener to a scroll-blocking 'mousewheel' event](https://blog.csdn.net/weixin_34403976/article/details/102900928)
+
+Chrome51 版本以后，Chrome 增加了新的事件捕获机制－Passive Event Listeners；
+
+解决方案：
+
+1. npm i default-passive-events -S
+2. main.js 中加入
+
+```ts
+import "default-passive-events";
+```
 
 ## 配置
 
