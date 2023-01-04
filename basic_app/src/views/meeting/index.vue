@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-04 16:04:40
+ * @LastEditTime: 2023-01-04 17:17:23
  * @Description: content
 -->
 <template>
@@ -46,7 +46,7 @@
           >
         </Select>
       </div>
-      <Button class="optBtn" icon="ios-refresh" @click="resetSearch"
+      <Button class="optBtn" icon="ios-refresh" v-debounce="resetSearch"
         >重置</Button
       >
     </div>
