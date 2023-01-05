@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-04 17:17:23
+ * @LastEditTime: 2023-01-05 17:43:13
  * @Description: content
 -->
 <template>
@@ -103,7 +103,7 @@
                 show-total
                 :total="total"
                 :page-size="searchForm.pageSize"
-                :page-size-opts="[8, 16, 24]"
+                :page-size-opts="[9, 16, 24]"
                 @on-page-size-change="pSizeChange"
                 @on-change="pageChange"
               ></Page>
@@ -112,6 +112,8 @@
         </Row>
       </Row>
     </div>
+    <!-- 详情 -->
+    <MDetail v-model="isShowDetail"></MDetail>
   </div>
 </template>
 <script setup lang="ts">
@@ -119,6 +121,7 @@ import { Select, Option, Message } from "view-ui-plus";
 import { ipcRenderer } from "electron";
 import { getDeviceList } from "@/apis/meet";
 import { MListTable, SearchType, SizeType } from "./comps/mListTable/index";
+import { MDetail } from "./comps/mListDetail/index";
 import _ from "lodash";
 
 const refTHeader = ref<HTMLElement>();
@@ -136,7 +139,7 @@ let searchForm = reactive<SearchType>({
   deviceId: "",
   pageNum: 1,
   isDel: 0,
-  pageSize: 8,
+  pageSize: 9,
 });
 
 // 设备 TODO: 可选为多个设备
@@ -155,7 +158,7 @@ const resetSearch = () => {
     deviceId: "",
     pageNum: 1,
     isDel: 0,
-    pageSize: 8,
+    pageSize: 9,
   };
   Object.assign(searchForm, temp);
   console.log(searchForm, "searchForm");
@@ -205,6 +208,9 @@ const delChange = () => {
   delDisabledFlag.value = mtable.value?.selectNum! == 0;
 };
 
+// 详情功能
+let isShowDetail = ref<boolean>(true);
+
 onMounted(() => {
   // 获取顶部的高度
   refHeaderHeight.value = refTHeader.value?.clientHeight || 0;
@@ -223,7 +229,7 @@ onMounted(() => {
     refHeaderHeight.value = refTHeader.value?.clientHeight || 0;
     refTableSize.width = refTable.value?.clientWidth || 0;
     refTableSize.height = refTable.value?.clientHeight || 0;
-    console.log(refTableSize);
+    console.log(refTableSize, "refTableSize");
   };
   getDeviceList().then((res) => {
     deviceList = res.data || [];
@@ -252,6 +258,15 @@ onUnmounted(() => {
 :deep(.ivu-table-header thead tr th) {
   color: @tHeader_color;
   cursor: default;
+}
+:deep(.ivu-table:before) {
+  display: none;
+}
+:deep(.ivu-table-fixed-right::before) {
+  display: none;
+}
+:deep(.ivu-table-header) {
+  height: 40px;
 }
 .meeting {
   .size(100%,100%);
@@ -294,6 +309,7 @@ onUnmounted(() => {
       }
       .footerBox {
         .size(100%, 60px);
+        border-top: 1px solid @search_bottom_border;
       }
     }
   }

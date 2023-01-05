@@ -44,9 +44,9 @@ const indexHtml = join(process.env.DIST, 'index.html')
 function createWindow() {
   win = new BrowserWindow({
     width: 1024,
-    height: 640,
+    height: 700,
     minWidth: 1024,
-    minHeight: 640,
+    minHeight: 700,
     title: 'Main window',
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {

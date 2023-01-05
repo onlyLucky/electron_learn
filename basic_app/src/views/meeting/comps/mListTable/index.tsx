@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-04 17:00:29
+ * @LastEditTime: 2023-01-05 16:20:46
  * @Description: 会议列表数据表格组件
  */
 
@@ -10,6 +10,7 @@ import { Table, Message } from "view-ui-plus";
 import { PropType } from "vue";
 import { getMeetingById, deleteByIds, reviseMeetDetail } from "@/apis/meet";
 import style from "./style.module.less";
+import { dropRight } from "lodash";
 
 const columns = reactive<any[]>([
   {
@@ -465,7 +466,6 @@ export const MListTable = defineComponent({
       getTableData,
       goDetail,
       delFun,
-      props,
     };
   },
   render() {

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-01-04 13:22:19
+ * @LastEditTime: 2023-01-05 13:33:44
  * @Description: content
 -->
 <template>
@@ -131,6 +131,10 @@ const loginTo = () => {
 <style scoped lang="less">
 :deep(.ivu-input) {
   height: 40px;
+}
+:deep(.ivu-input-wrapper) {
+  display: flex;
+  align-items: center;
 }
 .login {
   width: 100vw;
