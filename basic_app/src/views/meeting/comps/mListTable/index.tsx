@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-05 16:20:46
+ * @LastEditTime: 2023-01-06 14:45:58
  * @Description: 会议列表数据表格组件
  */
 
@@ -382,9 +382,9 @@ const getTableData = (params: SearchType) => {
     });
 };
 // 去详情
-const goDetail = (item?: any) => {
-  // console.log(item);
-  console.log("goDetail");
+const tabCellTap = (item: any) => {
+  emit("detail", item);
+  console.log(item, "index");
 };
 
 // 全选删除 功能
@@ -464,7 +464,6 @@ export const MListTable = defineComponent({
       tableData,
       selectNum,
       getTableData,
-      goDetail,
       delFun,
     };
   },
@@ -476,6 +475,7 @@ export const MListTable = defineComponent({
         data={this.tableData}
         loading={loading.value}
         columns={columns}
+        onOnRowClick={tabCellTap}
       ></Table>
     );
   },

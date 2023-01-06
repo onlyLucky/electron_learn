@@ -2,11 +2,11 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-05 17:43:13
+ * @LastEditTime: 2023-01-06 16:44:27
  * @Description: content
 -->
 <template>
-  <div class="meeting">
+  <div class="meeting" ref="refMeet">
     <div ref="refTHeader" class="searchBox f-w f-row-e-c">
       <div class="formItem formInput f-row-c-c">
         <!-- <span class="label">会议名称</span> -->
@@ -62,6 +62,7 @@
             :search="searchForm"
             @uploadData="uploadTableData"
             @delChange="delChange"
+            @detail="handleDetail"
           ></MListTable>
         </div>
         <!-- 底部 -->
@@ -113,7 +114,7 @@
       </Row>
     </div>
     <!-- 详情 -->
-    <MDetail v-model="isShowDetail"></MDetail>
+    <MDetail v-model="isShowDetail" :mask="false"></MDetail>
   </div>
 </template>
 <script setup lang="ts">
@@ -121,11 +122,13 @@ import { Select, Option, Message } from "view-ui-plus";
 import { ipcRenderer } from "electron";
 import { getDeviceList } from "@/apis/meet";
 import { MListTable, SearchType, SizeType } from "./comps/mListTable/index";
-import { MDetail } from "./comps/mListDetail/index";
+import MDetail from "./comps/mListDetail/index.vue";
 import _ from "lodash";
 
 const refTHeader = ref<HTMLElement>();
 const refTable = ref<HTMLElement>();
+const refMeet = ref<HTMLElement>();
+let refMeetHeight = ref<number>(0);
 let refHeaderHeight = ref<number>(0);
 let refTableSize = reactive<SizeType>({
   width: 0,
@@ -209,12 +212,17 @@ const delChange = () => {
 };
 
 // 详情功能
-let isShowDetail = ref<boolean>(true);
+let isShowDetail = ref<boolean>(false);
+const handleDetail = () => {
+  if (!isShowDetail.value) {
+    isShowDetail.value = true;
+  }
+};
 
 onMounted(() => {
   // 获取顶部的高度
   refHeaderHeight.value = refTHeader.value?.clientHeight || 0;
-
+  refMeetHeight.value = refMeet.value?.clientHeight! + 20 || 0;
   setTimeout(() => {
     // 获取表格的宽高
     refTableSize.width = refTable.value?.clientWidth || 0;
@@ -229,7 +237,7 @@ onMounted(() => {
     refHeaderHeight.value = refTHeader.value?.clientHeight || 0;
     refTableSize.width = refTable.value?.clientWidth || 0;
     refTableSize.height = refTable.value?.clientHeight || 0;
-    console.log(refTableSize, "refTableSize");
+    refMeetHeight.value = refMeet.value?.clientHeight! + 20 || 0;
   };
   getDeviceList().then((res) => {
     deviceList = res.data || [];

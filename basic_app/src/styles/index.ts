@@ -9,4 +9,3 @@ import 'view-ui-plus/dist/styles/viewuiplus.css'
 import "./global.less"
 import "./default.less"
 import "./variables.less"
-import "./flex.less"
