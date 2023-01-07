@@ -20,6 +20,7 @@
     - [Q6: \[@vue/compiler-sfc\] the ＞＞＞ and /deep/ combinators have been deprecated. Use :deep() instead.](#q6-vuecompiler-sfc-the--and-deep-combinators-have-been-deprecated-use-deep-instead)
     - [Q7: 安装 electron 项目的时候，在下载包的时候报错](#q7-安装-electron-项目的时候在下载包的时候报错)
     - [Q8：vue3 项目中 less 函数无法全局使用，如何解决？](#q8vue3-项目中-less-函数无法全局使用如何解决)
+    - [Q9: vue 项目 electron 打包后多个窗口为为其他路由](#q9-vue-项目-electron-打包后多个窗口为为其他路由)
   - [vue3 的问题](#vue3-的问题)
     - [Q1 vue3 reactive 对象数组重置，dom 不更新问题](#q1-vue3-reactive-对象数组重置dom-不更新问题)
   - [TS 问题](#ts-问题)
@@ -261,6 +262,60 @@ yarn config set electron_mirror https://npm.taobao.org/mirrors/electron/
   .theme_basic();
 }
 ```
+
+#### Q9: vue 项目 electron 打包后多个窗口为为其他路由
+
+首先默认情况下这里有个一个误区，就是默认路由为 history，开发环境中的路径配置是可以完全 OK 的，但是在打包的时候，官方要求用 hash 模式。
+
+- 首先我们要将路由模式更改为 hash 模式（vue-router4x 为主）
+
+```ts
+// router/index.ts
+const router = createRouter({
+  routes,
+  // 这里需要将createWebHistory更改为createWebHashHistory
+  history: createWebHashHistory(),
+  scrollBehavior() {
+    return { top: 0 };
+  },
+});
+```
+
+- 之后能够加载到文件，但是发生了上面 FAQ 中的第一个问题，尝试了一下以下的配置，解决
+
+```ts
+// electron/main/index.ts
+new BrowserWindow({
+  width: 710,
+  height: 426,
+  resizable: false,
+  title: "login",
+  icon: join(process.env.PUBLIC, "logo.ico"),
+  webPreferences: {
+    preload,
+    nodeIntegration: true,
+    contextIsolation: false,
+    // 所有窗口添加这个配置
+    webSecurity: false,
+  },
+  // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
+  frame: false,
+});
+```
+
+- 最后根据下面的链接配置跳转文件转地址链接(下面代码摘抄自官网)
+
+```js
+const url = require("url").format({
+  protocol: "file",
+  slashes: true,
+  pathname: require("path").join(__dirname, "index.html"),
+});
+
+win.loadURL(url);
+```
+
+[electron 官网 win.loadURL(url[, options])](https://www.electronjs.org/zh/docs/latest/api/browser-window#winloadurlurl-options)
 
 ### vue3 的问题
 
@@ -661,3 +716,4 @@ Vue3 使用 h 函数 推荐使用函数式插槽，以便获得更佳的性能�
 
 [封装 flex 布局（Less）](https://blog.csdn.net/zxBlogs/article/details/125127322)
 [Lodash,个人感觉一个不错的前端库](https://www.lodashjs.com/)
+[处理多窗口](https://juejin.cn/post/6844903910436519949)
