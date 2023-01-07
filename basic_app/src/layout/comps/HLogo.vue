@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 16:53:53
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 14:04:21
+ * @LastEditTime: 2023-01-07 13:35:29
  * @Description: header logo
 -->
 <template>
@@ -10,7 +10,7 @@
     <img src="@/assets/images/logo.png" alt="" />
   </div>
 </template>
-<script></script>
+<script lang="ts" setup></script>
 <style scoped lang="less">
 .logo {
   width: 200px;

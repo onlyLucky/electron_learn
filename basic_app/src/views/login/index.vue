@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-01-05 13:33:44
+ * @LastEditTime: 2023-01-07 17:29:06
  * @Description: content
 -->
 <template>
@@ -76,6 +76,7 @@ import { goLogin } from "@/apis/login";
 import { ipcRenderer } from "electron";
 import { useI18n } from "vue-i18n";
 import { Message } from "view-ui-plus";
+import { useRouter } from "vue-router";
 
 const { t } = useI18n();
 
@@ -84,6 +85,8 @@ const isRememberMe = ref<boolean>(true);
 
 const userName = ref<string>("");
 const password = ref<string>("");
+
+const router = useRouter();
 
 type RmeType = {
   isRememberMe: boolean;
@@ -124,6 +127,9 @@ const loginTo = () => {
       }
       localStorage.setItem("remember", JSON.stringify(tempRme));
       ipcRenderer.send("on_login");
+      /* , () => {
+        router.push({ name: "meeting" });
+      } */
     })
     .catch((err) => {});
 };

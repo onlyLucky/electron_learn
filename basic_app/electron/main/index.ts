@@ -15,6 +15,7 @@ process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_E
 import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, webFrame } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
+const url = require("url")
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -36,13 +37,14 @@ let win: BrowserWindow | null = null
 // 登录窗口
 let loginWin: BrowserWindow | null = null
 // 弹出层窗口
-let modelWin: BrowserWindow | null = null
+let modelWins = new Set();
 // 当前聚焦的窗口
 let focusWin: BrowserWindow | null = null
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
-const url = process.env.VITE_DEV_SERVER_URL
+const urlPath = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
+let loadPath = process.env.VITE_DEV_SERVER_URL ? urlPath : indexHtml
 function createWindow() {
   win = new BrowserWindow({
     width: 1024,
@@ -58,19 +60,24 @@ function createWindow() {
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
       nodeIntegration: true,
       contextIsolation: false,
+      webSecurity: false
     },
     // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
     frame: false
   })
   win.setMenu(null)
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
-    win.loadURL(url)
+    win.loadURL(urlPath + '#/meeting')
     // Open devTool if the app is not packaged
     win.webContents.openDevTools()
   } else {
-    win.loadFile(indexHtml)
+    win.loadURL(url.format({
+      pathname: indexHtml,
+      protocol: 'file:',
+      slashes: true,
+      hash: "meeting"
+    }))
   }
-
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString())
@@ -99,15 +106,21 @@ function createLoginWin() {
       preload,
       nodeIntegration: true,
       contextIsolation: false,
+      webSecurity: false
     },
     // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
     frame: false
   })
   loginWin.setMenu(null)
-  loginWin.loadURL(`${url}login`)
-  if (process.env.VITE_DEV_SERVER_URL) {
+  console.log(process.env.VITE_DEV_SERVER_URL, 'process.env.VITE_DEV_SERVER_URL')
+  if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
+    loginWin.loadURL(urlPath)
+    // Open devTool if the app is not packaged
     loginWin.webContents.openDevTools()
+  } else {
+    loginWin.loadFile(indexHtml)
   }
+
   loginWin.focus()
   loginWin.on('close', (e) => {
     e.preventDefault();  //阻止窗口的关闭事件
@@ -121,26 +134,28 @@ app.whenReady().then(() => {
   // createWindow()
   createLoginWin()
   // 创建托盘
-  const icon = nativeImage.createFromPath('resources/logo.png')
+  const icon = nativeImage.createFromPath(join(process.env.PUBLIC, 'resources/logo.png'))
   tray = new Tray(icon)
   const contextMenu = Menu.buildFromTemplate([
     {
       label: '打开应用',
-      icon: 'resources/icons/icon1.png',
+      icon: join(process.env.PUBLIC, 'resources/icons/icon1.png'),
       click: () => {
       }
     },
     {
       label: '退出',
-      icon: 'resources/icons/icon1.png',
+      icon: join(process.env.PUBLIC, 'resources/icons/icon1.png'),
       click: () => {
       }
     },
     {
       label: '退出应用',
-      icon: 'resources/icons/icon1.png',
+      icon: join(process.env.PUBLIC, 'resources/icons/icon1.png'),
       click: () => {
         if (process.platform !== 'darwin') {
+          loginWin = null;
+          win = null
           app.exit(0);
         }
       }
@@ -247,8 +262,8 @@ let iconShakeTimer = null;
 ipcMain.on('icon_shake', (event, arg: boolean) => {
   console.log(arg, 'icon_shake')
   if (arg) {
-    let icon_space = nativeImage.createFromPath('resources/logo_space.png')
-    let icon_active = nativeImage.createFromPath('resources/logo_active.png')
+    let icon_space = nativeImage.createFromPath(join(process.env.PUBLIC, 'resources/logo_space.png'))
+    let icon_active = nativeImage.createFromPath(join(process.env.PUBLIC, 'resources/logo_active.png'))
     let flag = true;
     iconShakeTimer = setInterval(() => {
       if (flag) {
@@ -260,7 +275,7 @@ ipcMain.on('icon_shake', (event, arg: boolean) => {
       }
     }, 500)
   } else {
-    let icon_logo = nativeImage.createFromPath('resources/logo.png')
+    let icon_logo = nativeImage.createFromPath(join(process.env.PUBLIC, 'resources/logo.png'))
     clearInterval(iconShakeTimer)
     tray.setImage(icon_logo)
   }
@@ -279,7 +294,7 @@ ipcMain.handle('open-win', (event, arg) => {
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${url}#${arg}`)
+    childWindow.loadURL(`${urlPath}#${arg}`)
   } else {
     childWindow.loadFile(indexHtml, { hash: arg })
   }
