@@ -37,6 +37,8 @@ let win: BrowserWindow | null = null
 let loginWin: BrowserWindow | null = null
 // 弹出层窗口
 let modelWin: BrowserWindow | null = null
+// 当前聚焦的窗口
+let focusWin: BrowserWindow | null = null
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
@@ -79,6 +81,11 @@ function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
+  win.on('close', (e) => {
+    e.preventDefault();  //阻止窗口的关闭事件
+    focusWin = win
+    win.hide();
+  })
 }
 
 function createLoginWin() {
@@ -102,6 +109,11 @@ function createLoginWin() {
     loginWin.webContents.openDevTools()
   }
   loginWin.focus()
+  loginWin.on('close', (e) => {
+    e.preventDefault();  //阻止窗口的关闭事件
+    focusWin = loginWin
+    loginWin.hide();
+  })
 }
 // 托盘对象
 let tray;
@@ -128,17 +140,44 @@ app.whenReady().then(() => {
       label: '退出应用',
       icon: 'resources/icons/icon1.png',
       click: () => {
+        if (process.platform !== 'darwin') {
+          app.exit(0);
+        }
       }
     },
   ])
   tray.setContextMenu(contextMenu)
   tray.setToolTip('basic app')
   tray.setTitle('This is my title')
+  //监听任务栏图标的点击事件
+  /* tray.on('double-click', function () {
+    focusWin.show();
+    console.log('double-click')
+  })
+  tray.on('click', function () {
+    console.log('click')
+  }) */
+  // 任务栏点击事件
+  let timeCount = 0
+  tray.on('click', function (Event) {
+    setTimeout(() => {
+      if (timeCount === 0) {
+        focusWin.show();
+        timeCount = 0
+      }
+    }, 300)
+  })
+  // 任务栏双击点击事件
+  tray.on('double-click', function () {
+    timeCount = 1
+    setTimeout(() => {
+      timeCount = 0
+    }, 300)
+  })
 })
 // 当所有的窗口都被关闭时触发
-app.on('window-all-closed', () => {
-  win = null
-  if (process.platform !== 'darwin') app.quit()
+app.on('window-all-closed', (e) => {
+  console.log('window-all-closed', BrowserWindow.getAllWindows().length)
 })
 
 app.on('second-instance', () => {
@@ -182,12 +221,21 @@ ipcMain.on('window_max', function () {
 
 ipcMain.on('on_login', (event, arg) => {
   BrowserWindow.getFocusedWindow().close();
+  loginWin = null;
   createWindow()
 })
 // 关闭窗口
-ipcMain.on('window_close', function () {
-  BrowserWindow.getFocusedWindow().close();
+ipcMain.on('window_close', function (e) {
+  focusWin = BrowserWindow.getFocusedWindow()
+  if (!focusWin.isFocused()) {
+    focusWin = null;
+  } else {
+    e.preventDefault();  //阻止窗口的关闭事件
+    focusWin.hide();
+  }
+  // BrowserWindow.getFocusedWindow().close();
 })
+
 ipcMain.on('win_size', function (event, arg) {
   // console.log(url, arg)
   createLoginWin()
