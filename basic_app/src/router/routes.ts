@@ -7,9 +7,19 @@ const routes: RouteRecordRaw[] = [
     component: () => import('_v/login/index.vue')
   },
   {
+    path: '/models/meet/summary',
+    name: 'meet_summary',
+    component: () => import("_v/meeting/summary.vue")
+  },
+  {
+    path: '/models/meet/file',
+    name: 'meet_file',
+    component: () => import("_v/meeting/fileList.vue")
+  },
+  {
     path: '/',
     name: '_index',
-    redirect: '/meeting',
+    redirect: '/login',
     component: () => import('@/layout/Index.vue'),
     meta: {
       hideInMenu: true,
@@ -40,6 +50,7 @@ const routes: RouteRecordRaw[] = [
       }
     ]
   }
+
 ]
 
 export default routes

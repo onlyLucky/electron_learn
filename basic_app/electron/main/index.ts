@@ -16,8 +16,8 @@ import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, webFrame }
 import { release } from 'os'
 import { join } from 'path'
 const url = require("url")
-
-// Disable GPU Acceleration for Windows 7
+const Config = require("../../src/config/index.json")
+// Disable GPU Acceleration for Windowsb 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
 // Set application name for Windows 10+ notifications
@@ -116,7 +116,7 @@ function createLoginWin() {
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     loginWin.loadURL(urlPath)
     // Open devTool if the app is not packaged
-    loginWin.webContents.openDevTools()
+    // loginWin.webContents.openDevTools()
   } else {
     loginWin.loadFile(indexHtml)
   }
@@ -284,18 +284,81 @@ ipcMain.on('icon_shake', (event, arg: boolean) => {
 
 // New window example arg: new windows url
 ipcMain.handle('open-win', (event, arg) => {
-  console.log('new win ++')
-  const childWindow = new BrowserWindow({
+  console.log('new win ++', arg)
+  createModelWin(arg)
+})
+
+// 创建model窗口
+type OptType = {
+  type?: 0 | 1 | 2 | 3,// 窗口类型
+  url: string,
+
+}
+function createModelWin(opt: OptType) {
+  // 判断当前窗口配置
+  if (modelWins.size >= Config.modelConfig.length) {
+    let tempArr: any = Array.from(modelWins)
+    let curWin: any = tempArr[tempArr.length - 1].win
+    if (process.env.VITE_DEV_SERVER_URL) {
+      curWin.loadURL(`${urlPath}#/${opt.url}`)
+      curWin.webContents.openDevTools()
+    } else {
+      curWin.loadURL(url.format({
+        pathname: indexHtml,
+        protocol: 'file:',
+        slashes: true,
+        hash: opt.url
+      }))
+    }
+    curWin.focus()
+    return curWin
+  }
+  let modelWin = new BrowserWindow({
+    width: 1024,
+    height: 700,
+    minWidth: 1024,
+    minHeight: 700,
+    title: 'Main window',
+    icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
       nodeIntegration: true,
       contextIsolation: false,
+      webSecurity: false
     },
-  })
+    // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
+    frame: false
+  });
+
+  modelWin.setMenu(null)
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${urlPath}#${arg}`)
+
+    modelWin.loadURL(`${urlPath}#/${opt.url}`)
+    modelWin.webContents.openDevTools()
   } else {
-    childWindow.loadFile(indexHtml, { hash: arg })
+    modelWin.loadURL(url.format({
+      pathname: indexHtml,
+      protocol: 'file:',
+      slashes: true,
+      hash: opt.url
+    }))
   }
-})
+
+  modelWin.once('ready-to-show', () => {
+    modelWin.show();
+  });
+
+  modelWin.on('closed', () => {
+    modelWins.delete(modelWin); //从已关闭的窗口Set中移除引用
+    modelWin = null;
+  });
+
+  modelWins.add({
+    win: modelWin,
+    time: new Date(),
+    type: opt.type,
+    url: opt.url,
+  }); //将窗口添加到已打开时设置的窗口
+  return modelWin;
+}
