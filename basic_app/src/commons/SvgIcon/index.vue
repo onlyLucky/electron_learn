@@ -2,11 +2,11 @@
  * @Author: fg
  * @Date: 2023-01-06 18:03:51
  * @LastEditors: fg
- * @LastEditTime: 2023-01-06 19:13:16
+ * @LastEditTime: 2023-01-09 16:45:10
  * @Description: content
 -->
 <template>
-  <svg :class="svgClass" aria-hidden="true">
+  <svg :class="svgClass" :style="style" aria-hidden="true">
     <use :xlink:href="iconClassName" :fill="color" />
   </svg>
 </template>
@@ -24,6 +24,12 @@ const props = defineProps({
   color: {
     type: String,
     default: "#409eff",
+  },
+  style: {
+    type: Object,
+    default: () => {
+      return {};
+    },
   },
 });
 // 图标在 iconfont 中的名字

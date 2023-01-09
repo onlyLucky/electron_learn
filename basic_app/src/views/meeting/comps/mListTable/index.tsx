@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-06 19:55:49
+ * @LastEditTime: 2023-01-09 16:14:09
  * @Description: 会议列表数据表格组件
  */
 
@@ -10,7 +10,8 @@ import { Table, Message } from "view-ui-plus";
 import { PropType } from "vue";
 import { getMeetingById, deleteByIds, reviseMeetDetail } from "@/apis/meet";
 import style from "./style.module.less";
-import { dropRight } from "lodash";
+import { ipcRenderer } from "electron";
+import _ from "lodash";
 
 const columns = reactive<any[]>([
   {
@@ -258,9 +259,9 @@ const columns = reactive<any[]>([
                   style: {
                     margin: "0 2px",
                   },
-                  onClick: () => {
+                  onClick: _.debounce(function () {
                     console.log(params.row);
-                  },
+                  }, 300),
                 }),
               ],
             }
@@ -282,9 +283,9 @@ const columns = reactive<any[]>([
                   style: {
                     margin: "0 2px",
                   },
-                  onClick: () => {
+                  onClick: _.debounce(function () {
                     console.log(params.row);
-                  },
+                  }, 300),
                 }),
               ],
             }
@@ -306,9 +307,14 @@ const columns = reactive<any[]>([
                   style: {
                     margin: "0 2px",
                   },
-                  onClick: () => {
-                    console.log(params.row);
-                  },
+                  onClick: _.debounce(async function () {
+                    // console.log(params.row);
+                    const result = await ipcRenderer.invoke("open-win", {
+                      type: 0,
+                      url: "models/meet/summary",
+                    });
+                    console.log(result);
+                  }, 300),
                 }),
               ],
             }
@@ -330,9 +336,9 @@ const columns = reactive<any[]>([
                   style: {
                     margin: "0 2px",
                   },
-                  onClick: () => {
+                  onClick: _.debounce(function () {
                     console.log(params.row);
-                  },
+                  }, 300),
                 }),
               ],
             }
@@ -480,4 +486,5 @@ export const MListTable = defineComponent({
       ></Table>
     );
   },
+  unmounted() {},
 });
