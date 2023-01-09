@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-06 16:44:27
+ * @LastEditTime: 2023-01-09 16:08:36
  * @Description: content
 -->
 <template>
@@ -246,6 +246,7 @@ onMounted(() => {
 onUnmounted(() => {
   // 取消防抖
   watchSearchForm.cancel();
+  clearTimeout();
 });
 /* onUpdated(() => {
   console.log("onUpdated");
