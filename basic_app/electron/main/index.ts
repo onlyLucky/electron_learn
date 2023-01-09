@@ -297,21 +297,8 @@ type OptType = {
 function createModelWin(opt: OptType) {
   // 判断当前窗口配置
   if (modelWins.size >= Config.modelConfig.length) {
-    let tempArr: any = Array.from(modelWins)
-    let curWin: any = tempArr[tempArr.length - 1].win
-    if (process.env.VITE_DEV_SERVER_URL) {
-      curWin.loadURL(`${urlPath}#/${opt.url}`)
-      curWin.webContents.openDevTools()
-    } else {
-      curWin.loadURL(url.format({
-        pathname: indexHtml,
-        protocol: 'file:',
-        slashes: true,
-        hash: opt.url
-      }))
-    }
-    curWin.focus()
-    return curWin
+    let tempArr: any[] = Array.from(modelWins)
+    tempArr[tempArr.length - 1].close()
   }
   let modelWin = new BrowserWindow({
     width: 1024,
@@ -354,11 +341,7 @@ function createModelWin(opt: OptType) {
     modelWin = null;
   });
 
-  modelWins.add({
-    win: modelWin,
-    time: new Date(),
-    type: opt.type,
-    url: opt.url,
-  }); //将窗口添加到已打开时设置的窗口
+  modelWins.add(modelWin); //将窗口添加到已打开时设置的窗口
+  console.log(modelWins.size, 'modelWins-add')
   return modelWin;
 }
