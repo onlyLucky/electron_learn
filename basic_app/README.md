@@ -39,6 +39,7 @@
   - [vite vue3 主题切换功能配置](#vite-vue3-主题切换功能配置)
   - [vue3 自定义指令尝试](#vue3-自定义指令尝试)
   - [Vue3 自动引入插件](#vue3-自动引入插件)
+  - [electron 创建全局快捷键配置](#electron-创建全局快捷键配置)
 - [技术点总结](#技术点总结)
   - [T1: vue3 使用 render 函数 h](#t1-vue3-使用-render-函数-h)
 - [提交规范](#提交规范)
@@ -625,6 +626,12 @@ export default defineConfig({
 ```
 
 配置完成之后使用 ref reactive watch 等 无须 import 导入 可以直接使用
+
+### electron 创建全局快捷键配置
+
+**TODO: 配置补充**
+
+[vue+electron 快捷键设置](https://juejin.cn/post/7139137295214444551)
 
 ## 技术点总结
 
