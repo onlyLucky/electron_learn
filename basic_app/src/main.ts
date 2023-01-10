@@ -9,7 +9,7 @@ import router from './router';
 import ViewUIPlus from 'view-ui-plus';
 import i18n from '@/locale'
 // iview 
-import { Button, Input, Icon, DatePicker, Table, Row, Col, Poptip, Page, Tooltip, Tag, Switch, Checkbox, Text } from 'view-ui-plus'
+import { Button, Input, Icon, DatePicker, Table, Row, Col, Poptip, Page, Tooltip, Tag, Switch, Checkbox, Text, Title } from 'view-ui-plus'
 import SvgIcon from "@/commons/SvgIcon/index.vue";
 import './assets/iconfont/iconfont.js';
 // 样式文件引入
@@ -46,6 +46,7 @@ app.component('Poptip', Poptip)
 app.component('Tooltip', Tooltip)
 app.component('Page', Page)
 app.component('Tag', Tag)
+app.component('Title', Title)
 app.component('Text', Text)
 app.component('Switch', Switch)
 app.component('Checkbox', Checkbox)
