@@ -112,7 +112,6 @@ function createLoginWin() {
     frame: false
   })
   loginWin.setMenu(null)
-  console.log(process.env.VITE_DEV_SERVER_URL, 'process.env.VITE_DEV_SERVER_URL')
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     loginWin.loadURL(urlPath)
     // Open devTool if the app is not packaged
@@ -164,14 +163,6 @@ app.whenReady().then(() => {
   tray.setContextMenu(contextMenu)
   tray.setToolTip('basic app')
   tray.setTitle('This is my title')
-  //监听任务栏图标的点击事件
-  /* tray.on('double-click', function () {
-    focusWin.show();
-    console.log('double-click')
-  })
-  tray.on('click', function () {
-    console.log('click')
-  }) */
   // 任务栏点击事件
   let timeCount = 0
   tray.on('click', function (Event) {
@@ -241,13 +232,25 @@ ipcMain.on('on_login', (event, arg) => {
 })
 // 关闭窗口
 ipcMain.on('window_close', function (e) {
-  focusWin = BrowserWindow.getFocusedWindow()
+  let temp = BrowserWindow.getFocusedWindow()
+  if (loginWin) {
+    focusWin = loginWin
+    e.preventDefault();  //阻止窗口的关闭事件
+    focusWin.hide();
+  } else if (win && win.id == temp.id) {
+    focusWin = win
+    e.preventDefault();  //阻止窗口的关闭事件
+    focusWin.hide();
+  } else {
+    temp.close()
+  }
+  /* focusWin = BrowserWindow.getFocusedWindow()
   if (!focusWin.isFocused()) {
     focusWin = null;
   } else {
     e.preventDefault();  //阻止窗口的关闭事件
     focusWin.hide();
-  }
+  } */
   // BrowserWindow.getFocusedWindow().close();
 })
 
@@ -336,8 +339,9 @@ function createModelWin(opt: OptType) {
     modelWin.show();
   });
 
-  modelWin.on('closed', () => {
+  modelWin.on('close', () => {
     modelWins.delete(modelWin); //从已关闭的窗口Set中移除引用
+    console.log(modelWins.size, 'modelWins-closed')
     modelWin = null;
   });
 
