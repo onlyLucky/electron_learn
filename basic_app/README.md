@@ -21,6 +21,7 @@
     - [Q7: 安装 electron 项目的时候，在下载包的时候报错](#q7-安装-electron-项目的时候在下载包的时候报错)
     - [Q8：vue3 项目中 less 函数无法全局使用，如何解决？](#q8vue3-项目中-less-函数无法全局使用如何解决)
     - [Q9: vue 项目 electron 打包后多个窗口为为其他路由](#q9-vue-项目-electron-打包后多个窗口为为其他路由)
+    - [Q10: iconfont 图标 symbol 引用方式，有的图标不能通过设置 color 样式来修改颜色的解决办法](#q10-iconfont-图标-symbol-引用方式有的图标不能通过设置-color-样式来修改颜色的解决办法)
   - [vue3 的问题](#vue3-的问题)
     - [Q1 vue3 reactive 对象数组重置，dom 不更新问题](#q1-vue3-reactive-对象数组重置dom-不更新问题)
   - [TS 问题](#ts-问题)
@@ -40,6 +41,7 @@
   - [vue3 自定义指令尝试](#vue3-自定义指令尝试)
   - [Vue3 自动引入插件](#vue3-自动引入插件)
   - [electron 创建全局快捷键配置](#electron-创建全局快捷键配置)
+  - [electron 调用打开第三方 exe 应用配置](#electron-调用打开第三方-exe-应用配置)
 - [技术点总结](#技术点总结)
   - [T1: vue3 使用 render 函数 h](#t1-vue3-使用-render-函数-h)
 - [提交规范](#提交规范)
@@ -317,6 +319,16 @@ win.loadURL(url);
 ```
 
 [electron 官网 win.loadURL(url[, options])](https://www.electronjs.org/zh/docs/latest/api/browser-window#winloadurlurl-options)
+
+#### Q10: iconfont 图标 symbol 引用方式，有的图标不能通过设置 color 样式来修改颜色的解决办法
+
+原因：
+
+> 当从阿里图库中图标被添加至项目，如果编辑过项目图标的颜色或者图标本身是有颜色的，那么在通过 symbol 获取图标时会在 svg 的 path 中增加 fill 属性，导致无法更改颜色，如果需要动态修改颜色，需要从新添加该图标(本身图标无色)，获取在 symbol 的 js 文件中程序删除 fill 属性。
+
+解决方法：
+
+下载 Js 文件后，用编译器打开，然后用正则表达式查找：fill="#......" ，替换为""。
 
 ### vue3 的问题
 
@@ -632,6 +644,10 @@ export default defineConfig({
 **TODO: 配置补充**
 
 [vue+electron 快捷键设置](https://juejin.cn/post/7139137295214444551)
+
+### electron 调用打开第三方 exe 应用配置
+
+**TODO: 配置补充**
 
 ## 技术点总结
 
