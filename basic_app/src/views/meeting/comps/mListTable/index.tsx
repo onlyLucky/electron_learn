@@ -311,7 +311,7 @@ const columns = reactive<any[]>([
                     // console.log(params.row);
                     const result = await ipcRenderer.invoke("open-win", {
                       type: 0,
-                      url: "models/meet/summary",
+                      urlName: "models/meet/summary",
                     });
                     console.log(result);
                   }, 300),

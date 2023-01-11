@@ -18,14 +18,14 @@ import { ipcRenderer } from "electron";
 const addWindows = async () => {
   const result = await ipcRenderer.invoke("open-win", {
     type: 0,
-    url: "models/meet/summary",
+    urlName: "models/meet/summary",
   });
   console.log(result);
 };
 const addWindows1 = async () => {
   const result = await ipcRenderer.invoke("open-win", {
     type: 1,
-    url: "models/meet/file?name=123",
+    urlName: "models/meet/file?name=123",
   });
   console.log(result);
 };

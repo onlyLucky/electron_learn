@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 14:10:32
+ * @LastEditTime: 2023-01-11 14:55:37
  * @Description: header
 -->
 <template>
@@ -16,6 +16,7 @@
           iconName="icon-shezhi-xianxing"
           className="setting"
           color="var(--fontColor)"
+          @click="settingTap"
         ></SvgIcon>
       </Tooltip>
       <SystemOpt></SystemOpt>
@@ -26,7 +27,18 @@
 import SystemOpt from "@/commons/system_opt/index";
 import HLogo from "./comps/HLogo.vue";
 import SvgIcon from "@/commons/SvgIcon/index.vue";
-import { Tooltip } from "view-ui-plus";
+import { ipcRenderer } from "electron";
+
+const settingTap = async () => {
+  await ipcRenderer.invoke("open-win", {
+    type: 0,
+    urlName: "setting",
+    width: 600,
+    height: 700,
+    minWidth: 600,
+    minHeight: 700,
+  });
+};
 </script>
 <style scoped lang="less">
 .header {

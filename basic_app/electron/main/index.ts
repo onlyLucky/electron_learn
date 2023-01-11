@@ -294,21 +294,27 @@ ipcMain.handle('open-win', (event, arg) => {
 // 创建model窗口
 type OptType = {
   type?: 0 | 1 | 2 | 3,// 窗口类型
-  url: string,
-
+  urlName: string,
+  width?: number,
+  height?: number,
+  minWidth?: number,
+  minHeight?: number,
+  title?: string,
 }
-function createModelWin(opt: OptType) {
+function createModelWin(
+  { width = 1024, height = 700, minWidth = 1024, minHeight = 700, title = "Main window", urlName, type }: OptType
+) {
   // 判断当前窗口配置
   if (modelWins.size >= Config.modelConfig.length) {
     let tempArr: any[] = Array.from(modelWins)
     tempArr[tempArr.length - 1].close()
   }
   let modelWin = new BrowserWindow({
-    width: 1024,
-    height: 700,
-    minWidth: 1024,
-    minHeight: 700,
-    title: 'Main window',
+    width,
+    height,
+    minWidth,
+    minHeight,
+    title,
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
@@ -319,19 +325,18 @@ function createModelWin(opt: OptType) {
     // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
     frame: false
   });
-
   modelWin.setMenu(null)
 
   if (process.env.VITE_DEV_SERVER_URL) {
 
-    modelWin.loadURL(`${urlPath}#/${opt.url}`)
+    modelWin.loadURL(`${urlPath}#/${urlName}`)
     modelWin.webContents.openDevTools()
   } else {
     modelWin.loadURL(url.format({
       pathname: indexHtml,
       protocol: 'file:',
       slashes: true,
-      hash: opt.url
+      hash: urlName
     }))
   }
 
