@@ -26,7 +26,8 @@
     - [Q1 vue3 reactive 对象数组重置，dom 不更新问题](#q1-vue3-reactive-对象数组重置dom-不更新问题)
     - [Q2: vue setup props 中 withDefaults 设置默认值的时候如果为复合对象类型，报错处理](#q2-vue-setup-props-中-withdefaults-设置默认值的时候如果为复合对象类型报错处理)
   - [TS 问题](#ts-问题)
-    - [Q1 ts 中引入 js 文件未找到，怎么解决](#q1-ts-中引入-js-文件未找到怎么解决)
+    - [Q1: ts 中引入 js 文件未找到，怎么解决](#q1-ts-中引入-js-文件未找到怎么解决)
+    - [Q2: tsconfig.json 文件报错 JSON schema for the TypeScript compiler‘s configuration file](#q2-tsconfigjson-文件报错-json-schema-for-the-typescript-compilers-configuration-file)
   - [报错处理](#报错处理)
     - [E1: 控制台： \[Violation\] Added non-passive event listener to a scroll-blocking 'mousewheel' event](#e1-控制台-violation-added-non-passive-event-listener-to-a-scroll-blocking-mousewheel-event)
 - [配置](#配置)
@@ -390,10 +391,22 @@ const props = withDefaults(defineProps<Props>(), {
 
 ### TS 问题
 
-#### Q1 ts 中引入 js 文件未找到，怎么解决
+#### Q1: ts 中引入 js 文件未找到，怎么解决
 
 - `const xx:any = require('package')` 当 js 来写，弹警告就屏蔽警告
 - 或者自己写声明文件 xxx.d.ts（仅限目标模块是自己写的情况，xxx 必须和目标文件同名）
+
+#### Q2: tsconfig.json 文件报错 JSON schema for the TypeScript compiler‘s configuration file
+
+> 在 tsconfig.json 文件的配置中添加配置保存以后问题就解决了
+
+```json
+"compilerOptions": {
+	"outDir":"./",
+}
+```
+
+[参考链接](https://blog.csdn.net/H1519223775/article/details/126846569)
 
 ### 报错处理
 
