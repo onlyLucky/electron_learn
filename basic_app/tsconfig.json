@@ -15,6 +15,7 @@
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
+      "P/*": ["./public/*"],
       "_c/*": ["./src/components/*"],
       "_v/*": ["./src/views/*"]
     },
