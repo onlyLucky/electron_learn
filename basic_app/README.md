@@ -28,6 +28,7 @@
   - [TS 问题](#ts-问题)
     - [Q1: ts 中引入 js 文件未找到，怎么解决](#q1-ts-中引入-js-文件未找到怎么解决)
     - [Q2: tsconfig.json 文件报错 JSON schema for the TypeScript compiler‘s configuration file](#q2-tsconfigjson-文件报错-json-schema-for-the-typescript-compilers-configuration-file)
+    - [Q3: ts 忽略报错](#q3-ts-忽略报错)
   - [报错处理](#报错处理)
     - [E1: 控制台： \[Violation\] Added non-passive event listener to a scroll-blocking 'mousewheel' event](#e1-控制台-violation-added-non-passive-event-listener-to-a-scroll-blocking-mousewheel-event)
 - [配置](#配置)
@@ -408,6 +409,17 @@ const props = withDefaults(defineProps<Props>(), {
 
 [参考链接](https://blog.csdn.net/H1519223775/article/details/126846569)
 
+#### Q3: ts 忽略报错
+
+在报错的代码上面添加下面的注释
+
+```ts
+// @ts-ignore
+title: i18n.global.t('login.name'),
+```
+
+这是我是再 main process 中配置国际化，遇到了一个报错`类型实例化过深，且可能无限。ts(2589)`,外部的对象无法处理,不影响代码运行
+
 ### 报错处理
 
 #### E1: [控制台： [Violation] Added non-passive event listener to a scroll-blocking 'mousewheel' event](https://blog.csdn.net/weixin_34403976/article/details/102900928)
@@ -571,6 +583,16 @@ export default defineConfig({
 [view-ui-plus](http://v4.iviewui.com/docs/guide/start)
 
 ### 国际化配置
+
+vue3 i18n 在 ts/js 文件中使用
+
+```ts
+// 这里在主程序中使用的话，需要在tsconfig.node.json 中 include 里面添加 './src/locale/index.ts' 去除路径报错
+import i18n from "../../src/locale/index"
+...
+// @ts-ignore
+title: i18n.global.t('login.name'),
+```
 
 [UI 框架国际化](https://www.iviewui.com/view-ui-plus/guide/i18n)
 
