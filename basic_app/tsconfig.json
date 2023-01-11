@@ -6,6 +6,7 @@
     "importHelpers": true,
     "jsx": "preserve",
     "jsxFactory": "h",
+    "allowJs": true, //编译时，允许有js文件
     "jsxFragmentFactory": "Fragment",
     "esModuleInterop": true,
     "resolveJsonModule": true,
@@ -24,6 +25,7 @@
   "include": [
     "src",
     "src/**/*.ts",
+    "src/**/*.js",
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",

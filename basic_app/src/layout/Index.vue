@@ -2,11 +2,12 @@
  * @Author: fg
  * @Date: 2022-12-14 14:05:24
  * @LastEditors: fg
- * @LastEditTime: 2022-12-27 17:25:13
+ * @LastEditTime: 2023-01-11 13:39:14
  * @Description: Index
 -->
 <template>
   <div class="_app">
+    <WaterMark :option="waterSetting"></WaterMark>
     <Header></Header>
     <div class="appContent f">
       <div class="menuBox">
@@ -27,6 +28,11 @@
 <script setup lang="ts">
 import Header from "./Header.vue";
 import Menu from "./Menu.vue";
+import WaterMark, { SettingType } from "@/commons/WaterMask/index.vue";
+const waterSetting = ref<SettingType>({
+  textArr: ["可立批"],
+  fillStyle: "rgba(0,0,0,.05)",
+});
 </script>
 <style scoped lang="less">
 .fade-enter-active,
