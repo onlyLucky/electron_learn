@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2022-12-15 17:46:02
+ * @LastEditTime: 2023-01-11 14:10:32
  * @Description: header
 -->
 <template>
@@ -10,7 +10,14 @@
     <div class="headerLeft">
       <HLogo></HLogo>
     </div>
-    <div class="headerRight">
+    <div class="headerRight f-row-e-c">
+      <Tooltip placement="bottom" content="设置">
+        <SvgIcon
+          iconName="icon-shezhi-xianxing"
+          className="setting"
+          color="var(--fontColor)"
+        ></SvgIcon>
+      </Tooltip>
       <SystemOpt></SystemOpt>
     </div>
   </div>
@@ -18,6 +25,8 @@
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import HLogo from "./comps/HLogo.vue";
+import SvgIcon from "@/commons/SvgIcon/index.vue";
+import { Tooltip } from "view-ui-plus";
 </script>
 <style scoped lang="less">
 .header {
@@ -33,5 +42,11 @@ import HLogo from "./comps/HLogo.vue";
   position: relative;
   justify-content: space-between;
   cursor: pointer;
+  .setting {
+    .size(20px,20px);
+    margin-right: 6px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+  }
 }
 </style>

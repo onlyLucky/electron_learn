@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 17:24:52
  * @LastEditors: fg
- * @LastEditTime: 2023-01-09 16:59:58
+ * @LastEditTime: 2023-01-11 14:13:45
  * @Description: content
  */
 import { ref } from "vue";
@@ -19,7 +19,7 @@ import icon_restore from "@/assets/icons/system/icon_sys_restore.png"; */
 
 interface Props {
   isShowChangeSize?: boolean;
-  isShowAllSize?: boolean;
+  isShowMinSize?: boolean;
   color?: string;
 }
 
@@ -42,8 +42,8 @@ const SystemOpt = (props: Props = { isShowChangeSize: true }) => {
   if (props.isShowChangeSize == undefined) {
     props.isShowChangeSize = true;
   }
-  if (props.isShowAllSize == undefined) {
-    props.isShowAllSize = true;
+  if (props.isShowMinSize == undefined) {
+    props.isShowMinSize = true;
   }
   if (props.color == undefined) {
     props.color = "var(--fontColor)";
@@ -51,11 +51,15 @@ const SystemOpt = (props: Props = { isShowChangeSize: true }) => {
   return (
     <div class={style.sOpt_Box}>
       <div class={style.sIconBox} onClick={onMinTap}>
-        <SvgIcon
-          style={{ width: "18px", height: "18px" }}
-          iconName="icon-2zuixiaohua-2"
-          color={props.color}
-        ></SvgIcon>
+        {props.isShowMinSize ? (
+          <SvgIcon
+            style={{ width: "18px", height: "18px" }}
+            iconName="icon-2zuixiaohua-2"
+            color={props.color}
+          ></SvgIcon>
+        ) : (
+          ""
+        )}
         {/* <img src={icon_min} alt="" /> */}
       </div>
       {props.isShowChangeSize ? (

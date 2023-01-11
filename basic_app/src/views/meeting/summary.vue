@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-01-10 15:53:44
+ * @LastEditTime: 2023-01-11 14:12:31
  * @Description: content
 -->
 <template>
@@ -12,7 +12,7 @@
       <SystemOpt
         :isShowChangeSize="false"
         color="var(--bg)"
-        :isShowAllSize="false"
+        :isShowMinSize="false"
       ></SystemOpt>
     </div>
     <div class="content">
