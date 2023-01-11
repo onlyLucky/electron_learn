@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 14:55:37
+ * @LastEditTime: 2023-01-11 17:19:48
  * @Description: header
 -->
 <template>
@@ -33,10 +33,12 @@ const settingTap = async () => {
   await ipcRenderer.invoke("open-win", {
     type: 0,
     urlName: "setting",
-    width: 600,
-    height: 700,
-    minWidth: 600,
-    minHeight: 700,
+    width: 800,
+    height: 600,
+    minWidth: 800,
+    minHeight: 600,
+    resizable: false,
+    title: "设置",
   });
 };
 </script>

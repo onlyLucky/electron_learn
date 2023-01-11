@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 14:25:54
+ * @LastEditTime: 2023-01-11 15:20:15
  * @Description: content
 -->
 <template>
@@ -118,7 +118,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Select, Option, Message } from "view-ui-plus";
+import { Message } from "view-ui-plus";
 import { getDeviceList } from "@/apis/meet";
 import { MListTable, SearchType, SizeType } from "./comps/mListTable/index";
 import MDetail from "./comps/mListDetail/index.vue";

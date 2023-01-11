@@ -15,6 +15,8 @@ process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_E
 import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, webFrame } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
+// 引入国际化
+import i18n from "../../src/locale/index"
 const url = require("url")
 const Config = require("../../src/config/index.json")
 // Disable GPU Acceleration for Windowsb 7
@@ -37,7 +39,13 @@ let win: BrowserWindow | null = null
 // 登录窗口
 let loginWin: BrowserWindow | null = null
 // 弹出层窗口
-let modelWins = new Set();
+type ModelItemType = {
+  type: 0 | 1 | 2 | 3,// 窗口类型 
+  path: string,
+  win: BrowserWindow,
+  id: number
+}
+let modelWins: Array<ModelItemType> = [];
 // 当前聚焦的窗口
 let focusWin: BrowserWindow | null = null
 // Here, you can also use other preload
@@ -51,7 +59,8 @@ function createWindow() {
     height: 700,
     minWidth: 1024,
     minHeight: 700,
-    title: 'Main window',
+    // @ts-ignore
+    title: i18n.global.t('appName'),
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
@@ -100,7 +109,8 @@ function createLoginWin() {
     width: 710,
     height: 426,
     resizable: false,
-    title: 'login',
+    // @ts-ignore
+    title: i18n.global.t('login.name'),
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
@@ -300,14 +310,25 @@ type OptType = {
   minWidth?: number,
   minHeight?: number,
   title?: string,
+  resizable?: boolean, //是否允许改变主窗口尺寸
 }
 function createModelWin(
-  { width = 1024, height = 700, minWidth = 1024, minHeight = 700, title = "Main window", urlName, type }: OptType
+  { width = 1024, height = 700, minWidth = 1024, minHeight = 700, title = "Main window", resizable = true, urlName, type }: OptType
 ) {
+  // 判断是否为同一个窗口
+  let tempItem: any = null
+  modelWins.map(item => {
+    if (urlName == item.path) {
+      tempItem = item
+    }
+  })
+  if (tempItem) {
+    tempItem.win.show();
+    return tempItem.win
+  }
   // 判断当前窗口配置
-  if (modelWins.size >= Config.modelConfig.length) {
-    let tempArr: any[] = Array.from(modelWins)
-    tempArr[tempArr.length - 1].close()
+  if (modelWins.length >= Config.modelConfig.length) {
+    modelWins[modelWins.length - 1].win.close()
   }
   let modelWin = new BrowserWindow({
     width,
@@ -315,6 +336,7 @@ function createModelWin(
     minWidth,
     minHeight,
     title,
+    resizable,
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
@@ -345,12 +367,22 @@ function createModelWin(
   });
 
   modelWin.on('close', () => {
-    modelWins.delete(modelWin); //从已关闭的窗口Set中移除引用
-    console.log(modelWins.size, 'modelWins-closed')
+    modelWins.map((item: ModelItemType, index: number) => {
+      if (item.id == modelWin.id) {
+        modelWins.splice(index, 1)
+      }
+    })
+    // modelWins.delete(modelWin);
+    console.log(modelWins.length, 'len modelWins-closed id', modelWin.id)
     modelWin = null;
   });
 
-  modelWins.add(modelWin); //将窗口添加到已打开时设置的窗口
-  console.log(modelWins.size, 'modelWins-add')
+  modelWins.push({
+    type,
+    path: urlName,
+    win: modelWin,
+    id: modelWin.id
+  }); //将窗口添加到已打开时设置的窗口
+  console.log(modelWins.length, 'len modelWins-add id', modelWin.id)
   return modelWin;
 }

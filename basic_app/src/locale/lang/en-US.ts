@@ -1,4 +1,5 @@
 export default {
+  appName: 'kelipi',
   home: 'Home',
   // 
   login: {

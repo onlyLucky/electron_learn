@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-09 16:14:09
+ * @LastEditTime: 2023-01-11 17:20:14
  * @Description: 会议列表数据表格组件
  */
 
@@ -311,7 +311,8 @@ const columns = reactive<any[]>([
                     // console.log(params.row);
                     const result = await ipcRenderer.invoke("open-win", {
                       type: 0,
-                      urlName: "models/meet/summary",
+                      urlName: "models/meet/summary?name=" + params.row.name,
+                      title: params.row.name,
                     });
                     console.log(result);
                   }, 300),

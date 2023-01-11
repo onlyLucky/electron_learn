@@ -1,4 +1,5 @@
 export default {
+  appName: '可立批',
   home: '首页',
   login: {
     name: '登录',
