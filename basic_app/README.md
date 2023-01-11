@@ -24,6 +24,7 @@
     - [Q10: iconfont 图标 symbol 引用方式，有的图标不能通过设置 color 样式来修改颜色的解决办法](#q10-iconfont-图标-symbol-引用方式有的图标不能通过设置-color-样式来修改颜色的解决办法)
   - [vue3 的问题](#vue3-的问题)
     - [Q1 vue3 reactive 对象数组重置，dom 不更新问题](#q1-vue3-reactive-对象数组重置dom-不更新问题)
+    - [Q2: vue setup props 中 withDefaults 设置默认值的时候如果为复合对象类型，报错处理](#q2-vue-setup-props-中-withdefaults-设置默认值的时候如果为复合对象类型报错处理)
   - [TS 问题](#ts-问题)
     - [Q1 ts 中引入 js 文件未找到，怎么解决](#q1-ts-中引入-js-文件未找到怎么解决)
   - [报错处理](#报错处理)
@@ -362,6 +363,29 @@ let temp = {
   deviceId: "",
 };
 Object.assign(searchForm, temp);
+```
+
+#### Q2: vue setup props 中 withDefaults 设置默认值的时候如果为复合对象类型，报错处理
+
+可以将属性对象赋值为一个函数，return 对象默认值
+
+```ts
+interface Props {
+  either: "必传且限定" | "其中一个" | "值"; // 利用TS：限定父组件传 either 的值
+  child: string | number;
+  sda?: string; // 未设置默认值，为 undefined
+  strData: string;
+  msg?: string;
+  labels?: string[];
+  obj?: { a: number };
+}
+const props = withDefaults(defineProps<Props>(), {
+  msg: "hello",
+  labels: () => ["one", "two"],
+  obj: () => {
+    return { a: 2 };
+  },
+});
 ```
 
 ### TS 问题
