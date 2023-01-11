@@ -43,6 +43,7 @@
   - [vite vue3 主题切换功能配置](#vite-vue3-主题切换功能配置)
   - [vue3 自定义指令尝试](#vue3-自定义指令尝试)
   - [Vue3 自动引入插件](#vue3-自动引入插件)
+  - [electron 底部工具栏预览窗口标题配置](#electron-底部工具栏预览窗口标题配置)
   - [electron 创建全局快捷键配置](#electron-创建全局快捷键配置)
   - [electron 调用打开第三方 exe 应用配置](#electron-调用打开第三方-exe-应用配置)
 - [技术点总结](#技术点总结)
@@ -698,15 +699,25 @@ export default defineConfig({
 
 配置完成之后使用 ref reactive watch 等 无须 import 导入 可以直接使用
 
+### electron 底部工具栏预览窗口标题配置
+
+在官方 API 文档中`BrowserWindow`,`new BrowserWindow([options])`options 的 title 说明中
+
+> title string(可选) - 默认窗口标题 默认为"Electron"。 如果由 loadURL()加载的 HTML 文件中含有标签`<title>`，此属性将被忽略。
+
+所以去除过 html 中的 title 标签，新建窗口对象中添加 title 的配置
+
+- [x] ~~TODO: 底部预览窗口标题国际化~~
+
 ### electron 创建全局快捷键配置
 
-**TODO: 配置补充**
+- [ ] TODO: 创建全局快捷键配置
 
 [vue+electron 快捷键设置](https://juejin.cn/post/7139137295214444551)
 
 ### electron 调用打开第三方 exe 应用配置
 
-**TODO: 配置补充**
+- [ ] TODO: 调用打开第三方 exe 应用配置
 
 ## 技术点总结
 
