@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 17:24:52
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 14:13:45
+ * @LastEditTime: 2023-01-12 16:05:11
  * @Description: content
  */
 import { ref } from "vue";
@@ -50,18 +50,19 @@ const SystemOpt = (props: Props = { isShowChangeSize: true }) => {
   }
   return (
     <div class={style.sOpt_Box}>
-      <div class={style.sIconBox} onClick={onMinTap}>
-        {props.isShowMinSize ? (
+      {props.isShowMinSize ? (
+        <div class={style.sIconBox} onClick={onMinTap}>
           <SvgIcon
             style={{ width: "18px", height: "18px" }}
             iconName="icon-2zuixiaohua-2"
             color={props.color}
           ></SvgIcon>
-        ) : (
-          ""
-        )}
-        {/* <img src={icon_min} alt="" /> */}
-      </div>
+          {/* <img src={icon_min} alt="" /> */}
+        </div>
+      ) : (
+        ""
+      )}
+
       {props.isShowChangeSize ? (
         smallSizeFlag.value ? (
           <div class={style.sIconBox} onClick={onMaxTap.bind(this, false)}>
