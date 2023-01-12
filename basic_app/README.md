@@ -810,3 +810,4 @@ Vue3 使用 h 函数 推荐使用函数式插槽，以便获得更佳的性能�
 [封装 flex 布局（Less）](https://blog.csdn.net/zxBlogs/article/details/125127322)
 [Lodash,个人感觉一个不错的前端库](https://www.lodashjs.com/)
 [处理多窗口](https://juejin.cn/post/6844903910436519949)
+[版本号管理](https://blog.csdn.net/twtsa/article/details/7858078)
