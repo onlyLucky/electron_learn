@@ -19,7 +19,7 @@ import { join } from 'path'
 const url = require("url")
 const Config = require(join(process.env.PUBLIC, 'config/index.json'))
 // 引入国际化
-const lang = require(join(process.env.PUBLIC, 'lang/' + Config.language.value + '.json'))
+const lang = require(join(process.env.PUBLIC, 'lang/' + Config.language.lang + '.json'))
 
 // Disable GPU Acceleration for Windowsb 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -330,7 +330,7 @@ function createModelWin(
     return tempItem.win
   }
   // 判断当前窗口配置
-  if (modelWins.length >= Config.modelConfig.length) {
+  if (modelWins.length >= Config.windows.winsNum) {
     modelWins[modelWins.length - 1].win.close()
   }
   let modelWin = new BrowserWindow({
