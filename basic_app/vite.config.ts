@@ -9,7 +9,7 @@ import pkg from './package.json'
 import autoprefixer from 'autoprefixer';
 import postCssPxToRem from 'postcss-pxtorem';
 const path = require('path')
-import Config from "./src/config/index"
+import Config from "./public/config/index.json"
 
 rmSync('dist-electron', { recursive: true, force: true })
 const sourcemap = !!process.env.VSCODE_DEBUG

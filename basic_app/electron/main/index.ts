@@ -15,10 +15,12 @@ process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_E
 import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, webFrame } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
-// 引入国际化
-import i18n from "../../src/locale/index"
+
 const url = require("url")
-const Config = require("../../src/config/index.json")
+const Config = require(join(process.env.PUBLIC, 'config/index.json'))
+// 引入国际化
+const lang = require(join(process.env.PUBLIC, 'lang/' + Config.language.value + '.json'))
+
 // Disable GPU Acceleration for Windowsb 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
@@ -59,8 +61,8 @@ function createWindow() {
     height: 700,
     minWidth: 1024,
     minHeight: 700,
-    // @ts-ignore
-    title: i18n.global.t('appName'),
+    // @ts-ignore i18n.global.t('appName')
+    title: lang.appName,
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
@@ -109,8 +111,8 @@ function createLoginWin() {
     width: 710,
     height: 426,
     resizable: false,
-    // @ts-ignore
-    title: i18n.global.t('login.name'),
+    // @ts-ignore i18n.global.t('login.name')
+    title: lang.login,
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
@@ -311,9 +313,10 @@ type OptType = {
   minHeight?: number,
   title?: string,
   resizable?: boolean, //是否允许改变主窗口尺寸
+  skipTaskbar?: boolean,//是否在任务栏中显示窗口
 }
 function createModelWin(
-  { width = 1024, height = 700, minWidth = 1024, minHeight = 700, title = "Main window", resizable = true, urlName, type }: OptType
+  { width = 1024, height = 700, minWidth = 1024, minHeight = 700, title = "Main window", resizable = true, skipTaskbar = false, urlName, type }: OptType
 ) {
   // 判断是否为同一个窗口
   let tempItem: any = null
@@ -337,6 +340,7 @@ function createModelWin(
     minHeight,
     title,
     resizable,
+    skipTaskbar,
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,

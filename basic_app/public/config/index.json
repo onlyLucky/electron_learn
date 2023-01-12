@@ -1,0 +1,20 @@
+{
+  "useI18n": false,
+  "baseUrl": "http://192.168.19.89:8888",
+  "modelConfig": {
+    "length": 3
+  },
+  "language": {
+    "description": "语言与文字",
+    "value": "zh-CN",
+    "isHasReset": false,
+    "isNeedReload": true,
+    "children": [
+      {
+        "description": "切换语言",
+        "type": "Select",
+        "props": {}
+      }
+    ]
+  }
+}

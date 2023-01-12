@@ -1,7 +1,0 @@
-{
-  "useI18n": false,
-  "baseUrl": "http://192.168.19.89:8888",
-  "modelConfig": {
-    "length": 3
-  }
-}

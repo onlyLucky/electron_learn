@@ -1,7 +1,7 @@
 export default {
   appName: 'kelipi',
   home: 'Home',
-  // 
+  setting: 'Setting',
   login: {
     name: 'Login',
     username_t: 'Username',

@@ -13,6 +13,8 @@
     "sourceMap": true,
     "baseUrl": "./",
     "strict": true,
+    "declaration": true,
+    "declarationDir": "./types",
     "paths": {
       "@/*": ["./src/*"],
       "P/*": ["./public/*"],
@@ -24,12 +26,14 @@
     "skipLibCheck": true
   },
   "include": [
+    "types/*.d.ts",
     "src/**/*.ts",
     "src/**/*.js",
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "./src/env.d.ts"
+    "./src/env.d.ts",
+    "./public/config.json"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

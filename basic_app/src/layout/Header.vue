@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 17:19:48
+ * @LastEditTime: 2023-01-12 15:49:37
  * @Description: header
 -->
 <template>
@@ -28,6 +28,9 @@ import SystemOpt from "@/commons/system_opt/index";
 import HLogo from "./comps/HLogo.vue";
 import SvgIcon from "@/commons/SvgIcon/index.vue";
 import { ipcRenderer } from "electron";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const settingTap = async () => {
   await ipcRenderer.invoke("open-win", {
@@ -38,7 +41,7 @@ const settingTap = async () => {
     minWidth: 800,
     minHeight: 600,
     resizable: false,
-    title: "设置",
+    title: t("setting"),
   });
 };
 </script>

@@ -16,7 +16,7 @@ import './assets/iconfont/iconfont.js';
 import "@/styles/index"
 // 自定义指令引入
 import { vDebounce, vMove } from "./directive/index"
-import config from '@/config'
+import config from "P/config/index.json";
 import http from './libs/request'
 import { webFrame } from "electron"
 
