@@ -15,9 +15,10 @@ process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_E
 import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, webFrame } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
+const fs = require('fs')
 
 const url = require("url")
-const Config = require(join(process.env.PUBLIC, 'config/index.json'))
+let Config = require(join(process.env.PUBLIC, 'config/index.json'))
 // 引入国际化
 const lang = require(join(process.env.PUBLIC, 'lang/' + Config.language.lang + '.json'))
 
@@ -104,6 +105,19 @@ function createWindow() {
     focusWin = win
     win.hide();
   })
+}
+saveFile()
+function saveFile() {
+  fs.readFile(join(process.env.PUBLIC, 'config/index.json'), 'utf-8', function (err: any, data: any) {
+    if (err) {
+      console.log(err)// eslint-disable-line
+    } else {
+      console.log(JSON.parse(data).basic, 'basic----')// eslint-disable-line
+      Config.basic.name = "basic setting"
+      fs.writeFileSync(join(process.env.PUBLIC, 'config/index.json'), JSON.stringify(Config))
+    }
+  })
+  console.log('config/index.json')
 }
 
 function createLoginWin() {

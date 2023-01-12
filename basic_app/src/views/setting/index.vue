@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 15:15:17
+ * @LastEditTime: 2023-01-12 17:39:57
  * @Description: 设置
 -->
 <template>
@@ -22,6 +22,8 @@
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt";
+import hdObj from "./handleData";
+// console.log(hdObj.saveFile());
 </script>
 <style scoped lang="less">
 .setting {

@@ -1,6 +1,6 @@
 {
   "basic": {
-    "name": "basic",
+    "name": "basic setting",
     "description": "基础设置",
     "show": true,
     "children": []
