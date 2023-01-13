@@ -46,6 +46,7 @@
   - [electron 底部工具栏预览窗口标题配置](#electron-底部工具栏预览窗口标题配置)
   - [electron 创建全局快捷键配置](#electron-创建全局快捷键配置)
   - [electron 调用打开第三方 exe 应用配置](#electron-调用打开第三方-exe-应用配置)
+  - [全局配置 config.json 处理逻辑](#全局配置-configjson-处理逻辑)
 - [技术点总结](#技术点总结)
   - [T1: vue3 使用 render 函数 h](#t1-vue3-使用-render-函数-h)
 - [提交规范](#提交规范)
@@ -719,6 +720,34 @@ export default defineConfig({
 
 - [ ] TODO: 调用打开第三方 exe 应用配置
 
+### 全局配置 config.json 处理逻辑
+
+最初的尝试直接更改配置文件，应用会退出（项目中使用过这个文件配置代码）
+
+之后的想法是：
+
+- 本地读取 config.json 存储到应用的 localStorage 中
+- 更改 setting 的时候，创建 config.backup.json 文件
+- 应用进入之后再次修改 config.json 文件同步 localStorage
+
+最后是使用
+
+```ts
+import {
+  app,
+  BrowserWindow,
+  shell,
+  ipcMain,
+  Tray,
+  Menu,
+  nativeImage,
+  webFrame,
+} from "electron";
+const STORE_PATH = app.getPath("userData"); // 获取应用的用户目录 C:\Users\XXX\AppData\Roaming\basic-app
+```
+
+上面获取到数据路径添加 config.json 文件，读写文件中操作完全可以
+
 ## 技术点总结
 
 ### T1: vue3 使用 render 函数 h
@@ -811,3 +840,4 @@ Vue3 使用 h 函数 推荐使用函数式插槽，以便获得更佳的性能�
 [Lodash,个人感觉一个不错的前端库](https://www.lodashjs.com/)
 [处理多窗口](https://juejin.cn/post/6844903910436519949)
 [版本号管理](https://blog.csdn.net/twtsa/article/details/7858078)
+[下载器](https://www.cnblogs.com/JasonLong/p/13844056.html)
