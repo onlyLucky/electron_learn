@@ -29,6 +29,7 @@
     - [Q1: ts 中引入 js 文件未找到，怎么解决](#q1-ts-中引入-js-文件未找到怎么解决)
     - [Q2: tsconfig.json 文件报错 JSON schema for the TypeScript compiler‘s configuration file](#q2-tsconfigjson-文件报错-json-schema-for-the-typescript-compilers-configuration-file)
     - [Q3: ts 忽略报错](#q3-ts-忽略报错)
+    - [Q4: “元素隐式具有 “any“ 类型，因为类型为 “string“ 的表达式不能用于索引类型”（for in）](#q4-元素隐式具有-any-类型因为类型为-string-的表达式不能用于索引类型for-in)
   - [报错处理](#报错处理)
     - [E1: 控制台： \[Violation\] Added non-passive event listener to a scroll-blocking 'mousewheel' event](#e1-控制台-violation-added-non-passive-event-listener-to-a-scroll-blocking-mousewheel-event)
 - [配置](#配置)
@@ -421,6 +422,21 @@ title: i18n.global.t('login.name'),
 ```
 
 这是我是再 main process 中配置国际化，遇到了一个报错`类型实例化过深，且可能无限。ts(2589)`,外部的对象无法处理,不影响代码运行
+
+#### Q4: “元素隐式具有 “any“ 类型，因为类型为 “string“ 的表达式不能用于索引类型”（for in）
+
+```ts
+let key: keyof ConfigType;
+for (key in this.config) {
+  if (this.config.hasOwnProperty(key)) {
+    console.log(this.config[key], "this.config[key]");
+  }
+}
+```
+
+直接将 key 的类型 赋值为 keyof ConfigType
+
+[处理方式](https://blog.csdn.net/m0_47670683/article/details/124025972)
 
 ### 报错处理
 

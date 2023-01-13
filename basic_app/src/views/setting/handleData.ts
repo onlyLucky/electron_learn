@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-01-13 17:09:24
+ * @LastEditTime: 2023-01-13 17:41:37
  * @Description: 处理动态数据
  */
 
@@ -15,6 +15,7 @@ import { ipcRenderer } from 'electron'
 class HandleData {
   private config: ConfigType;
   readonly app_url: string;
+  public menu: any[] = [];
 
   constructor() {
     this.config = {} as ConfigType;
@@ -27,7 +28,14 @@ class HandleData {
   }
 
   readFile() {
+    this.menu = []
     this.config = JSON.parse(fs.readFileSync(join(this.app_url, '/config.json'), { encoding: 'utf8' }))
+    let key: keyof ConfigType
+    for (key in this.config) {
+      if (this.config.hasOwnProperty(key)) {
+        console.log(this.config[key], 'this.config[key]')
+      }
+    }
   }
 
   saveFile() {
