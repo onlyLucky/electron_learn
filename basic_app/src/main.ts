@@ -16,7 +16,6 @@ import './assets/iconfont/iconfont.js';
 import "@/styles/index"
 // 自定义指令引入
 import { vDebounce, vMove } from "./directive/index"
-import config from "P/config/index.json";
 import http from './libs/request'
 import { webFrame } from "electron"
 
@@ -32,7 +31,6 @@ app.use(i18n)
 }) */
 app.use(vDebounce).use(vMove)
 
-app.config.globalProperties.$config = config;
 app.config.globalProperties.$http = http
 
 app.component('SvgIcon', SvgIcon)

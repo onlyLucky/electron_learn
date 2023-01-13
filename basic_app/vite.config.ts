@@ -98,6 +98,7 @@ export default defineConfig({
       'P': path.resolve(__dirname, 'public'),
       '_c': path.resolve(__dirname, 'src/components'),
       '_v': path.resolve(__dirname, 'src/views'),
+
     },
   },
   server: {

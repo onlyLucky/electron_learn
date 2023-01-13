@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-01-07 17:29:06
+ * @LastEditTime: 2023-01-13 13:48:17
  * @Description: content
 -->
 <template>
@@ -104,9 +104,10 @@ onMounted(() => {
   }
 });
 
-const loginTo = () => {
+const loginTo = async () => {
   // localStorage.setItem("token", "test")
   // ipcRenderer.send("on_login", "test");
+
   if (userName.value == "" || password.value == "") {
     Message.error("请补全用户名或密码");
     return false;
@@ -127,9 +128,6 @@ const loginTo = () => {
       }
       localStorage.setItem("remember", JSON.stringify(tempRme));
       ipcRenderer.send("on_login");
-      /* , () => {
-        router.push({ name: "meeting" });
-      } */
     })
     .catch((err) => {});
 };

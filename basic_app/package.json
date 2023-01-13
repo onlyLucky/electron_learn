@@ -17,6 +17,8 @@
   },
   "build": {
     "appId": "com.basic.app",
+    "compression": "store",
+    "asar": false,
     "mac": {
       "target": [
         "dmg",

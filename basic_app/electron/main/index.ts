@@ -17,8 +17,17 @@ import { release } from 'os'
 import { join } from 'path'
 const fs = require('fs')
 
-const url = require("url")
 let Config = require(join(process.env.PUBLIC, 'config/index.json'))
+const STORE_PATH = app.getPath('userData') // 获取应用的用户目录 C:\Users\XXX\AppData\Roaming\basic-app
+
+if (!fs.existsSync(join(STORE_PATH, '/config.json'))) {
+  fs.writeFileSync(join(STORE_PATH, '/config.json'), JSON.stringify(Config))
+} else {
+  const data = JSON.parse(fs.readFileSync(join(STORE_PATH, '/config.json'), { encoding: "utf8" }))
+  Config = data
+}
+const url = require("url")
+
 // 引入国际化
 const lang = require(join(process.env.PUBLIC, 'lang/' + Config.language.lang + '.json'))
 
@@ -106,20 +115,6 @@ function createWindow() {
     win.hide();
   })
 }
-saveFile()
-function saveFile() {
-  fs.readFile(join(process.env.PUBLIC, 'config/index.json'), 'utf-8', function (err: any, data: any) {
-    if (err) {
-      console.log(err)// eslint-disable-line
-    } else {
-      console.log(JSON.parse(data).basic, 'basic----')// eslint-disable-line
-      Config.basic.name = "basic setting"
-      fs.writeFileSync(join(process.env.PUBLIC, 'config/index.json'), JSON.stringify(Config))
-    }
-  })
-  console.log('config/index.json')
-}
-
 function createLoginWin() {
   loginWin = new BrowserWindow({
     width: 710,
@@ -138,6 +133,7 @@ function createLoginWin() {
     frame: false
   })
   loginWin.setMenu(null)
+
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     loginWin.loadURL(urlPath)
     // Open devTool if the app is not packaged
@@ -156,6 +152,7 @@ function createLoginWin() {
 // 托盘对象
 let tray;
 app.whenReady().then(() => {
+
   // createWindow()
   createLoginWin()
   // 创建托盘
@@ -284,6 +281,15 @@ ipcMain.on('win_size', function (event, arg) {
   // console.log(url, arg)
   createLoginWin()
 })
+// 初始化传递app_url 语言
+ipcMain.on('get_app', function (event) {
+  BrowserWindow.getFocusedWindow().webContents.send('set_url', STORE_PATH, Config.language.lang)
+})
+ipcMain.on('set_config', function (event, config) {
+  // console.log(url, arg)
+  Config = config
+})
+
 
 
 // 监听图标闪动事件

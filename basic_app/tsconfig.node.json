@@ -12,6 +12,7 @@
     "package.json",
     "electron",
     "./src/locale/index.ts",
-    "./src/locale/lang/*.ts"
+    "./src/locale/lang/*.ts",
+    "./typings/*.d.ts"
   ]
 }
