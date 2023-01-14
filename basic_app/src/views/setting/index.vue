@@ -2,41 +2,160 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-01-13 14:13:23
+ * @LastEditTime: 2023-01-14 15:36:35
  * @Description: 设置
 -->
 <template>
   <div class="setting">
     <div class="header f-row-b-c">
       <h1>设置</h1>
-      <SystemOpt
-        :isShowChangeSize="false"
-        color="var(--bg)"
-        :isShowMinSize="false"
-      ></SystemOpt>
+      <SystemOpt :isShowChangeSize="false" color="var(--fontColor)"></SystemOpt>
     </div>
     <div class="content">
-      <div class="search"></div>
+      <div class="search f-row-e-c">
+        <Select
+          class="searchBox"
+          filterable
+          placeholder="搜索设置项"
+          v-model="searchConfig"
+        >
+          <Option
+            v-for="(item, index) in searchData"
+            :value="item.name"
+            :key="index"
+            >{{ item.description }}</Option
+          >
+        </Select>
+      </div>
+      <div class="conBox">
+        <div class="leftCon">
+          <div
+            @click="menuTap(index, item)"
+            @mouseenter="menuMouseEnter(index, item)"
+            @mouseleave="menuMouseLeave(index, item)"
+            v-for="(item, index) in menuData"
+            :class="{
+              menuItem: true,
+              menuItemHover: item.hover,
+              menuItemSelected: item.select,
+            }"
+            :key="index"
+          >
+            {{ item.description }}
+          </div>
+        </div>
+        <div class="rightCon">
+          <div class="menuCom" id="menu1">
+            <h3>常规配置</h3>
+            <div class="menuComChild">
+              <h4>字体设置</h4>
+              <div class="settingCon"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt";
 import hdObj from "./handleData";
-console.log(hdObj.saveFile());
+const menuData = reactive(hdObj.menu);
+const searchData = reactive(hdObj.mList);
+let searchConfig = ref<string>("");
+onMounted(async () => {
+  await nextTick();
+  console.log(document.getElementsByClassName("menuItem")[1], "getElementById");
+});
+const menuTap = (index: number, item: any) => {
+  menuData.map((item) => {
+    item.hover = false;
+    item.select = false;
+  });
+  menuData[index].select = true;
+  document.getElementsByClassName("menuCom")[index]!.scrollIntoView({
+    behavior: "smooth",
+  });
+};
+const menuMouseEnter = (index: number, item: any) => {
+  if (!item.select) {
+    menuData[index].hover = true;
+  }
+};
+const menuMouseLeave = (index: number, item: any) => {
+  if (!item.select) {
+    menuData[index].hover = false;
+  }
+};
 </script>
 <style scoped lang="less">
+:deep(.ivu-select-selection) {
+  border-radius: 20px;
+}
 .setting {
   .size(100vw,100vh);
   .header {
     .size(100%,48px);
     padding: 0 8px 0 16px;
     box-sizing: border-box;
-    background-color: @f_color_active;
+    // background-color: @f_color_active;
     -webkit-app-region: drag;
     h1 {
       font-size: 16px;
-      color: @bg;
+      font-weight: 400;
+      color: @fontColor;
+    }
+  }
+  .content {
+    width: 100%;
+    height: calc(100% - 48px);
+    padding-right: 4px;
+    box-sizing: border-box;
+    .search {
+      .size(100%,50px);
+      padding: 0 20px;
+      box-sizing: border-box;
+      .searchBox {
+        width: 240px;
+      }
+    }
+    .conBox {
+      width: 100%;
+      height: calc(100% - 50px);
+      display: flex;
+      .leftCon {
+        .size(200px, 100%);
+        padding: 0 20px;
+        border-right: 1px solid @search_bottom_border;
+        box-sizing: border-box;
+        .menuItem {
+          .size(100%, 34px);
+          .textCenter(34px);
+          margin-bottom: 10px;
+          border-radius: 4px;
+          font-size: 14px;
+          color: @f_color_h3;
+          cursor: pointer;
+          &:last-child {
+            margin-bottom: 0px;
+          }
+        }
+        .menuItem.menuItemHover {
+          color: @f_color_active;
+        }
+        .menuItem.menuItemSelected {
+          color: @bg;
+          background-color: @f_color_active;
+        }
+      }
+      .rightCon {
+        width: calc(100% - 200px);
+        height: 100%;
+        overflow: auto;
+        .menuCom {
+          .size(100%, 440px);
+        }
+      }
     }
   }
 }

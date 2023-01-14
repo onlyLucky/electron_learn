@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-01-13 17:41:37
+ * @LastEditTime: 2023-01-14 15:54:27
  * @Description: 处理动态数据
  */
 
@@ -16,6 +16,7 @@ class HandleData {
   private config: ConfigType;
   readonly app_url: string;
   public menu: any[] = [];
+  public mList: any[] = [];
 
   constructor() {
     this.config = {} as ConfigType;
@@ -33,14 +34,27 @@ class HandleData {
     let key: keyof ConfigType
     for (key in this.config) {
       if (this.config.hasOwnProperty(key)) {
-        console.log(this.config[key], 'this.config[key]')
+        if (this.config[key].show) {
+          let temp = JSON.parse(JSON.stringify(this.config[key]))
+          temp.select = false
+          temp.hover = false
+          this.menu.push(temp)
+        }
       }
     }
+    this.menu[0].select = true;
+    this.mList = this.toLine(this.menu)
+    console.log(this.mList, 'menu')
+  }
+  // 树状数据扁平化
+  toLine(data: any[]): any[] {
+    return data.reduce((arr, { name, description, children = [] }) => arr.concat([{ name, description }], this.toLine(children)), [])
   }
 
   saveFile() {
     console.log(this.config, 'config')
-    this.config.language.lang = 'en-US'
+    // zh-CN en-US
+    this.config.language.lang = 'zh-CN'
     fs.writeFileSync(join(this.app_url, '/config.json'), JSON.stringify(this.config))
     ipcRenderer.send('set_config', this.config)
     /* fs.readFile(join(localStorage.getIt), 'utf-8', function (err: any, data: any) {
