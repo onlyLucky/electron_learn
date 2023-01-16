@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-01-14 15:36:35
+ * @LastEditTime: 2023-01-16 10:02:37
  * @Description: 设置
 -->
 <template>
@@ -49,7 +49,7 @@
             <h3>常规配置</h3>
             <div class="menuComChild">
               <h4>字体设置</h4>
-              <div class="settingCon"></div>
+              <div class="settingCon">hello world</div>
             </div>
           </div>
         </div>
@@ -151,9 +151,30 @@ const menuMouseLeave = (index: number, item: any) => {
       .rightCon {
         width: calc(100% - 200px);
         height: 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
         overflow: auto;
         .menuCom {
-          .size(100%, 440px);
+          .size(100%, auto);
+          h3 {
+            height: 24px;
+            line-height: 24px;
+            font-size: 18px;
+            color: @f_color_h3;
+            margin-bottom: 14px;
+          }
+          .menuComChild {
+            h4 {
+              font-size: 14px;
+              color: #666;
+              font-weight: 400;
+              margin-bottom: 4px;
+            }
+            .settingCon {
+              font-size: 14px;
+              color: #333;
+            }
+          }
         }
       }
     }
