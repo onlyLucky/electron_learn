@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-27 10:19:32
  * @LastEditors: fg
- * @LastEditTime: 2022-12-27 16:24:58
+ * @LastEditTime: 2023-01-16 17:40:40
  * @Description: 登录api 
  */
 import http from "@/libs/request"
@@ -21,6 +21,7 @@ const path = {
 type loginType = {
   token: string
 }
-export const goLogin = (params: object) => {
+// : Promise<ResultData<loginType>>
+export const goLogin = (params: object): Promise<ResultData<loginType>> => {
   return http.post<loginType>(path.login, params)
 }

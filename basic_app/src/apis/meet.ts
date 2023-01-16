@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-28 13:44:32
  * @LastEditors: fg
- * @LastEditTime: 2023-01-04 16:24:23
+ * @LastEditTime: 2023-01-16 17:50:59
  * @Description: 会议api
  */
 
@@ -20,23 +20,25 @@ const path = {
   getMeetingById: '/meet/getMeetingById',
   deleteByIds: '/meet/deleteByIds',
   putMeet: '/meet',
+  getListByMeetId: '/meetText/getListByMeetId'
 }
 
-export const getDeviceList = (params?: object) => {
+export const getDeviceList: any = (params?: object) => {
   return http.get<any[]>(path.deviceList, params)
 }
 
 type meetingByIdRD = {
   records: any[];
   total: number;
+  [propsName: string]: any
 }
 
-export const getMeetingById = (params?: object) => {
+export const getMeetingById = (params?: object): Promise<ResultData<meetingByIdRD>> => {
   return http.get<meetingByIdRD>(path.getMeetingById, params)
 }
 
-export const deleteByIds = (params?: { ids: string }) => {
-  return http.delete(path.deleteByIds, params)
+export const deleteByIds = (params?: { ids: string }): Promise<ResultData<any>> => {
+  return http.delete<any>(path.deleteByIds, params)
 }
 // 
 type putMeetPT = {
@@ -44,6 +46,10 @@ type putMeetPT = {
   secrecy?: number,//会议保密
   meetShare?: number,//会议分享
 }
-export const reviseMeetDetail = (params: putMeetPT) => {
+export const reviseMeetDetail = (params: putMeetPT): Promise<ResultData<any>> => {
   return http.put(path.putMeet, params)
+}
+
+export const getListByMeetId = (params: any): Promise<ResultData<any>> => {
+  return http.get(path.getListByMeetId, params)
 }
