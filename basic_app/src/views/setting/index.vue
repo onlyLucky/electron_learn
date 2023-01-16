@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-01-16 10:02:37
+ * @LastEditTime: 2023-01-16 15:29:33
  * @Description: 设置
 -->
 <template>
@@ -45,11 +45,22 @@
           </div>
         </div>
         <div class="rightCon">
-          <div class="menuCom" id="menu1">
-            <h3>常规配置</h3>
-            <div class="menuComChild">
-              <h4>字体设置</h4>
-              <div class="settingCon">hello world</div>
+          <div
+            class="menuCom"
+            v-for="(menu, menuIndex) in menuData"
+            :key="menuIndex"
+            :id="menu.name"
+          >
+            <h3>{{ menu.description }}</h3>
+            <div
+              class="menuComChild"
+              v-for="(item, index) in menu.children"
+              :key="menuIndex + '' + index"
+            >
+              <h4>{{ item.description }}</h4>
+              <div class="settingCon">
+                <SettingComps :data="item"></SettingComps>
+              </div>
             </div>
           </div>
         </div>
@@ -59,6 +70,7 @@
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt";
+import SettingComps from "./comps/index.vue";
 import hdObj from "./handleData";
 const menuData = reactive(hdObj.menu);
 const searchData = reactive(hdObj.mList);
@@ -89,7 +101,7 @@ const menuMouseLeave = (index: number, item: any) => {
 };
 </script>
 <style scoped lang="less">
-:deep(.ivu-select-selection) {
+:deep(.searchBox .ivu-select-selection) {
   border-radius: 20px;
 }
 .setting {
@@ -156,6 +168,7 @@ const menuMouseLeave = (index: number, item: any) => {
         overflow: auto;
         .menuCom {
           .size(100%, auto);
+          margin-bottom: 30px;
           h3 {
             height: 24px;
             line-height: 24px;
@@ -164,15 +177,17 @@ const menuMouseLeave = (index: number, item: any) => {
             margin-bottom: 14px;
           }
           .menuComChild {
+            .size(100%, auto);
+            padding: 10px 0;
             h4 {
               font-size: 14px;
-              color: #666;
-              font-weight: 400;
-              margin-bottom: 4px;
+              color: #333;
+              margin-bottom: 8px;
             }
             .settingCon {
               font-size: 14px;
-              color: #333;
+              color: #999;
+              touch-action: none;
             }
           }
         }

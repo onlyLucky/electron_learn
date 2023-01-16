@@ -50,6 +50,7 @@
   - [全局配置 config.json 处理逻辑](#全局配置-configjson-处理逻辑)
 - [技术点总结](#技术点总结)
   - [T1: vue3 使用 render 函数 h](#t1-vue3-使用-render-函数-h)
+  - [T2: Javascript Object 和 Map 之间的转换](#t2-javascript-object-和-map-之间的转换)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -832,6 +833,11 @@ Vue3 使用 h 函数 推荐使用函数式插槽，以便获得更佳的性能�
   return h(xxx, { xxx }, { default: () => xxx });
 - 第二种：多个插槽
   return h( xxx, { xxx }, { default: () => [xxx, xxx], });
+
+### T2: Javascript Object 和 Map 之间的转换
+
+TODO:
+[Javascript Object 和 Map 之间的转换](https://blog.csdn.net/weixin_46112649/article/details/126038160)
 
 ## 提交规范
 

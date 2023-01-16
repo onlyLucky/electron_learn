@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-01-14 15:54:27
+ * @LastEditTime: 2023-01-16 14:22:41
  * @Description: 处理动态数据
  */
 
@@ -44,7 +44,7 @@ class HandleData {
     }
     this.menu[0].select = true;
     this.mList = this.toLine(this.menu)
-    console.log(this.mList, 'menu')
+    console.log(this.config, 'menu')
   }
   // 树状数据扁平化
   toLine(data: any[]): any[] {
