@@ -32,6 +32,8 @@
     - [Q4: “元素隐式具有 “any“ 类型，因为类型为 “string“ 的表达式不能用于索引类型”（for in）](#q4-元素隐式具有-any-类型因为类型为-string-的表达式不能用于索引类型for-in)
   - [报错处理](#报错处理)
     - [E1: 控制台： \[Violation\] Added non-passive event listener to a scroll-blocking 'mousewheel' event](#e1-控制台-violation-added-non-passive-event-listener-to-a-scroll-blocking-mousewheel-event)
+  - [view-ui-plus 框架在 electron 问题](#view-ui-plus-框架在-electron-问题)
+    - [V1: (ERROR:CONSOLE(1)\] "Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}", source: devtools://devtools/bundled/core/protocol\_client/protocol\_client.js (1)) 报错处理：](#v1-errorconsole1-request-storagegetstoragekeyforframe-failed-code-32602messageframe-tree-node-for-given-frame-not-found-source-devtoolsdevtoolsbundledcoreprotocol_clientprotocol_clientjs-1-报错处理)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -453,6 +455,18 @@ Chrome51 版本以后，Chrome 增加了新的事件捕获机制－Passive Event
 ```ts
 import "default-passive-events";
 ```
+
+### view-ui-plus 框架在 electron 问题
+
+UI 框架使用的部分功能在 electron 中，会有额外的问题
+
+#### V1: (ERROR:CONSOLE(1)] "Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)) 报错处理：
+
+问题追溯：这里我发现报错的内容是在项目详情点击展开的部分，固定功能，锁定报错部分，发现是 view-ui-plus 中的 Text 组件的问题，
+
+- 最初是以为是 Text 引入组件与 html 中的 text 原生标签有冲突，更改了引入标签名称，但是没有效果
+- 后面发现会议纪要中也有一样的组件使用，但是没有报错，但是两者的属性配置都是一样的。
+- 最后发现上面有一个 class 属性，注释过后报错停止。试着将 class 属性名称设置为 className,报错停止。
 
 ## 配置
 
