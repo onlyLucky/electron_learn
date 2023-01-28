@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-28 13:44:32
  * @LastEditors: fg
- * @LastEditTime: 2023-01-16 17:50:59
+ * @LastEditTime: 2023-01-28 09:28:40
  * @Description: 会议api
  */
 
@@ -11,7 +11,6 @@
 后缀缩写说明：
 PT paramsType 接口请求参数类型 
 RD res.data 返回res.data类型
-
 */
 import http from "@/libs/request"
 

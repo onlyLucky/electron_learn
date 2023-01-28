@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-06 19:33:19
+ * @LastEditTime: 2023-01-28 10:27:57
  * @Description: 会议详情
 -->
 <template>
@@ -20,7 +20,7 @@
               <div class="mainInfo">
                 <div class="mainTitle f-row-b-c">
                   <Text
-                    class="meetName"
+                    className="meetName"
                     :ellipsis-config="{ tooltip: true }"
                     ellipsis
                     placement="bottom-start"
@@ -35,29 +35,23 @@
                         color="var(--fontColor)"
                       ></svg-icon>
                     </Tooltip>
-                    <Tooltip placement="bottom-end" content="删除会议">
-                      <svg-icon
-                        className="mInfoIcon"
-                        iconName="icon-shanchu1"
-                        color="var(--fontColor)"
-                      ></svg-icon>
-                    </Tooltip>
                   </div>
                 </div>
                 <Text
-                  class="meetEq"
+                  className="meetEq"
                   :ellipsis-config="{ tooltip: true }"
                   ellipsis
                   placement="bottom-start"
                 >
-                  创建于 <span>xxxxxxxxxxxxxxxxxxxxxxxxxx设备</span>
+                  创建于
+                  <span @click="goEquip">xxxxxxxxxxxxxxxxxxxxxxxxxx设备</span>
                 </Text>
               </div>
               <div class="otherInfo">
                 <div class="itemOInfo">
                   <h3>创建人</h3>
                   <Text
-                    class="itemValue"
+                    className="itemValue"
                     :ellipsis-config="{ tooltip: true }"
                     ellipsis
                     placement="bottom-start"
@@ -68,7 +62,7 @@
                 <div class="itemOInfo">
                   <h3>会议时间</h3>
                   <Text
-                    class="itemValue"
+                    className="itemValue"
                     :ellipsis-config="{ tooltip: true }"
                     ellipsis
                     placement="bottom-start"
@@ -88,6 +82,9 @@
   </teleport>
 </template>
 <script lang="ts" setup>
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 withDefaults(
   defineProps<{
     modelValue: boolean;
@@ -103,6 +100,9 @@ let emit = defineEmits<{
 }>();
 const onClose = () => {
   emit("update:modelValue", false);
+};
+const goEquip = () => {
+  router.push({ name: "equipment", params: { username: "post" } });
 };
 </script>
 <style lang="less" scoped>
@@ -166,14 +166,15 @@ const onClose = () => {
         .mainTitle {
           .size(100%,30px);
           .meetName {
-            width: calc(100% - 56px);
+            width: calc(100% - 30px);
             height: 100%;
             line-height: 30px;
             font-size: 16px;
             font-weight: 600;
           }
           .meetOptBox {
-            .size(56px,100%);
+            .size(30px,100%);
+            background: pink;
             .mInfoIcon {
               .size(18px,18px);
               margin-left: 8px;
@@ -185,7 +186,7 @@ const onClose = () => {
         .meetEq {
           .size(100%,20px);
           line-height: 20px;
-          font-size: 12px;
+          font-size: 14px;
           color: @f_color_h3;
           span {
             color: @f_color_active;
@@ -208,7 +209,8 @@ const onClose = () => {
           }
           .itemValue {
             .size(100%, 20px);
-            font-size: 12px;
+            font-size: 14px;
+            color: @fontColor;
           }
         }
       }

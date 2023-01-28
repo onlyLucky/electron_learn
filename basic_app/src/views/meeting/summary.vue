@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 14:12:31
+ * @LastEditTime: 2023-01-28 10:29:06
  * @Description: content
 -->
 <template>
@@ -19,7 +19,7 @@
       <div class="conHeader f-row-b-c">
         <div class="cHLeft">
           <Text
-            class="meetName"
+            className="meetName"
             :ellipsis-config="{ tooltip: true }"
             ellipsis
             placement="bottom-start"
