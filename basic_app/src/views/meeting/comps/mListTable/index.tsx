@@ -2,11 +2,11 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 17:20:14
+ * @LastEditTime: 2023-01-28 15:24:57
  * @Description: 会议列表数据表格组件
  */
 
-import { Table, Message } from "view-ui-plus";
+import { Table, Message, Spin, Icon } from "view-ui-plus";
 import { PropType } from "vue";
 import { getMeetingById, deleteByIds, reviseMeetDetail } from "@/apis/meet";
 import style from "./style.module.less";
@@ -484,7 +484,30 @@ export const MListTable = defineComponent({
         loading={loading.value}
         columns={columns}
         onOnCellClick={tabCellTap}
-      ></Table>
+      >
+        {{
+          loading: () => (
+            <Spin
+              fix
+              size="large"
+              style={{
+                width: "120px",
+                height: "120px",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <Icon
+                type="ios-loading"
+                size={22}
+                class={style.spinLoading}
+              ></Icon>
+              <div style={{ marginTop: "10px", fontSize: "14px" }}>
+                加载中...
+              </div>
+            </Spin>
+          ),
+        }}
+      </Table>
     );
   },
   unmounted() {},

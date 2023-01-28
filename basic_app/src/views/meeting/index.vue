@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-14 15:28:27
+ * @LastEditTime: 2023-01-28 14:45:59
  * @Description: content
 -->
 <template>
@@ -114,7 +114,7 @@
       </Row>
     </div>
     <!-- 详情 -->
-    <MDetail v-model="isShowDetail" :mask="false"></MDetail>
+    <MDetail v-model="isShowDetail" :mId="refMeetId" :mask="false"></MDetail>
   </div>
 </template>
 <script setup lang="ts">
@@ -127,6 +127,7 @@ import _ from "lodash";
 const refTHeader = ref<HTMLElement>();
 const refTable = ref<HTMLElement>();
 const refMeet = ref<HTMLElement>();
+
 let refMeetHeight = ref<number>(0);
 let refHeaderHeight = ref<number>(0);
 let refTableSize = reactive<SizeType>({
@@ -212,7 +213,9 @@ const delChange = () => {
 
 // 详情功能
 let isShowDetail = ref<boolean>(false);
-const handleDetail = () => {
+let refMeetId = ref<number | null>(null);
+const handleDetail = (row: any) => {
+  refMeetId.value = row.id;
   if (!isShowDetail.value) {
     isShowDetail.value = true;
   }

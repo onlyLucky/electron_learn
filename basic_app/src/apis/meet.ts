@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-28 13:44:32
  * @LastEditors: fg
- * @LastEditTime: 2023-01-28 09:28:40
+ * @LastEditTime: 2023-01-28 14:24:50
  * @Description: 会议api
  */
 
@@ -22,7 +22,7 @@ const path = {
   getListByMeetId: '/meetText/getListByMeetId'
 }
 
-export const getDeviceList: any = (params?: object) => {
+export const getDeviceList = (params?: object): Promise<ResultData<any>> => {
   return http.get<any[]>(path.deviceList, params)
 }
 
@@ -47,6 +47,10 @@ type putMeetPT = {
 }
 export const reviseMeetDetail = (params: putMeetPT): Promise<ResultData<any>> => {
   return http.put(path.putMeet, params)
+}
+// putMeet
+export const getMeetDetailById = (id: number): Promise<ResultData<any>> => {
+  return http.get(`${path.putMeet}/${id}`)
 }
 
 export const getListByMeetId = (params: any): Promise<ResultData<any>> => {
