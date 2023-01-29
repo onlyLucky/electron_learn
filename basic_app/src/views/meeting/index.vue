@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-29 17:30:09
+ * @LastEditTime: 2023-01-29 17:34:38
  * @Description: content
 -->
 <template>
@@ -233,6 +233,7 @@ const handleDetail = (row: any) => {
     isShowDetail.value = true;
   }
 };
+// 更新表格
 const onUploadTable = () => {
   mtable.value?.getTableData(searchForm);
 };

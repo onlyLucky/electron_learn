@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-29 17:29:27
+ * @LastEditTime: 2023-01-29 19:23:27
  * @Description: 会议详情
 -->
 <template>
@@ -19,14 +19,22 @@
             <div class="meetInfo">
               <div class="mainInfo">
                 <div class="mainTitle f-row-b-c">
-                  <Text
-                    className="meetName"
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                  >
-                    {{ detail.name }}
-                  </Text>
+                  <Skeleton :loading="loading" animated>
+                    <template #template>
+                      <SkeletonItem block width="300px" height="22px" />
+                    </template>
+                    <template #default>
+                      <Text
+                        className="meetName"
+                        :ellipsis-config="{ tooltip: true }"
+                        ellipsis
+                        placement="bottom-start"
+                      >
+                        {{ detail.name }}
+                      </Text>
+                    </template>
+                  </Skeleton>
+
                   <div class="meetOptBox f-row-b-c">
                     <Tooltip placement="bottom-end" content="编辑">
                       <svg-icon
@@ -43,89 +51,128 @@
                   ellipsis
                   placement="bottom-start"
                 >
-                  创建人：
-                  {{ detail.createUserName ? detail.createUserName : "无" }}
+                  <div class="f">
+                    <div style="flex-shrink: 0">创建人：</div>
+                    <Skeleton :loading="loading" animated>
+                      <template #template>
+                        <SkeletonItem block width="50px" height="22px" />
+                      </template>
+                      <template #default>
+                        {{
+                          detail.createUserName ? detail.createUserName : "无"
+                        }}
+                      </template>
+                    </Skeleton>
+                  </div>
                 </Text>
               </div>
               <div class="otherInfo">
                 <div class="itemOInfo">
                   <h3>设备名称</h3>
-                  <Text
-                    className="itemValue jumpTxt"
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                    @click="goEquip"
-                  >
-                    {{ deviceName ? deviceName : "无" }}
-                  </Text>
+                  <Skeleton :loading="loading" animated>
+                    <template #template>
+                      <SkeletonItem block width="50%" height="22px" />
+                    </template>
+                    <template #default>
+                      <Text
+                        className="itemValue jumpTxt"
+                        :ellipsis-config="{ tooltip: true }"
+                        ellipsis
+                        placement="bottom-start"
+                        @click="goEquip"
+                      >
+                        {{ deviceName ? deviceName : "无" }}
+                      </Text>
+                    </template>
+                  </Skeleton>
                 </div>
                 <div class="itemOInfo">
                   <h3>会议时间</h3>
-                  <Text
-                    className="itemValue"
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                  >
-                    {{ meetTimeStr }}
-                  </Text>
+                  <Skeleton :loading="loading" animated>
+                    <template #template>
+                      <SkeletonItem block width="50%" height="22px" />
+                    </template>
+                    <template #default>
+                      <Text
+                        className="itemValue"
+                        :ellipsis-config="{ tooltip: true }"
+                        ellipsis
+                        placement="bottom-start"
+                      >
+                        {{ meetTimeStr }}
+                      </Text>
+                    </template>
+                  </Skeleton>
                 </div>
               </div>
             </div>
             <div class="switchInfo partInfo">
               <div class="switchItem partInfoItem f-row-b-c">
                 <h3>会议保密</h3>
-                <Switch
-                  :model-value="detail.secrecy"
-                  size="large"
-                  :true-value="1"
-                  :false-value="0"
-                  :loading="isSecrecyLoading"
-                  @on-change="switchChange"
-                  :before-change="
-                    () => {
-                      return useSecrecy({
-                        id: mId,
-                        secrecy: detail.secrecy ? 0 : 1,
-                      });
-                    }
-                  "
-                >
-                  <template #open>
-                    <span>保密</span>
+                <Skeleton :loading="loading" animated>
+                  <template #template>
+                    <SkeletonItem block width="60px" height="22px" />
                   </template>
-                  <template #close>
-                    <span>公开</span>
+                  <template #default>
+                    <Switch
+                      :model-value="detail.secrecy"
+                      size="large"
+                      :true-value="1"
+                      :false-value="0"
+                      :loading="isSecrecyLoading"
+                      @on-change="switchChange"
+                      :before-change="
+                        () => {
+                          return useSecrecy({
+                            id: mId,
+                            secrecy: detail.secrecy ? 0 : 1,
+                          });
+                        }
+                      "
+                    >
+                      <template #open>
+                        <span>保密</span>
+                      </template>
+                      <template #close>
+                        <span>公开</span>
+                      </template>
+                    </Switch>
                   </template>
-                </Switch>
+                </Skeleton>
               </div>
               <div class="switchItem partInfoItem f-row-b-c">
                 <h3>会议分享</h3>
 
-                <Switch
-                  :model-value="detail.meetShare"
-                  size="large"
-                  :true-value="0"
-                  :false-value="1"
-                  :loading="isShareLoading"
-                  @on-change="switchChange"
-                  :before-change="
-                    () => {
-                      return useShare({
-                        id: mId,
-                        meetShare: detail.meetShare ? 0 : 1,
-                      });
-                    }
-                  "
-                >
-                  <template #open>
-                    <span>允许</span>
+                <Skeleton :loading="loading" animated>
+                  <template #template>
+                    <SkeletonItem block width="60px" height="22px" />
                   </template>
-                  <template #close>
-                    <span>禁止</span>
+                  <template #default>
+                    <Switch
+                      :model-value="detail.meetShare"
+                      size="large"
+                      :true-value="0"
+                      :false-value="1"
+                      :loading="isShareLoading"
+                      @on-change="switchChange"
+                      :before-change="
+                        () => {
+                          return useShare({
+                            id: mId,
+                            meetShare: detail.meetShare ? 0 : 1,
+                          });
+                        }
+                      "
+                    >
+                      <template #open>
+                        <span>允许</span>
+                      </template>
+                      <template #close>
+                        <span>禁止</span>
+                      </template>
+                    </Switch>
                   </template>
-                </Switch>
+                </Skeleton>
               </div>
             </div>
             <div class="linkInfo partInfo">
@@ -150,28 +197,51 @@
                 </h3>
                 <Icon class="iconUseSearch" type="ios-search" size="20" />
               </div>
-              <div class="useCon">
-                <div class="useList" v-if="userList.length > 0">
-                  <Space wrap :size="[8, 16]">
+
+              <Skeleton :loading="loading" animated>
+                <template #template>
+                  <Space wrap :size="[8, 16]" style="padding-bottom: 10px">
                     <div
-                      class="useItem"
-                      v-for="(item, index) in userList"
-                      :key="index"
+                      class="f-col-c-c"
+                      style="width: 60px; height: 60px"
+                      v-for="i in 3"
+                      :key="i"
                     >
-                      <ddAvatar :nickname="item.nickname"></ddAvatar>
+                      <SkeletonItem type="circle" width="36px" height="36px" />
+                      <SkeletonItem
+                        block
+                        style="margin-top: 4px"
+                        width="50px"
+                        height="14px"
+                      />
                     </div>
                   </Space>
-                  <div
-                    class="pageTap f-row-c-c"
-                    v-show="userList.length < page.total"
-                  >
-                    <span>查看更多</span>
+                </template>
+                <template #default>
+                  <div class="useCon">
+                    <div class="useList" v-if="userList.length > 0">
+                      <Space wrap :size="[8, 16]">
+                        <div
+                          class="useItem"
+                          v-for="(item, index) in userList"
+                          :key="index"
+                        >
+                          <ddAvatar :nickname="item.nickname"></ddAvatar>
+                        </div>
+                      </Space>
+                      <div
+                        class="pageTap f-row-c-c"
+                        v-show="userList.length < page.total"
+                      >
+                        <span>查看更多</span>
+                      </div>
+                    </div>
+                    <div v-if="userList.length <= 0" class="noData f-col-c-c">
+                      ———— 暂无参会人员数据 ————
+                    </div>
                   </div>
-                </div>
-                <div v-if="userList.length <= 0" class="noData f-col-c-c">
-                  ———— 暂无参会人员数据 ————
-                </div>
-              </div>
+                </template>
+              </Skeleton>
             </div>
           </div>
           <div class="footBox f-row-e-c">
@@ -195,7 +265,8 @@ import {
   useShare,
   useSecrecy,
 } from "@/hooks/useMeetSwitch";
-
+import { Skeleton } from "view-ui-plus";
+let loading = ref(false);
 const router = useRouter();
 let props = withDefaults(
   defineProps<{
@@ -213,8 +284,13 @@ let props = withDefaults(
 );
 watch(
   () => props.modelValue,
-  (val: boolean) => {
-    if (val) getData(props.mId);
+  async (val: boolean) => {
+    if (val) {
+      loading.value = true;
+      await getData(props.mId);
+      await getUserList(props.mId);
+      loading.value = false;
+    }
   }
 );
 
@@ -257,14 +333,13 @@ const getData = (id: number) => {
   // 初始化
   userList = [];
   dataNeedChange.value = false;
-  getMeetDetailById(id).then((res) => {
+  return getMeetDetailById(id).then((res) => {
     Object.assign(detail, res.data);
   });
-  getUserList(id);
 };
 
 const getUserList = (id: number) => {
-  getMeetingUserBymeetId({
+  return getMeetingUserBymeetId({
     meetId: id,
     pageSize: page.pageSize,
     pageNum: page.pageNum,
@@ -291,6 +366,12 @@ const switchChange = (val: number) => {
 };
 </script>
 <style lang="less" scoped>
+:deep(.ivu-skeleton) {
+  // width: 100%;
+}
+:deep(.useItem .ivu-skeleton .ivu-skeleton-item) {
+  margin-top: 4px;
+}
 .modelBox {
   width: 100%;
   height: calc(100% - 48px);
