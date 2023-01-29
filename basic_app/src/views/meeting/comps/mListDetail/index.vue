@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-28 18:02:13
+ * @LastEditTime: 2023-01-29 13:27:31
  * @Description: 会议详情
 -->
 <template>
@@ -114,15 +114,8 @@
               <div class="useCon">
                 <div class="useList">
                   <Space wrap :size="[8, 16]">
-                    <div class="useItem f-col-b-c" v-for="i in 18" :key="i">
-                      <div class="avatar f-col-c-c">张</div>
-                      <Text
-                        className="userName"
-                        :ellipsis-config="{ tooltip: true }"
-                        ellipsis
-                        placement="bottom-start"
-                        >张三张三张三张三</Text
-                      >
+                    <div class="useItem" v-for="i in 18" :key="i">
+                      <ddAvatar nickname="三"></ddAvatar>
                     </div>
                   </Space>
                   <span class="pageTap">查看更多</span>
@@ -161,7 +154,7 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 import { getMeetDetailById } from "@/apis/meet";
-import { Switch } from "view-ui-plus";
+import ddAvatar from "@/components/ddAvatar.vue";
 
 const router = useRouter();
 let props = withDefaults(

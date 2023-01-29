@@ -86,12 +86,12 @@
     "name": "network",
     "description": "网络配置",
     "show": true,
-    "baseUrl": "http://192.168.19.89:8888",
+    "baseUrl": "http://192.168.19.161:8888",
     "children": [
       {
         "name": "baseUrl",
         "parent": "network",
-        "value": "http://192.168.19.89:8888",
+        "value": "http://192.168.19.161:8888",
         "description": "代理网络",
         "type": "Input",
         "props": {}
