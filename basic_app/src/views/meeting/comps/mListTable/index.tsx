@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-01-28 15:24:57
+ * @LastEditTime: 2023-01-29 16:16:52
  * @Description: 会议列表数据表格组件
  */
 
@@ -12,6 +12,7 @@ import { getMeetingById, deleteByIds, reviseMeetDetail } from "@/apis/meet";
 import style from "./style.module.less";
 import { ipcRenderer } from "electron";
 import _ from "lodash";
+import { useSwitchMultiple } from "@/hooks/useMeetSwitch";
 
 const columns = reactive<any[]>([
   {
@@ -144,21 +145,18 @@ const columns = reactive<any[]>([
           "false-value": 0,
           loading: params.row.isSecrecyLoading,
           "before-change": () => {
-            return new Promise((resolve: Function, reject: Function) => {
-              params.row.isSecrecyLoading = true;
-              reviseMeetDetail({
+            return useSwitchMultiple(
+              {
                 id: params.row.id,
                 secrecy: params.row.secrecy ? 0 : 1,
-              })
-                .then((res) => {
-                  params.row.isSecrecyLoading = false;
-                  resolve();
-                })
-                .catch((err) => {
-                  params.row.isSecrecyLoading = false;
-                  reject();
-                });
-            });
+              },
+              () => {
+                params.row.isSecrecyLoading = true;
+              },
+              () => {
+                params.row.isSecrecyLoading = false;
+              }
+            );
           },
           onOnChange: (val: number) => {
             params.row.secrecy = val;
@@ -187,21 +185,18 @@ const columns = reactive<any[]>([
           "false-value": 1,
           loading: params.row.isMeetShareLoading,
           "before-change": () => {
-            return new Promise((resolve: Function, reject: Function) => {
-              params.row.isMeetShareLoading = true;
-              reviseMeetDetail({
+            return useSwitchMultiple(
+              {
                 id: params.row.id,
                 meetShare: params.row.meetShare ? 0 : 1,
-              })
-                .then((res) => {
-                  params.row.isMeetShareLoading = false;
-                  resolve();
-                })
-                .catch((err) => {
-                  params.row.isMeetShareLoading = false;
-                  reject();
-                });
-            });
+              },
+              () => {
+                params.row.isMeetShareLoading = true;
+              },
+              () => {
+                params.row.isMeetShareLoading = false;
+              }
+            );
           },
           onOnChange: (val: number) => {
             params.row.meetShare = val;

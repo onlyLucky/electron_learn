@@ -2,13 +2,13 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-29 13:27:31
+ * @LastEditTime: 2023-01-29 17:29:27
  * @Description: 会议详情
 -->
 <template>
   <teleport to="#DetailModel">
     <div class="modelBox" v-show="modelValue">
-      <div class="detailModel" v-show="mask"></div>
+      <div class="detailModel" :style="maskStyle" @click="onClose"></div>
       <transition name="move-right">
         <div class="detail" v-show="modelValue">
           <div class="detailHeader f-row-b-c">
@@ -25,7 +25,7 @@
                     ellipsis
                     placement="bottom-start"
                   >
-                    可立即批注简称可立批，PC端界面设计讨论会议
+                    {{ detail.name }}
                   </Text>
                   <div class="meetOptBox f-row-b-c">
                     <Tooltip placement="bottom-end" content="编辑">
@@ -43,7 +43,8 @@
                   ellipsis
                   placement="bottom-start"
                 >
-                  创建人： 张三
+                  创建人：
+                  {{ detail.createUserName ? detail.createUserName : "无" }}
                 </Text>
               </div>
               <div class="otherInfo">
@@ -56,7 +57,7 @@
                     placement="bottom-start"
                     @click="goEquip"
                   >
-                    测试设备
+                    {{ deviceName ? deviceName : "无" }}
                   </Text>
                 </div>
                 <div class="itemOInfo">
@@ -67,35 +68,29 @@
                     ellipsis
                     placement="bottom-start"
                   >
-                    2022-12-12 10:30
+                    {{ meetTimeStr }}
                   </Text>
                 </div>
               </div>
             </div>
             <div class="switchInfo partInfo">
               <div class="switchItem partInfoItem f-row-b-c">
-                <h3>会议分享</h3>
-                <Switch
-                  :model-value="true"
-                  size="large"
-                  :true-value="0"
-                  :false-value="1"
-                >
-                  <template #open>
-                    <span>允许</span>
-                  </template>
-                  <template #close>
-                    <span>禁止</span>
-                  </template>
-                </Switch>
-              </div>
-              <div class="switchItem partInfoItem f-row-b-c">
                 <h3>会议保密</h3>
                 <Switch
-                  :model-value="true"
+                  :model-value="detail.secrecy"
                   size="large"
                   :true-value="1"
                   :false-value="0"
+                  :loading="isSecrecyLoading"
+                  @on-change="switchChange"
+                  :before-change="
+                    () => {
+                      return useSecrecy({
+                        id: mId,
+                        secrecy: detail.secrecy ? 0 : 1,
+                      });
+                    }
+                  "
                 >
                   <template #open>
                     <span>保密</span>
@@ -105,24 +100,32 @@
                   </template>
                 </Switch>
               </div>
-            </div>
-            <div class="useInfo">
-              <div class="userHeader f-row-b-c">
-                <h3>参会人员 <span>（20人）</span></h3>
-                <Icon class="iconUseSearch" type="ios-search" size="20" />
-              </div>
-              <div class="useCon">
-                <div class="useList">
-                  <Space wrap :size="[8, 16]">
-                    <div class="useItem" v-for="i in 18" :key="i">
-                      <ddAvatar nickname="三"></ddAvatar>
-                    </div>
-                  </Space>
-                  <span class="pageTap">查看更多</span>
-                </div>
-                <div v-show="false" class="noData f-col-c-c">
-                  暂无参会人员数据
-                </div>
+              <div class="switchItem partInfoItem f-row-b-c">
+                <h3>会议分享</h3>
+
+                <Switch
+                  :model-value="detail.meetShare"
+                  size="large"
+                  :true-value="0"
+                  :false-value="1"
+                  :loading="isShareLoading"
+                  @on-change="switchChange"
+                  :before-change="
+                    () => {
+                      return useShare({
+                        id: mId,
+                        meetShare: detail.meetShare ? 0 : 1,
+                      });
+                    }
+                  "
+                >
+                  <template #open>
+                    <span>允许</span>
+                  </template>
+                  <template #close>
+                    <span>禁止</span>
+                  </template>
+                </Switch>
               </div>
             </div>
             <div class="linkInfo partInfo">
@@ -139,6 +142,37 @@
                 <span>查看</span>
               </div>
             </div>
+            <div class="useInfo partInfo">
+              <div class="userHeader f-row-b-c">
+                <h3>
+                  参会人员
+                  <span v-if="page.total > 0">（{{ page.total }}人）</span>
+                </h3>
+                <Icon class="iconUseSearch" type="ios-search" size="20" />
+              </div>
+              <div class="useCon">
+                <div class="useList" v-if="userList.length > 0">
+                  <Space wrap :size="[8, 16]">
+                    <div
+                      class="useItem"
+                      v-for="(item, index) in userList"
+                      :key="index"
+                    >
+                      <ddAvatar :nickname="item.nickname"></ddAvatar>
+                    </div>
+                  </Space>
+                  <div
+                    class="pageTap f-row-c-c"
+                    v-show="userList.length < page.total"
+                  >
+                    <span>查看更多</span>
+                  </div>
+                </div>
+                <div v-if="userList.length <= 0" class="noData f-col-c-c">
+                  ———— 暂无参会人员数据 ————
+                </div>
+              </div>
+            </div>
           </div>
           <div class="footBox f-row-e-c">
             <Space wrap>
@@ -153,45 +187,107 @@
 </template>
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { getMeetDetailById } from "@/apis/meet";
+import { getMeetDetailById, getMeetingUserBymeetId } from "@/apis/meet";
 import ddAvatar from "@/components/ddAvatar.vue";
+import {
+  isSecrecyLoading,
+  isShareLoading,
+  useShare,
+  useSecrecy,
+} from "@/hooks/useMeetSwitch";
 
 const router = useRouter();
 let props = withDefaults(
   defineProps<{
     modelValue: boolean;
     mask?: boolean;
-    mId: number | null;
+    mId: any;
+    deviceName: any;
   }>(),
   {
     modelValue: false,
     mask: false,
     mId: null,
+    deviceName: null,
   }
 );
 watch(
-  () => props.mId,
-  (val: number | null) => {
-    console.log(val);
-    if (val != null) getData(val);
+  () => props.modelValue,
+  (val: boolean) => {
+    if (val) getData(props.mId);
   }
 );
+
+const maskStyle = computed(() => {
+  return {
+    backgroundColor: props.mask ? "rgba(0, 0, 0, 0.3)" : "transparent",
+  };
+});
+
+let userList = reactive<any[]>([]);
+let page = reactive({
+  total: 0,
+  pageSize: 18,
+  pageNum: 1,
+});
+let detail = reactive<MeetDetailType>({} as MeetDetailType);
+
 let emit = defineEmits<{
   (e: "update:modelValue", flag: boolean): void;
+  (e: "uploadTable"): void;
 }>();
 const onClose = () => {
+  // 关闭的时候查看数据是否更新了，列表更新数据
+  if (dataNeedChange.value) {
+    emit("uploadTable");
+  }
   emit("update:modelValue", false);
 };
 const goEquip = () => {
-  router.push({ name: "equipment", params: { username: "post" } });
+  if (detail.deviceId) {
+    router.push({ name: "equipment", params: { username: "post" } });
+  }
 };
 
-onMounted(() => {});
+onMounted(() => {
+  console.log(props.deviceName, "deviceName");
+});
 
 const getData = (id: number) => {
+  // 初始化
+  userList = [];
+  dataNeedChange.value = false;
   getMeetDetailById(id).then((res) => {
-    console.log(res, "res");
+    Object.assign(detail, res.data);
   });
+  getUserList(id);
+};
+
+const getUserList = (id: number) => {
+  getMeetingUserBymeetId({
+    meetId: id,
+    pageSize: page.pageSize,
+    pageNum: page.pageNum,
+  }).then((res) => {
+    Object.assign(userList, res.data?.records);
+    page.total = res.data?.total!;
+  });
+};
+// 会议时间计算
+const meetTimeStr = computed(() => {
+  if (detail.endTime) {
+    return `${detail.createTime} - ${detail.endTime.substring(
+      detail.endTime.length - 5
+    )}`;
+  } else {
+    return detail.createTime;
+  }
+});
+
+//
+let dataNeedChange = ref<boolean>(false);
+const switchChange = (val: number) => {
+  dataNeedChange.value = true;
 };
 </script>
 <style lang="less" scoped>
@@ -311,6 +407,9 @@ const getData = (id: number) => {
         margin-top: 10px;
         padding: 0 20px;
         box-sizing: border-box;
+        &:last-child {
+          margin-bottom: 10px;
+        }
         .partInfoItem {
           .size(100%, 52px);
           border-bottom: 1px solid @search_bottom_border;
@@ -371,6 +470,20 @@ const getData = (id: number) => {
                 text-align: center;
                 cursor: pointer;
               }
+            }
+          }
+          .noData {
+            font-size: 14px;
+            color: @fontColor;
+          }
+          .pageTap {
+            margin-top: 10px;
+            .size(100%, auto);
+            font-size: 14px;
+            color: @f_color_active;
+            span {
+              padding: 0 14px;
+              cursor: pointer;
             }
           }
         }

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-01-28 14:45:59
+ * @LastEditTime: 2023-01-29 17:30:09
  * @Description: content
 -->
 <template>
@@ -114,7 +114,13 @@
       </Row>
     </div>
     <!-- 详情 -->
-    <MDetail v-model="isShowDetail" :mId="refMeetId" :mask="false"></MDetail>
+    <MDetail
+      v-model="isShowDetail"
+      :mId="refMeetProps.id"
+      :deviceName="refMeetProps.deviceName"
+      :mask="false"
+      @uploadTable="onUploadTable"
+    ></MDetail>
   </div>
 </template>
 <script setup lang="ts">
@@ -213,12 +219,22 @@ const delChange = () => {
 
 // 详情功能
 let isShowDetail = ref<boolean>(false);
-let refMeetId = ref<number | null>(null);
+let refMeetProps = reactive<{
+  id: String | null;
+  deviceName: String | null;
+}>({
+  id: null,
+  deviceName: null,
+});
 const handleDetail = (row: any) => {
-  refMeetId.value = row.id;
+  refMeetProps.id = row.id;
+  refMeetProps.deviceName = row.deviceName;
   if (!isShowDetail.value) {
     isShowDetail.value = true;
   }
+};
+const onUploadTable = () => {
+  mtable.value?.getTableData(searchForm);
 };
 
 onMounted(() => {
