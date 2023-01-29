@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-29 19:23:27
+ * @LastEditTime: 2023-01-29 20:01:17
  * @Description: 会议详情
 -->
 <template>
@@ -25,6 +25,7 @@
                     </template>
                     <template #default>
                       <Text
+                        v-show="!isEditStatus"
                         className="meetName"
                         :ellipsis-config="{ tooltip: true }"
                         ellipsis
@@ -32,15 +33,23 @@
                       >
                         {{ detail.name }}
                       </Text>
+                      <Input
+                        v-model="detail.name"
+                        placeholder="请输入会议名称"
+                        clearable
+                        class="meetInput"
+                        v-show="isEditStatus"
+                      ></Input>
                     </template>
                   </Skeleton>
 
-                  <div class="meetOptBox f-row-b-c">
+                  <div class="meetOptBox f-row-b-c" v-show="!isEditStatus">
                     <Tooltip placement="bottom-end" content="编辑">
                       <svg-icon
                         iconName="icon-bianji"
                         className="mInfoIcon"
                         color="var(--fontColor)"
+                        @click="handleEdit"
                       ></svg-icon>
                     </Tooltip>
                   </div>
@@ -75,6 +84,7 @@
                     </template>
                     <template #default>
                       <Text
+                        v-show="!isEditStatus"
                         className="itemValue jumpTxt"
                         :ellipsis-config="{ tooltip: true }"
                         ellipsis
@@ -83,6 +93,19 @@
                       >
                         {{ deviceName ? deviceName : "无" }}
                       </Text>
+                      <Select
+                        style="width: 220px"
+                        v-show="isEditStatus"
+                        v-model="detail.deviceId"
+                        filterable
+                      >
+                        <Option
+                          v-for="(item, index) in deviceList"
+                          :key="index"
+                          :value="item.id"
+                          >{{ item.name }}</Option
+                        >
+                      </Select>
                     </template>
                   </Skeleton>
                 </div>
@@ -94,6 +117,7 @@
                     </template>
                     <template #default>
                       <Text
+                        v-show="!isEditStatus"
                         className="itemValue"
                         :ellipsis-config="{ tooltip: true }"
                         ellipsis
@@ -101,6 +125,13 @@
                       >
                         {{ meetTimeStr }}
                       </Text>
+                      <DatePicker
+                        style="width: 220px"
+                        v-show="isEditStatus"
+                        type="datetime"
+                        placeholder="请选择会议时间"
+                        format="yyyy-MM-dd HH:mm"
+                      ></DatePicker>
                     </template>
                   </Skeleton>
                 </div>
@@ -245,9 +276,13 @@
             </div>
           </div>
           <div class="footBox f-row-e-c">
-            <Space wrap>
+            <Space wrap v-show="!isEditStatus">
               <Button type="error">删除</Button>
               <Button>退出会议</Button>
+            </Space>
+            <Space wrap v-show="isEditStatus">
+              <Button type="primary">保存</Button>
+              <Button>取消</Button>
             </Space>
           </div>
         </div>
@@ -257,7 +292,11 @@
 </template>
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { getMeetDetailById, getMeetingUserBymeetId } from "@/apis/meet";
+import {
+  getMeetDetailById,
+  getMeetingUserBymeetId,
+  getDeviceList,
+} from "@/apis/meet";
 import ddAvatar from "@/components/ddAvatar.vue";
 import {
   isSecrecyLoading,
@@ -325,10 +364,6 @@ const goEquip = () => {
   }
 };
 
-onMounted(() => {
-  console.log(props.deviceName, "deviceName");
-});
-
 const getData = (id: number) => {
   // 初始化
   userList = [];
@@ -337,7 +372,7 @@ const getData = (id: number) => {
     Object.assign(detail, res.data);
   });
 };
-
+// 获取用户列表
 const getUserList = (id: number) => {
   return getMeetingUserBymeetId({
     meetId: id,
@@ -348,6 +383,7 @@ const getUserList = (id: number) => {
     page.total = res.data?.total!;
   });
 };
+
 // 会议时间计算
 const meetTimeStr = computed(() => {
   if (detail.endTime) {
@@ -359,16 +395,30 @@ const meetTimeStr = computed(() => {
   }
 });
 
-//
+//数据更新修改
 let dataNeedChange = ref<boolean>(false);
 const switchChange = (val: number) => {
   dataNeedChange.value = true;
 };
+// 编辑处理
+let isEditStatus = ref<boolean>(false);
+const handleEdit = () => {
+  isEditStatus.value = true;
+};
+
+let deviceList = reactive<any[]>([]);
+onMounted(() => {
+  // 获取设备列表
+  getDeviceList().then((res) => {
+    deviceList = res.data || [];
+  });
+});
 </script>
 <style lang="less" scoped>
 :deep(.ivu-skeleton) {
   // width: 100%;
 }
+
 :deep(.useItem .ivu-skeleton .ivu-skeleton-item) {
   margin-top: 4px;
 }
@@ -429,6 +479,11 @@ const switchChange = (val: number) => {
               line-height: 30px;
               font-size: 16px;
               font-weight: 600;
+            }
+            .meetInput {
+              width: calc(100% - 30px);
+              height: 100%;
+              border: none;
             }
             .meetOptBox {
               .size(30px,100%);
