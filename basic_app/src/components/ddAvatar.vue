@@ -2,13 +2,13 @@
  * @Author: fg
  * @Date: 2023-01-29 09:35:31
  * @LastEditors: fg
- * @LastEditTime: 2023-01-29 13:26:31
+ * @LastEditTime: 2023-01-30 16:40:14
  * @Description: dd风格的头像组件处理
 -->
 <template>
   <div class="avatarBox f-col-b-c">
     <div class="avatar f-col-c-c" :style="style">
-      <div class="imgBox" v-if="avatar">
+      <div class="imgBox f-col-c-c" v-if="avatar">
         <img :src="avatar" :alt="nickname" />
       </div>
       <span v-else>{{ nickname.substring(nickname.length - 2) }}</span>
@@ -92,7 +92,7 @@ let style = computed(() => {
       border-radius: 4px;
       overflow: hidden;
       img {
-        .size(100%,auto);
+        .size(100%,100%);
       }
     }
     .tag {

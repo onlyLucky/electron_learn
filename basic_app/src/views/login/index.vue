@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-01-16 13:31:23
+ * @LastEditTime: 2023-01-30 16:09:01
  * @Description: content
 -->
 <template>
@@ -117,7 +117,19 @@ const loginTo = async () => {
     password: password.value,
   })
     .then((res) => {
+      let userInfo = {
+        avatarPath: res.data?.avatarPath,
+        deptName: res.data?.deptName,
+        nickname: res.data?.nickname,
+        phone: res.data?.phone,
+        id: res.data?.id,
+        deptId: res.data?.deptId,
+        userName: res.data?.userName,
+        mobileType: res.data?.mobileType,
+        userSex: res.data?.userSex,
+      };
       localStorage.setItem("token", res.data!.token);
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
       // 判断当前是否记住我
       let tempRme: RmeType = {
         isRememberMe: isRememberMe.value,
