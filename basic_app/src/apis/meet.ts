@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-28 13:44:32
  * @LastEditors: fg
- * @LastEditTime: 2023-01-29 14:09:24
+ * @LastEditTime: 2023-01-30 17:36:16
  * @Description: 会议api
  */
 
@@ -20,9 +20,11 @@ const path = {
   deleteByIds: '/meet/deleteByIds',
   putMeet: '/meet',
   getListByMeetId: '/meetText/getListByMeetId',
-  getMeetingUserBymeetId: '/meet/getMeetingUserBymeetIdAndNickname'
+  getMeetingUserBymeetId: '/meet/getMeetingUserBymeetIdAndNickname',
+  deleteMeetConf: '/meet/deleteMeetConf'
 }
 
+// 获取设备列表
 export const getDeviceList = (params?: object): Promise<ResultData<any>> => {
   return http.get<any[]>(path.deviceList, params)
 }
@@ -66,7 +68,12 @@ export const getMeetDetailById = (id: number): Promise<ResultData<any>> => {
   return http.get(`${path.putMeet}/${id}`)
 }
 
-// 
+// 通过会议id查询会议列表
 export const getListByMeetId = (params: any): Promise<ResultData<any>> => {
   return http.get(path.getListByMeetId, params)
+}
+
+// 退出会议
+export const deleteMeetConf = (params: any): Promise<ResultData<any>> => {
+  return http.delete(path.deleteMeetConf, params)
 }

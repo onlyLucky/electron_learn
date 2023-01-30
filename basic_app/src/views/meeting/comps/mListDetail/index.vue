@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-30 16:36:56
+ * @LastEditTime: 2023-01-30 17:51:03
  * @Description: 会议详情
 -->
 <template>
@@ -15,7 +15,14 @@
             <h1>会议详情</h1>
             <Icon size="34" type="ios-close" @click="onClose" />
           </div>
-          <div class="contentBox">
+          <div
+            class="contentBox"
+            :style="{
+              height: isShowBottomOpt
+                ? 'calc(100% - 115px)'
+                : 'calc(100% - 45px)',
+            }"
+          >
             <div class="meetInfo">
               <div class="mainInfo">
                 <div class="mainTitle f-row-b-c">
@@ -286,7 +293,7 @@
             结束会议： 正在进行中，自己创建的
             删除： 已结束
            -->
-          <div class="footBox f-row-e-c">
+          <div class="footBox f-row-e-c" v-show="isShowBottomOpt">
             <Space wrap v-show="!isEditStatus">
               <Poptip
                 confirm
@@ -295,10 +302,15 @@
                 placement="top-end"
                 :disabled="detail.state == 0"
               >
-                <Button v-show="detail.state != 0" type="error">删除</Button>
+                <Button v-show="detail.state == 1" type="error">删除</Button>
               </Poptip>
               <!-- <Button type="error">删除</Button> -->
-              <Button>退出会议</Button>
+              <Button v-show="detail.state == 0">结束会议</Button>
+              <Button
+                v-show="detail.state == 0 && isShowBottomOpt"
+                v-debounce="outMeet"
+                >退出会议</Button
+              >
             </Space>
             <Space wrap v-show="isEditStatus">
               <Button v-debounce="editSave" type="primary">保存</Button>
@@ -318,6 +330,7 @@ import {
   getDeviceList,
   reviseMeetDetail,
   deleteByIds,
+  deleteMeetConf,
 } from "@/apis/meet";
 import ddAvatar from "@/components/ddAvatar.vue";
 import {
@@ -358,9 +371,17 @@ watch(
     }
   }
 );
-let userName = JSON.parse(localStorage.getItem("userInfo")!).nickname;
+let refUserName = ref<string>(
+  JSON.parse(localStorage.getItem("userInfo")!).nickname
+);
 const handleBHeight = () => {
-  userList.map((item) => {});
+  if (detail.state) {
+    isShowBottomOpt.value = true;
+  } else {
+    isShowBottomOpt.value = userList.some((item) => {
+      return item.nickname == refUserName.value;
+    });
+  }
 };
 
 const maskStyle = computed(() => {
@@ -454,6 +475,7 @@ const handleEdit = () => {
     _.pick(detail, ["name", "deviceName", "deviceId", "createTime"])
   );
   isEditStatus.value = true;
+  isShowBottomOpt.value = true;
 };
 
 let deviceList = reactive<any[]>([]);
@@ -471,15 +493,28 @@ const editSave = () => {
     isEditStatus.value = false;
     dataNeedChange.value = true;
     getData(props.mId);
+    handleBHeight();
   });
 };
 const editCancel = () => {
   isEditStatus.value = false;
+  handleBHeight();
 };
 // 删除处理
 const delMeeting = () => {
   deleteByIds({
     ids: props.mId + "",
+  }).then((res) => {
+    isEditStatus.value = false;
+    dataNeedChange.value = true;
+    onClose();
+  });
+};
+
+// 退出会议
+const outMeet = () => {
+  deleteMeetConf({
+    meetId: props.mId,
   }).then((res) => {
     isEditStatus.value = false;
     dataNeedChange.value = true;
@@ -520,7 +555,9 @@ const delMeeting = () => {
     .detailHeader {
       padding: 0 10px;
       box-sizing: border-box;
+      background-color: @bg;
       .size(100%, 45px);
+      border-bottom: 1px solid @search_bottom_border;
       h1 {
         font-size: 18px;
         font-weight: 400;
