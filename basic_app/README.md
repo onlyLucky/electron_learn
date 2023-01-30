@@ -50,6 +50,7 @@
   - [electron 创建全局快捷键配置](#electron-创建全局快捷键配置)
   - [electron 调用打开第三方 exe 应用配置](#electron-调用打开第三方-exe-应用配置)
   - [全局配置 config.json 处理逻辑](#全局配置-configjson-处理逻辑)
+  - [electron 文件下载器开发配置](#electron-文件下载器开发配置)
 - [技术点总结](#技术点总结)
   - [T1: vue3 使用 render 函数 h](#t1-vue3-使用-render-函数-h)
   - [T2: Javascript Object 和 Map 之间的转换](#t2-javascript-object-和-map-之间的转换)
@@ -779,6 +780,10 @@ const STORE_PATH = app.getPath("userData"); // 获取应用的用户目录 C:\Us
 ```
 
 上面获取到数据路径添加 config.json 文件，读写文件中操作完全可以
+
+### electron 文件下载器开发配置
+
+[electron 实现文件下载管理器](https://www.cnblogs.com/JasonLong/p/13844056.html)
 
 ## 技术点总结
 
