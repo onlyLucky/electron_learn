@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-29 20:01:17
+ * @LastEditTime: 2023-01-30 16:36:56
  * @Description: 会议详情
 -->
 <template>
@@ -34,7 +34,7 @@
                         {{ detail.name }}
                       </Text>
                       <Input
-                        v-model="detail.name"
+                        v-model="editDetail.name"
                         placeholder="请输入会议名称"
                         clearable
                         class="meetInput"
@@ -91,12 +91,12 @@
                         placement="bottom-start"
                         @click="goEquip"
                       >
-                        {{ deviceName ? deviceName : "无" }}
+                        {{ detail.deviceName ? detail.deviceName : "无" }}
                       </Text>
                       <Select
                         style="width: 220px"
                         v-show="isEditStatus"
-                        v-model="detail.deviceId"
+                        v-model="editDetail.deviceId"
                         filterable
                       >
                         <Option
@@ -123,14 +123,17 @@
                         ellipsis
                         placement="bottom-start"
                       >
-                        {{ meetTimeStr }}
+                        {{ detail.createTime }}
                       </Text>
+                      <!-- v-model="editDetail.createTime" -->
                       <DatePicker
+                        :model-value="editDetail.createTime"
                         style="width: 220px"
                         v-show="isEditStatus"
                         type="datetime"
                         placeholder="请选择会议时间"
                         format="yyyy-MM-dd HH:mm"
+                        @on-change="editDetail.createTime = $event"
                       ></DatePicker>
                     </template>
                   </Skeleton>
@@ -257,7 +260,10 @@
                           v-for="(item, index) in userList"
                           :key="index"
                         >
-                          <ddAvatar :nickname="item.nickname"></ddAvatar>
+                          <ddAvatar
+                            :nickname="item.nickname"
+                            :avatar="item.imageurl"
+                          ></ddAvatar>
                         </div>
                       </Space>
                       <div
@@ -275,14 +281,28 @@
               </Skeleton>
             </div>
           </div>
+          <!-- 
+            退出会议： 正在进行中，自己再参会中的
+            结束会议： 正在进行中，自己创建的
+            删除： 已结束
+           -->
           <div class="footBox f-row-e-c">
             <Space wrap v-show="!isEditStatus">
-              <Button type="error">删除</Button>
+              <Poptip
+                confirm
+                title="是否删除当前会议？"
+                @on-ok="delMeeting"
+                placement="top-end"
+                :disabled="detail.state == 0"
+              >
+                <Button v-show="detail.state != 0" type="error">删除</Button>
+              </Poptip>
+              <!-- <Button type="error">删除</Button> -->
               <Button>退出会议</Button>
             </Space>
             <Space wrap v-show="isEditStatus">
-              <Button type="primary">保存</Button>
-              <Button>取消</Button>
+              <Button v-debounce="editSave" type="primary">保存</Button>
+              <Button v-debounce="editCancel">取消</Button>
             </Space>
           </div>
         </div>
@@ -296,6 +316,8 @@ import {
   getMeetDetailById,
   getMeetingUserBymeetId,
   getDeviceList,
+  reviseMeetDetail,
+  deleteByIds,
 } from "@/apis/meet";
 import ddAvatar from "@/components/ddAvatar.vue";
 import {
@@ -305,6 +327,7 @@ import {
   useSecrecy,
 } from "@/hooks/useMeetSwitch";
 import { Skeleton } from "view-ui-plus";
+import _ from "lodash";
 let loading = ref(false);
 const router = useRouter();
 let props = withDefaults(
@@ -312,7 +335,7 @@ let props = withDefaults(
     modelValue: boolean;
     mask?: boolean;
     mId: any;
-    deviceName: any;
+    deviceName?: any;
   }>(),
   {
     modelValue: false,
@@ -321,17 +344,24 @@ let props = withDefaults(
     deviceName: null,
   }
 );
+let isShowBottomOpt = ref<boolean>(false);
 watch(
   () => props.modelValue,
   async (val: boolean) => {
     if (val) {
+      initData();
       loading.value = true;
       await getData(props.mId);
       await getUserList(props.mId);
       loading.value = false;
+      handleBHeight();
     }
   }
 );
+let userName = JSON.parse(localStorage.getItem("userInfo")!).nickname;
+const handleBHeight = () => {
+  userList.map((item) => {});
+};
 
 const maskStyle = computed(() => {
   return {
@@ -357,6 +387,8 @@ const onClose = () => {
     emit("uploadTable");
   }
   emit("update:modelValue", false);
+  // 初始化数据
+  initData();
 };
 const goEquip = () => {
   if (detail.deviceId) {
@@ -364,10 +396,14 @@ const goEquip = () => {
   }
 };
 
-const getData = (id: number) => {
+const initData = () => {
   // 初始化
   userList = [];
   dataNeedChange.value = false;
+  isEditStatus.value = false;
+};
+
+const getData = (id: number) => {
   return getMeetDetailById(id).then((res) => {
     Object.assign(detail, res.data);
   });
@@ -379,13 +415,17 @@ const getUserList = (id: number) => {
     pageSize: page.pageSize,
     pageNum: page.pageNum,
   }).then((res) => {
-    Object.assign(userList, res.data?.records);
+    let temp = res.data?.pageUser.records;
+    temp.map((item: any) => {
+      item.imageurl = res.data?.fileServer + item.imageurl;
+    });
+    Object.assign(userList, temp);
     page.total = res.data?.total!;
   });
 };
 
 // 会议时间计算
-const meetTimeStr = computed(() => {
+/* const meetTimeStr = computed(() => {
   if (detail.endTime) {
     return `${detail.createTime} - ${detail.endTime.substring(
       detail.endTime.length - 5
@@ -393,7 +433,7 @@ const meetTimeStr = computed(() => {
   } else {
     return detail.createTime;
   }
-});
+}); */
 
 //数据更新修改
 let dataNeedChange = ref<boolean>(false);
@@ -402,7 +442,17 @@ const switchChange = (val: number) => {
 };
 // 编辑处理
 let isEditStatus = ref<boolean>(false);
+let editDetail = reactive({
+  name: "",
+  deviceName: "",
+  deviceId: 0,
+  createTime: "",
+});
 const handleEdit = () => {
+  Object.assign(
+    editDetail,
+    _.pick(detail, ["name", "deviceName", "deviceId", "createTime"])
+  );
   isEditStatus.value = true;
 };
 
@@ -413,12 +463,31 @@ onMounted(() => {
     deviceList = res.data || [];
   });
 });
+const editSave = () => {
+  reviseMeetDetail({
+    id: props.mId,
+    ...editDetail,
+  }).then((res) => {
+    isEditStatus.value = false;
+    dataNeedChange.value = true;
+    getData(props.mId);
+  });
+};
+const editCancel = () => {
+  isEditStatus.value = false;
+};
+// 删除处理
+const delMeeting = () => {
+  deleteByIds({
+    ids: props.mId + "",
+  }).then((res) => {
+    isEditStatus.value = false;
+    dataNeedChange.value = true;
+    onClose();
+  });
+};
 </script>
 <style lang="less" scoped>
-:deep(.ivu-skeleton) {
-  // width: 100%;
-}
-
 :deep(.useItem .ivu-skeleton .ivu-skeleton-item) {
   margin-top: 4px;
 }
@@ -531,10 +600,6 @@ onMounted(() => {
               cursor: pointer;
             }
           }
-        }
-      }
-      .switchInfo {
-        .switchItem {
         }
       }
       .partInfo {
