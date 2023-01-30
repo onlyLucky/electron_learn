@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-28 13:44:32
  * @LastEditors: fg
- * @LastEditTime: 2023-01-30 17:36:16
+ * @LastEditTime: 2023-01-30 17:59:54
  * @Description: 会议api
  */
 
@@ -21,7 +21,8 @@ const path = {
   putMeet: '/meet',
   getListByMeetId: '/meetText/getListByMeetId',
   getMeetingUserBymeetId: '/meet/getMeetingUserBymeetIdAndNickname',
-  deleteMeetConf: '/meet/deleteMeetConf'
+  deleteMeetConf: '/meet/deleteMeetConf',
+  getAllFileByMeetId: "/meetFile/getAllFileByMeetId"
 }
 
 // 获取设备列表
@@ -73,7 +74,15 @@ export const getListByMeetId = (params: any): Promise<ResultData<any>> => {
   return http.get(path.getListByMeetId, params)
 }
 
+type MeetIdPT = {
+  meetId: number
+}
 // 退出会议
-export const deleteMeetConf = (params: any): Promise<ResultData<any>> => {
+export const deleteMeetConf = (params: MeetIdPT): Promise<ResultData<any>> => {
   return http.delete(path.deleteMeetConf, params)
+}
+
+// 根据会议id获取会议文件
+export const getAllFileByMeetId = (params: MeetIdPT): Promise<ResultData<any>> => {
+  return http.get(path.getAllFileByMeetId, params)
 }

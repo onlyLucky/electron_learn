@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-30 17:51:03
+ * @LastEditTime: 2023-01-30 18:08:09
  * @Description: 会议详情
 -->
 <template>
@@ -323,6 +323,7 @@
   </teleport>
 </template>
 <script lang="ts" setup>
+/* TODO: 结束会议添加 */
 import { useRouter } from "vue-router";
 import {
   getMeetDetailById,
@@ -331,6 +332,7 @@ import {
   reviseMeetDetail,
   deleteByIds,
   deleteMeetConf,
+  getAllFileByMeetId,
 } from "@/apis/meet";
 import ddAvatar from "@/components/ddAvatar.vue";
 import {
@@ -341,6 +343,7 @@ import {
 } from "@/hooks/useMeetSwitch";
 import { Skeleton } from "view-ui-plus";
 import _ from "lodash";
+import { useDownload } from "./useDownload";
 let loading = ref(false);
 const router = useRouter();
 let props = withDefaults(
@@ -366,6 +369,8 @@ watch(
       loading.value = true;
       await getData(props.mId);
       await getUserList(props.mId);
+      console.log("1231");
+      useDownload(props.mId);
       loading.value = false;
       handleBHeight();
     }
