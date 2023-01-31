@@ -97,5 +97,21 @@
         "props": {}
       }
     ]
+  },
+  "download": {
+    "name": "download",
+    "description": "下载配置",
+    "show": true,
+    "downloadPath": "",
+    "children": [
+      {
+        "name": "downloadPath",
+        "parent": "network",
+        "value": "",
+        "description": "保存地址",
+        "type": "PathSelect",
+        "props": {}
+      }
+    ]
   }
 }

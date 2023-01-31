@@ -56,5 +56,17 @@ export type ConfigType = {
       props: {};
     }[];
   };
+  download: {
+    name: string;
+    description: string;
+    show: boolean;
+    downloadPath: string;
+    children: {
+      name: string;
+      description: string;
+      type: string;
+      props: {};
+    }[];
+  };
 };
 
