@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-30 18:08:09
+ * @LastEditTime: 2023-01-31 16:20:58
  * @Description: 会议详情
 -->
 <template>
@@ -219,7 +219,7 @@
             <div class="linkInfo partInfo">
               <div class="linkInfoItem partInfoItem f-row-b-c">
                 <h3>会议文件</h3>
-                <span>查看</span>
+                <span @click="download">查看</span>
               </div>
               <div class="linkInfoItem partInfoItem f-row-b-c">
                 <h3>分享列表</h3>
@@ -343,7 +343,8 @@ import {
 } from "@/hooks/useMeetSwitch";
 import { Skeleton } from "view-ui-plus";
 import _ from "lodash";
-import { useDownload } from "./useDownload";
+import useDownload from "./useDownload";
+import { ipcRenderer } from "electron";
 let loading = ref(false);
 const router = useRouter();
 let props = withDefaults(
@@ -369,7 +370,6 @@ watch(
       loading.value = true;
       await getData(props.mId);
       await getUserList(props.mId);
-      console.log("1231");
       useDownload(props.mId);
       loading.value = false;
       handleBHeight();
@@ -524,6 +524,21 @@ const outMeet = () => {
     isEditStatus.value = false;
     dataNeedChange.value = true;
     onClose();
+  });
+};
+
+// 下载
+
+const download = () => {
+  ipcRenderer.send("download", {
+    path: "http://192.168.10.215:8080/china/M00/00/08/wKgK12NaSbqAV5USCLLhJNUn4WM121.mp4",
+    directory: "test",
+    fileName: "test.mp4",
+  });
+  ipcRenderer.send("download", {
+    path: "http://192.168.10.215:8080/china/M00/00/08/wKgK12NaSeOAWVicABUNQRPTcxI787.mp4",
+    directory: "test1",
+    fileName: "test1.mp4",
   });
 };
 </script>

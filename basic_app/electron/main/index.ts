@@ -12,15 +12,22 @@ process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_ELECTRON, '../public')
 
-import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, webFrame } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Tray, Menu, nativeImage, dialog } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
+import _ from 'lodash';
 const fs = require('fs')
 
 let Config = require(join(process.env.PUBLIC, 'config/index.json'))
 const STORE_PATH = app.getPath('userData') // 获取应用的用户目录 C:\Users\XXX\AppData\Roaming\basic-app
-
 if (!fs.existsSync(join(STORE_PATH, '/config.json'))) {
+  // 配置默认缓存地址  C:\Users\feynman\Downloads\kelipi downloads
+  Config.download.downloadPath = join(app.getPath('downloads'), '/kelipi')
+  Config.download.children.map(item => {
+    if (item.name == "downloadPath") {
+      item.value = join(app.getPath('downloads'), '/kelipi')
+    }
+  })
   fs.writeFileSync(join(STORE_PATH, '/config.json'), JSON.stringify(Config))
 } else {
   const data = JSON.parse(fs.readFileSync(join(STORE_PATH, '/config.json'), { encoding: "utf8" }))
@@ -65,6 +72,10 @@ const preload = join(__dirname, '../preload/index.js')
 const urlPath = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 let loadPath = process.env.VITE_DEV_SERVER_URL ? urlPath : indexHtml
+
+// 下载map堆栈
+let DownloadDataMap = new Map();
+let downloadState = 0//已下载总量
 function createWindow() {
   win = new BrowserWindow({
     width: 1024,
@@ -113,6 +124,42 @@ function createWindow() {
     e.preventDefault();  //阻止窗口的关闭事件
     focusWin = win
     win.hide();
+  })
+  win.webContents.session.on('will-download', (event, item, webContents) => {
+    let temp = DownloadDataMap.get(item.getFilename())
+    item.setSavePath(join(Config.download.downloadPath, `/${temp.directory}/${temp.fileName}`))
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed')
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused')
+        } else {
+          const progress = item.getReceivedBytes() / item.getTotalBytes()
+          win.setProgressBar(progress)
+          console.log(`Received bytes: ${item.getReceivedBytes()}**${DownloadDataMap.get(item.getFilename()).fileName}`)
+        }
+      }
+    })
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        console.log('Download successfully', item.getTotalBytes())
+        //如果窗口还在的话，去掉进度条
+        if (!win.isDestroyed()) {
+          win.setProgressBar(-1);
+        }
+        // 清除数据
+        downloadState = item.getTotalBytes()
+        DownloadDataMap.delete(item.getFilename())
+        if (DownloadDataMap.size <= 0) {
+          // 初始化
+          downloadState = 0
+        }
+      } else {
+        dialog.showErrorBox('下载失败', `文件因为某些原因被中断下载`);
+        console.log(`Download failed: ${state}`)
+      }
+    })
   })
 }
 function createLoginWin() {
@@ -288,6 +335,11 @@ ipcMain.on('get_app', function (event) {
 ipcMain.on('set_config', function (event, config) {
   // console.log(url, arg)
   Config = config
+})
+// 下载触发
+ipcMain.on('download', function (event, args) {
+  DownloadDataMap.set(_.last(args.path.split('/')), args)
+  BrowserWindow.getFocusedWindow().webContents.downloadURL(args.path)
 })
 
 
