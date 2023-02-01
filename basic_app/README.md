@@ -55,6 +55,7 @@
   - [T1: vue3 使用 render 函数 h](#t1-vue3-使用-render-函数-h)
   - [T2: Javascript Object 和 Map 之间的转换](#t2-javascript-object-和-map-之间的转换)
   - [T3: lodash 使用技巧](#t3-lodash-使用技巧)
+  - [T4: js 中的便利使用场景](#t4-js-中的便利使用场景)
 - [提交规范](#提交规范)
 - [参考链接](#参考链接)
 
@@ -862,6 +863,39 @@ TODO:
 ### T3: lodash 使用技巧
 
 [lodash 使用.md](/basic_app/docs/lodash使用.md)
+
+### T4: js 中的便利使用场景
+
+- 1. 便利**所有情况都满足**是返回 true
+
+```js
+var arr = [1, 2, 3, 4, 5, 6];
+arr.every(function (item, index, array) {
+  console.log("item=" + item + ",index=" + index + ",array=" + array);
+  return item > 3;
+});
+
+// =>item=1,index=0,array=1,2,3,4,5,6
+// =>false
+```
+
+- 2. 便利**只要其中一项满足**就返回 true
+
+```js
+var arr = [1, 2, 3, 4, 5, 6];
+arr.some(function (item, index, array) {
+  console.log("item=" + item + ",index=" + index + ",array=" + array);
+  return item > 3;
+});
+
+// =>item=1,index=0,array=1,2,3,4,5,6
+// =>item=2,index=1,array=1,2,3,4,5,6
+// =>item=3,index=2,array=1,2,3,4,5,6
+// =>item=4,index=3,array=1,2,3,4,5,6
+// =>true
+```
+
+上面两种都是遍历到达到目的的情况下就不去便利了
 
 ## 提交规范
 
