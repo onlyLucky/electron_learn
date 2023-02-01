@@ -127,6 +127,11 @@ function createWindow() {
   })
   win.webContents.session.on('will-download', (event, item, webContents) => {
     let temp = DownloadDataMap.get(item.getFilename())
+    // TODO: 静态资源服务器不支持文件断点续传 暂时储存downloadItem 方便后面的操作
+    DownloadDataMap.set(item.getFilename(), {
+      ...temp,
+      downloadItem: item
+    })
     item.setSavePath(join(Config.download.downloadPath, `/${temp.directory}/${temp.fileName}`))
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
@@ -136,8 +141,10 @@ function createWindow() {
           console.log('Download is paused')
         } else {
           const progress = item.getReceivedBytes() / item.getTotalBytes()
+          // 想渲染端传递更新数据
+          webContents.send('downloadUpload', downloadState + item.getReceivedBytes())
           win.setProgressBar(progress)
-          console.log(`Received bytes: ${item.getReceivedBytes()}**${DownloadDataMap.get(item.getFilename()).fileName}`)
+          console.log(`Received bytes: ${item.getReceivedBytes()}`)
         }
       }
     })

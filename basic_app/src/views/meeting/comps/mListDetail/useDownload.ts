@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-30 18:00:53
  * @LastEditors: fg
- * @LastEditTime: 2023-02-01 15:56:24
+ * @LastEditTime: 2023-02-01 16:18:20
  * @Description: 会议详情下载
  */
 
@@ -43,22 +43,29 @@ export const useDownload = async (meetId: number, meetName: string) => {
     if (isNeedDownload.value) {
       fileList.map(item => {
         ipcRenderer.send("download", {
-          path: "http://192.168.10.215:8080/china/M00/00/08/wKgK12NaSeOAWVicABUNQRPTcxI787.mp4",
-          directory: "test1",
-          fileName: "test1.mp4",
+          path: localStorage.getItem("staticPath") + item.fileUrl,
+          directory: meetName,
+          fileName: item.realName,
         });
       })
     }
   }
 
+  // 监听下载进度
+  ipcRenderer.on("downloadUpload", (event, args) => {
+
+  })
+
   return {
     fileList,
     isNeedDownload,
-    isExistMeetFile
+    isExistMeetFile,
+    handleDownload
   }
 }
 export type DownloadType = {
   fileList: any[],
   isNeedDownload: Ref<boolean>,
-  isExistMeetFile: Function
+  isExistMeetFile: Function,
+  handleDownload: Function
 }

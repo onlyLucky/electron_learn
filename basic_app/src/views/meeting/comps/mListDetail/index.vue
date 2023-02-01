@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-02-01 16:04:22
+ * @LastEditTime: 2023-02-01 17:58:43
  * @Description: 会议详情
 -->
 <template>
@@ -232,7 +232,7 @@
                   <div
                     class="download f-row-c-c"
                     v-show="downloadUse.isNeedDownload"
-                    @click=""
+                    @click="downloadUse.handleDownload"
                   >
                     <svg-icon
                       size="18"
@@ -474,7 +474,7 @@ const getUserList = (id: number) => {
   }).then((res) => {
     let temp = res.data?.records!;
     temp.map((item: any) => {
-      item.imageurl = res.data?.fileServer + item.imageurl;
+      item.imageurl = localStorage.getItem("staticPath") + item.imageurl;
     });
     Object.assign(userList, temp);
     page.total = res.data?.total!;
@@ -565,11 +565,6 @@ const download = () => {
     path: "http://192.168.10.215:8080/china/M00/00/08/wKgK12NaSbqAV5USCLLhJNUn4WM121.mp4",
     directory: "test",
     fileName: "test.mp4",
-  });
-  ipcRenderer.send("download", {
-    path: "http://192.168.10.215:8080/china/M00/00/08/wKgK12NaSeOAWVicABUNQRPTcxI787.mp4",
-    directory: "test1",
-    fileName: "test1.mp4",
   });
 };
 </script>
