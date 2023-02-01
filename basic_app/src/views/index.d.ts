@@ -17,3 +17,5 @@ type MeetDetailType = {
   secrecyPassword: string | null,
   state: 0 | 1,
 }
+
+type ConfigKey = 'basic' | 'windows' | 'language' | 'network' | 'download'

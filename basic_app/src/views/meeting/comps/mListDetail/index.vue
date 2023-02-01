@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-01-31 16:20:58
+ * @LastEditTime: 2023-02-01 16:04:22
  * @Description: 会议详情
 -->
 <template>
@@ -219,7 +219,32 @@
             <div class="linkInfo partInfo">
               <div class="linkInfoItem partInfoItem f-row-b-c">
                 <h3>会议文件</h3>
-                <span @click="download">查看</span>
+                <div
+                  class="noFile"
+                  v-if="
+                    downloadUse.fileList && downloadUse.fileList.length <= 0
+                  "
+                >
+                  <span>暂无文件</span>
+                </div>
+                <!-- v-else -->
+                <div v-else>
+                  <div
+                    class="download f-row-c-c"
+                    v-show="downloadUse.isNeedDownload"
+                    @click=""
+                  >
+                    <svg-icon
+                      size="18"
+                      iconName="icon-yunxiazai-"
+                      color="var(--f_color_active)"
+                    ></svg-icon>
+                    <span>下载</span>
+                  </div>
+                  <span v-show="!downloadUse.isNeedDownload" @click="download"
+                    >查看</span
+                  >
+                </div>
               </div>
               <div class="linkInfoItem partInfoItem f-row-b-c">
                 <h3>分享列表</h3>
@@ -341,9 +366,8 @@ import {
   useShare,
   useSecrecy,
 } from "@/hooks/useMeetSwitch";
-import { Skeleton } from "view-ui-plus";
+import { useDownload, DownloadType } from "./useDownload";
 import _ from "lodash";
-import useDownload from "./useDownload";
 import { ipcRenderer } from "electron";
 let loading = ref(false);
 const router = useRouter();
@@ -362,6 +386,10 @@ let props = withDefaults(
   }
 );
 let isShowBottomOpt = ref<boolean>(false);
+// 下载模块导出变量函数操作
+let downloadUse = reactive<DownloadType>(
+  {} as DownloadType
+) as unknown as DownloadType;
 watch(
   () => props.modelValue,
   async (val: boolean) => {
@@ -370,7 +398,10 @@ watch(
       loading.value = true;
       await getData(props.mId);
       await getUserList(props.mId);
-      useDownload(props.mId);
+      downloadUse = await useDownload(props.mId, detail.name);
+      if (downloadUse.fileList.length > 0) {
+        console.log(downloadUse.isExistMeetFile());
+      }
       loading.value = false;
       handleBHeight();
     }
@@ -441,7 +472,7 @@ const getUserList = (id: number) => {
     pageSize: page.pageSize,
     pageNum: page.pageNum,
   }).then((res) => {
-    let temp = res.data?.pageUser.records;
+    let temp = res.data?.records!;
     temp.map((item: any) => {
       item.imageurl = res.data?.fileServer + item.imageurl;
     });
@@ -685,6 +716,18 @@ const download = () => {
             font-size: 14px;
             color: @f_color_active;
             cursor: pointer;
+          }
+          .noFile {
+            span {
+              color: @fontColor;
+              cursor: default;
+            }
+          }
+          .download {
+            cursor: pointer;
+            span {
+              margin-left: 4px;
+            }
           }
         }
       }

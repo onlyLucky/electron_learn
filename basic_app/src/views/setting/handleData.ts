@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-01-16 14:22:41
+ * @LastEditTime: 2023-02-01 11:34:17
  * @Description: 处理动态数据
  */
 
@@ -22,6 +22,10 @@ class HandleData {
     this.config = {} as ConfigType;
     this.app_url = localStorage.getItem('app_url') || ''
     this.init()
+  }
+
+  getConfigItem(key: ConfigKey): any {
+    return this.config[key]
   }
 
   init() {
@@ -44,7 +48,7 @@ class HandleData {
     }
     this.menu[0].select = true;
     this.mList = this.toLine(this.menu)
-    console.log(this.config, 'menu')
+    console.log(this.config, 'menu', this.mList)
   }
   // 树状数据扁平化
   toLine(data: any[]): any[] {
