@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-01-30 16:09:01
+ * @LastEditTime: 2023-02-01 16:14:26
  * @Description: content
 -->
 <template>
@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import { onMounted, ref } from "vue";
-import { goLogin } from "@/apis/login";
+import { goLogin, getFileIp } from "@/apis/login";
 import { ipcRenderer } from "electron";
 import { useI18n } from "vue-i18n";
 import { Message } from "view-ui-plus";
@@ -138,6 +138,9 @@ const loginTo = async () => {
         tempRme.userName = userName.value;
         tempRme.password = password.value;
       }
+      getFileIp({}).then((res) => {
+        localStorage.setItem("staticPath", res.data);
+      });
       localStorage.setItem("remember", JSON.stringify(tempRme));
       ipcRenderer.send("on_login");
     })
