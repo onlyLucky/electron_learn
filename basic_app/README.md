@@ -921,3 +921,4 @@ arr.some(function (item, index, array) {
 [处理多窗口](https://juejin.cn/post/6844903910436519949)
 [版本号管理](https://blog.csdn.net/twtsa/article/details/7858078)
 [下载器](https://www.cnblogs.com/JasonLong/p/13844056.html)
+[TypeScript 高级类型及用法](https://juejin.cn/post/6985296521495314445)

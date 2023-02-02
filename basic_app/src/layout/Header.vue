@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2023-01-12 15:49:37
+ * @LastEditTime: 2023-02-02 09:21:33
  * @Description: header
 -->
 <template>
@@ -15,6 +15,7 @@
         <SvgIcon
           iconName="icon-shezhi-xianxing"
           className="setting"
+          size="20"
           color="var(--fontColor)"
           @click="settingTap"
         ></SvgIcon>

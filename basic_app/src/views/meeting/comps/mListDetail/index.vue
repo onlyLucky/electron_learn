@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-02-01 17:58:43
+ * @LastEditTime: 2023-02-02 14:54:18
  * @Description: 会议详情
 -->
 <template>
@@ -230,20 +230,32 @@
                 <!-- v-else -->
                 <div v-else>
                   <div
-                    class="download f-row-c-c"
-                    v-show="downloadUse.isNeedDownload"
-                    @click="downloadUse.handleDownload"
+                    class="download f-row-e-c"
+                    v-if="downloadUse.isNeedDownload"
                   >
-                    <svg-icon
-                      size="18"
-                      iconName="icon-yunxiazai-"
-                      color="var(--f_color_active)"
-                    ></svg-icon>
-                    <span>下载</span>
+                    <Progress
+                      v-show="downloadUse.status == 1"
+                      :percent="downloadUse.progress"
+                      :stroke-width="6"
+                      status="active"
+                    >
+                      <span
+                        style="color: var(--fontColor)"
+                        v-if="downloadUse.progress < 100"
+                        >{{ downloadUse.progress }}%</span
+                      >
+                      <span style="color: var(--success)" v-else>下载完成</span>
+                    </Progress>
+                    <div class="f-row-c-c" v-show="downloadUse.status != 1" @click="downloadUse.handleDownload">
+                      <svg-icon
+                        size="18"
+                        iconName="icon-yunxiazai-"
+                        color="var(--f_color_active)"
+                      ></svg-icon>
+                      <span>下载{{ downloadUse.progress }}</span>
+                    </div>
                   </div>
-                  <span v-show="!downloadUse.isNeedDownload" @click="download"
-                    >查看</span
-                  >
+                  <span v-show="!downloadUse.isNeedDownload">查看</span>
                 </div>
               </div>
               <div class="linkInfoItem partInfoItem f-row-b-c">
@@ -398,10 +410,8 @@ watch(
       loading.value = true;
       await getData(props.mId);
       await getUserList(props.mId);
+      await nextTick();
       downloadUse = await useDownload(props.mId, detail.name);
-      if (downloadUse.fileList.length > 0) {
-        console.log(downloadUse.isExistMeetFile());
-      }
       loading.value = false;
       handleBHeight();
     }
@@ -560,13 +570,13 @@ const outMeet = () => {
 
 // 下载
 
-const download = () => {
+/* const download = () => {
   ipcRenderer.send("download", {
     path: "http://192.168.10.215:8080/china/M00/00/08/wKgK12NaSbqAV5USCLLhJNUn4WM121.mp4",
     directory: "test",
     fileName: "test.mp4",
   });
-};
+}; */
 </script>
 <style lang="less" scoped>
 :deep(.useItem .ivu-skeleton .ivu-skeleton-item) {
@@ -719,6 +729,7 @@ const download = () => {
             }
           }
           .download {
+            width: 260px;
             cursor: pointer;
             span {
               margin-left: 4px;

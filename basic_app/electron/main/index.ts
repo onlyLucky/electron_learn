@@ -74,8 +74,12 @@ const indexHtml = join(process.env.DIST, 'index.html')
 let loadPath = process.env.VITE_DEV_SERVER_URL ? urlPath : indexHtml
 
 // 下载map堆栈
+let DownloadListMap = new Map
 let DownloadDataMap = new Map();
-let downloadState = 0//已下载总量
+let downloadState = []//已下载总量 多个同时下载
+let downloadTotal = 0
+
+
 function createWindow() {
   win = new BrowserWindow({
     width: 1024,
@@ -125,10 +129,12 @@ function createWindow() {
     focusWin = win
     win.hide();
   })
+  // win 主场口downloadItem 下载任务监听
   win.webContents.session.on('will-download', (event, item, webContents) => {
-    let temp = DownloadDataMap.get(item.getFilename())
+    // new URL(item.getURL()).searchParams.get('id') 获取id
+    let temp = DownloadDataMap.get(`${item.getFilename()}_${new URL(item.getURL()).searchParams.get('id')}`)
     // TODO: 静态资源服务器不支持文件断点续传 暂时储存downloadItem 方便后面的操作
-    DownloadDataMap.set(item.getFilename(), {
+    DownloadDataMap.set(`${item.getFilename()}_${new URL(item.getURL()).searchParams.get('id')}`, {
       ...temp,
       downloadItem: item
     })
@@ -136,31 +142,37 @@ function createWindow() {
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
         console.log('Download is interrupted but can be resumed')
+        item.resume()
       } else if (state === 'progressing') {
         if (item.isPaused()) {
           console.log('Download is paused')
         } else {
-          const progress = item.getReceivedBytes() / item.getTotalBytes()
+          downloadState[temp.id] = item.getReceivedBytes()
+          const progress = _.sum(downloadState) / downloadTotal
           // 想渲染端传递更新数据
-          webContents.send('downloadUpload', downloadState + item.getReceivedBytes())
+          win.webContents.send('downloadUpload', {
+            total: _.sum(downloadState),//多个会议文件的下载size
+            progress: item.getReceivedBytes(),// 当前文件的下载size
+            fileName: temp.fileName//当前正在下载的文件名称，用于后续文件列表下载识别
+          })
           win.setProgressBar(progress)
-          console.log(`Received bytes: ${item.getReceivedBytes()}`)
+          // console.log(`Received bytes: ${item.getReceivedBytes()}`,)
         }
       }
     })
     item.once('done', (event, state) => {
       if (state === 'completed') {
-        console.log('Download successfully', item.getTotalBytes())
+        // console.log('Download successfully', temp.fileName)
         //如果窗口还在的话，去掉进度条
         if (!win.isDestroyed()) {
           win.setProgressBar(-1);
         }
-        // 清除数据
-        downloadState = item.getTotalBytes()
-        DownloadDataMap.delete(item.getFilename())
+        DownloadDataMap.delete(`${item.getFilename()}_${new URL(item.getURL()).searchParams.get('id')}`)
         if (DownloadDataMap.size <= 0) {
           // 初始化
-          downloadState = 0
+          downloadState = []
+          downloadTotal = 0
+          win.webContents.send('downloadEnd')
         }
       } else {
         dialog.showErrorBox('下载失败', `文件因为某些原因被中断下载`);
@@ -344,9 +356,25 @@ ipcMain.on('set_config', function (event, config) {
   Config = config
 })
 // 下载触发
-ipcMain.on('download', function (event, args) {
-  DownloadDataMap.set(_.last(args.path.split('/')), args)
-  BrowserWindow.getFocusedWindow().webContents.downloadURL(args.path)
+ipcMain.on('download', function (event, list) {
+  if (DownloadDataMap.size <= 0) {
+    downloadState = new Array(list.length).fill(0);
+    list.map((item, index) => {
+      item.id = index;
+      downloadTotal += item.fileSize
+      // _.last(item.path.split('/'))
+      DownloadDataMap.set(`${_.last(item.path.split('/'))}_${item.fId}`, item)
+      BrowserWindow.getFocusedWindow().webContents.downloadURL(`${item.path}?id=${item.fId}`)
+    })
+  } else {
+    // TODO: 当前下载中未结束，有进行点击创建下载任务，处理堆栈信息
+    dialog.showMessageBox({
+      message: '当前已有下载任务执行中，请等待下载任务结束'
+    })
+  }
+
+  /* DownloadDataMap.set(_.last(args.path.split('/')), args)
+  BrowserWindow.getFocusedWindow().webContents.downloadURL(args.path) */
 })
 
 
