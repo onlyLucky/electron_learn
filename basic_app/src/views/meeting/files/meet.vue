@@ -1,18 +1,18 @@
 <!--
  * @Author: fg
- * @Date: 2023-02-03 14:55:51
+ * @Date: 2023-02-03 15:06:48
  * @LastEditors: fg
- * @LastEditTime: 2023-02-03 16:21:22
+ * @LastEditTime: 2023-02-03 15:32:06
  * @Description: content
 -->
 <template>
-  <div class="fileListCon">
-    <h1>files List</h1>
+  <div class="meetListCon">
+    <h1>meet List</h1>
   </div>
 </template>
 <script setup lang="ts"></script>
 <style scoped lang="less">
-.fileListCon {
+.meetListCon {
   h1 {
     font-size: 30px;
   }

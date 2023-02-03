@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-02-03 10:51:09
+ * @LastEditTime: 2023-02-03 16:23:45
  * @Description: 会议列表数据表格组件
  */
 
@@ -281,12 +281,12 @@ const columns = reactive<any[]>([
                   onClick: _.debounce(async function () {
                     const result = await ipcRenderer.invoke("open-win", {
                       type: 0,
-                      urlName: "models/meet/file?name=" + params.row.name,
+                      urlName: `models/meet/file?name=${params.row.name}&id=${params.row.id}`,
                       width: 900,
                       height: 600,
                       minWidth: 900,
                       minHeight: 600,
-                      resizable: false,
+                      resizable: true,
                       title: `${params.row.name}_文件列表`,
                     });
                     // console.log(params.row);

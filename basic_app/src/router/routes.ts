@@ -19,7 +19,30 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/models/meet/file',
     name: 'meet_file',
-    component: () => import("@/views/meeting/files/list.vue")
+    component: () => import("_v/meeting/files/index.vue"),
+    redirect: '/list',
+    children: [
+      {
+        path: '/list',
+        name: 'files_list',
+        meta: {
+          hideInMenu: false,
+          title: '会议文件',
+          notCache: false,
+        },
+        component: () => import('@/views/meeting/files/list.vue')
+      },
+      {
+        path: '/meet',
+        name: 'files_meet',
+        meta: {
+          hideInMenu: false,
+          title: '会议列表',
+          notCache: false,
+        },
+        component: () => import('@/views/meeting/files/meet.vue')
+      },
+    ]
   },
   {
     path: '/',
