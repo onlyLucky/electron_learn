@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/models/meet/file',
     name: 'meet_file',
-    component: () => import("_v/meeting/fileList.vue")
+    component: () => import("@/views/meeting/files/list.vue")
   },
   {
     path: '/',
