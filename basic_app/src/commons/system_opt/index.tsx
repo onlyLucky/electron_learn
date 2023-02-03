@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 17:24:52
  * @LastEditors: fg
- * @LastEditTime: 2023-01-12 16:05:11
+ * @LastEditTime: 2023-02-03 11:47:59
  * @Description: content
  */
 import { ref } from "vue";
@@ -69,7 +69,7 @@ const SystemOpt = (props: Props = { isShowChangeSize: true }) => {
             <SvgIcon
               iconName="icon-zuidahua1"
               style={{ width: "20px", height: "20px" }}
-              color="var(--fontColor)"
+              color={props.color}
             ></SvgIcon>
             {/* <img src={icon_max} alt="" /> */}
           </div>

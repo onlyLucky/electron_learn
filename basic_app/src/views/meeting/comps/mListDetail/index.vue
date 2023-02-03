@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-02-02 14:54:18
+ * @LastEditTime: 2023-02-03 10:35:25
  * @Description: 会议详情
 -->
 <template>
@@ -239,20 +239,19 @@
                       :stroke-width="6"
                       status="active"
                     >
-                      <span
-                        style="color: var(--fontColor)"
-                        v-if="downloadUse.progress < 100"
-                        >{{ downloadUse.progress }}%</span
-                      >
-                      <span style="color: var(--success)" v-else>下载完成</span>
+                      <span class="proTxt"> {{ downloadUse.progress }}% </span>
                     </Progress>
-                    <div class="f-row-c-c" v-show="downloadUse.status != 1" @click="downloadUse.handleDownload">
+                    <div
+                      class="f-row-c-c"
+                      v-show="downloadUse.status != 1"
+                      @click="downloadUse.handleDownload"
+                    >
                       <svg-icon
                         size="18"
                         iconName="icon-yunxiazai-"
                         color="var(--f_color_active)"
                       ></svg-icon>
-                      <span>下载{{ downloadUse.progress }}</span>
+                      <span>下载</span>
                     </div>
                   </div>
                   <span v-show="!downloadUse.isNeedDownload">查看</span>
@@ -582,6 +581,14 @@ const outMeet = () => {
 :deep(.useItem .ivu-skeleton .ivu-skeleton-item) {
   margin-top: 4px;
 }
+:deep(.ivu-progress) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+:deep(.ivu-progress-show-info .ivu-progress-outer) {
+  padding-right: 40px;
+}
 .modelBox {
   width: 100%;
   height: calc(100% - 48px);
@@ -731,6 +738,10 @@ const outMeet = () => {
           .download {
             width: 260px;
             cursor: pointer;
+            .proTxt {
+              font-size: 14px;
+              color: @fontColor;
+            }
             span {
               margin-left: 4px;
             }
