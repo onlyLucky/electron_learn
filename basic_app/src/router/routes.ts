@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           hideInMenu: false,
           title: '会议文件',
-          notCache: false,
+          keepAlive: true,
         },
         component: () => import('@/views/meeting/files/list.vue')
       },
@@ -38,7 +38,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           hideInMenu: false,
           title: '会议列表',
-          notCache: false,
+          keepAlive: true,
         },
         component: () => import('@/views/meeting/files/meet.vue')
       },
@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/layout/Index.vue'),
     meta: {
       hideInMenu: true,
-      notCache: true
+      keepAlive: true
     },
     children: [
       {
@@ -60,7 +60,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           hideInMenu: false,
           title: '会议',
-          notCache: false,
+          keepAlive: true,
           icon: 'ios-people'
         },
         component: () => import('_v/meeting/index.vue')
@@ -71,7 +71,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           hideInMenu: false,
           title: '设备',
-          notCache: false,
+          keepAlive: true,
           icon: 'ios-construct'
         },
         component: () => import('_v/equipment/index.vue')

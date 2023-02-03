@@ -19,3 +19,9 @@ type MeetDetailType = {
 }
 
 type ConfigKey = 'basic' | 'windows' | 'language' | 'network' | 'download'
+
+// 文件列表路由query传参类型
+type FileQPType = {
+  name: string;
+  id: any;
+};

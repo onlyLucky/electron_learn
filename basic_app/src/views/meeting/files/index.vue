@@ -14,13 +14,18 @@
       <SystemOpt color="var(--bg)"></SystemOpt>
     </div>
     <div class="FileContent">
-      <router-view />
+      <keep-alive v-if="route.meta.keepAlive">
+        <router-view />
+      </keep-alive>
+      <router-view v-if="!route.meta.keepAlive" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import FTabs from "../comps/fTabs/index.vue";
+import { useRoute } from "vue-router";
+const route = useRoute();
 </script>
 <style scoped lang="less">
 .File {

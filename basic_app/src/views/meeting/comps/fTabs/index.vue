@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-03 13:58:21
  * @LastEditors: fg
- * @LastEditTime: 2023-02-03 16:56:50
+ * @LastEditTime: 2023-02-03 17:39:41
  * @Description: 文件tabs切换
 -->
 <template>
@@ -29,11 +29,7 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
 const route = useRoute();
-type QPType = {
-  name: string;
-  id: any;
-};
-const queryParams = reactive<QPType>(route.query as QPType);
+const queryParams = reactive<FileQPType>(route.query as FileQPType);
 const router = useRouter();
 const goMeet = () => {
   console.log("meet");
