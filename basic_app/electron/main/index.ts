@@ -102,6 +102,8 @@ function createWindow() {
     frame: false
   })
   win.setMenu(null)
+  // 替换聚焦窗口
+  focusWin = win;
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(urlPath + '#/meeting')
     // Open devTool if the app is not packaged
@@ -199,7 +201,8 @@ function createLoginWin() {
     frame: false
   })
   loginWin.setMenu(null)
-
+  // 设置聚焦窗口
+  focusWin = loginWin
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     loginWin.loadURL(urlPath)
     // Open devTool if the app is not packaged
