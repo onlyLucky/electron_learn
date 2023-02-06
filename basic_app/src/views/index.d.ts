@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-29 14:17:06
  * @LastEditors: fg
- * @LastEditTime: 2023-01-30 14:25:28
+ * @LastEditTime: 2023-02-06 14:54:37
  * @Description: views index.d.ts
  */
 type MeetDetailType = {
@@ -25,3 +25,8 @@ type FileQPType = {
   name: string;
   id: any;
 };
+// 文件列表类筛选型
+type FileFilterType = {
+  type: number;// 类型id
+  typeName: string; // 类型名称
+}
