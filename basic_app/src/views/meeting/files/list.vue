@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-03 14:55:51
  * @LastEditors: fg
- * @LastEditTime: 2023-02-06 16:07:08
+ * @LastEditTime: 2023-02-06 16:53:37
  * @Description: content
 -->
 <template>
@@ -71,12 +71,22 @@
           </Dropdown>
         </div>
       </div>
-      <div class="filterOpt"></div>
+      <div class="filterOpt f-row-e-c">
+        <Checkbox :model-value="false">全选下载</Checkbox>
+        <div class="optBox" v-show="false">
+          <Button type="primary">下载</Button>
+        </div>
+      </div>
+    </div>
+    <!-- 展示内容 -->
+    <div class="content">
+      <fTable></fTable>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
+import fTable from "../comps/filesList/fTable.vue";
 const route = useRoute();
 const router = useRouter();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
@@ -181,6 +191,10 @@ const onMenuTap = (val: number) => {
         }
       }
     }
+  }
+  .content {
+    width: 100%;
+    height: calc(100% - 110px);
   }
 }
 </style>

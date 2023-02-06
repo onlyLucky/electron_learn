@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-29 14:17:06
  * @LastEditors: fg
- * @LastEditTime: 2023-02-06 14:54:37
+ * @LastEditTime: 2023-02-06 16:51:37
  * @Description: views index.d.ts
  */
 type MeetDetailType = {
