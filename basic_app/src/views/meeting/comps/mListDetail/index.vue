@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-02-03 10:35:25
+ * @LastEditTime: 2023-02-07 17:54:39
  * @Description: 会议详情
 -->
 <template>
@@ -254,7 +254,9 @@
                       <span>下载</span>
                     </div>
                   </div>
-                  <span v-show="!downloadUse.isNeedDownload">查看</span>
+                  <span v-show="!downloadUse.isNeedDownload" @click="goFileWin"
+                    >查看</span
+                  >
                 </div>
               </div>
               <div class="linkInfoItem partInfoItem f-row-b-c">
@@ -576,6 +578,20 @@ const outMeet = () => {
     fileName: "test.mp4",
   });
 }; */
+
+// 文件查看
+const goFileWin = () => {
+  ipcRenderer.invoke("open-win", {
+    type: 0,
+    urlName: `models/meet/file?name=${detail.name}&id=${props.mId}`,
+    width: 900,
+    height: 600,
+    minWidth: 900,
+    minHeight: 600,
+    resizable: true,
+    title: `${detail.name}_文件列表`,
+  });
+};
 </script>
 <style lang="less" scoped>
 :deep(.useItem .ivu-skeleton .ivu-skeleton-item) {
