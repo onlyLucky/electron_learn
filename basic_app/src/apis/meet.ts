@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-28 13:44:32
  * @LastEditors: fg
- * @LastEditTime: 2023-01-30 17:59:54
+ * @LastEditTime: 2023-02-07 15:06:17
  * @Description: 会议api
  */
 
@@ -84,5 +84,5 @@ export const deleteMeetConf = (params: MeetIdPT): Promise<ResultData<any>> => {
 
 // 根据会议id获取会议文件
 export const getAllFileByMeetId = (params: MeetIdPT): Promise<ResultData<any>> => {
-  return http.get(path.getAllFileByMeetId, params)
+  return http.get<{ data: any[] }>(path.getAllFileByMeetId, params)
 }

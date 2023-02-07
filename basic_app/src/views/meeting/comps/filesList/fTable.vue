@@ -2,23 +2,24 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-02-06 18:01:31
+ * @LastEditTime: 2023-02-07 15:35:22
  * @Description: 文件列表的块状组件
 -->
 <template>
-  <div class="table">
-    <Table
-      :columns="columns"
-      :data="tData"
-      style="width: 100%; height: 100%"
-    ></Table>
+  <div class="table" ref="refTable">
+    <Table :columns="columns" :data="tData" :height="tableHeight"></Table>
   </div>
 </template>
 <script setup lang="ts">
+import { useType } from "./useType";
+import { useRoute } from "vue-router";
+import { getAllFileByMeetId } from "@/apis/meet";
+const route = useRoute();
+const queryParams = reactive<FileQPType>(route.query as FileQPType);
 // props
 /* let props = withDefaults(
   defineProps<{
-    columns: any[];
+    columns: any[]; 
   }>(),
   {
     columns: () => [],
@@ -43,22 +44,53 @@ const columns = [
           h(
             "div",
             {
-              class: "fileLeft f-row-c-c",
+              class: "fileLeft f-row-s-c",
             },
             [
-              h("img", { src: "" }),
-              h("div", { class: "fileInfo" }, [
-                h("h1", {}, "文件名称"),
-                h("p", {}, "已下载"),
+              h("img", {
+                src: useType(params.row.realName),
+              }),
+              h("div", { class: "fileInfo f-col-c-s" }, [
+                h(
+                  resolveComponent("Text"),
+                  {
+                    placement: "bottom-start",
+                    ellipsis: true,
+                    style: { fontSize: "16px" },
+                    "ellipsis-config": { tooltip: true },
+                  },
+                  params.row.realName
+                ),
+                h("p", { class: "fileStatus" }, "已下载"),
               ]),
             ]
           ),
           h(
             "div",
             {
-              class: "fileRight",
+              class: "fileRight f-row-e-c",
             },
-            []
+            [
+              h(
+                resolveComponent("Tooltip"),
+                {
+                  content: "更多",
+                  placement: "top",
+                  transfer: true,
+                },
+                // <Icon type="ios-more" />
+                {
+                  default: () => [
+                    h(resolveComponent("Icon"), {
+                      type: "ios-more",
+                      class: "iconOpt",
+                      size: "26",
+                    }),
+                  ],
+                }
+              ),
+              // h(SvgIcon,{})
+            ]
           ),
         ]
       );
@@ -83,23 +115,19 @@ const columns = [
     sortable: true,
   },
 ];
+const refTable = ref<HTMLElement>();
+let tableHeight = ref<number>();
 
-let tData = [
-  {
-    id: 1573,
-    type: 10,
-    length: null,
-    code: null,
-    isChild: 0,
-    parentId: 0,
-    deviceId: 18,
-    deviceName: null,
-    realName: "继续测试长视频-1.mp4",
-    fileSize: 145940772,
-    createTime: "2022-10-27 17:04",
-    updateTime: "2022-10-27 17:05",
-  },
-];
+let tData = reactive<any[]>([]);
+onMounted(() => {
+  tableHeight.value = refTable.value?.clientHeight;
+  getData();
+});
+const getData = () => {
+  getAllFileByMeetId({ meetId: queryParams.id }).then((res) => {
+    res.data.map((item: any, index: number) => tData.push(item));
+  });
+};
 </script>
 <style scoped lang="less">
 :deep(.ivu-table th) {
@@ -114,9 +142,41 @@ let tData = [
 :deep(.ivu-table:before) {
   display: none;
 }
+:deep(.ivu-typography) {
+  color: @f_color_h3;
+}
 :deep(.fileName) {
   .size(100%,60px);
-  background-color: pink;
+  .fileLeft {
+    .size(100%,100%);
+    img {
+      .size(46px,46px);
+      margin-right: 6px;
+    }
+    .fileInfo {
+      .fileStatus {
+        font-size: 12px;
+        margin-top: 6px;
+        color: @fontColor;
+      }
+    }
+  }
+  .fileRight {
+    display: none;
+    .size(auto, 100%);
+    padding-left: 10px;
+    flex-shrink: 0;
+    .iconOpt {
+      /* border: 10px solid transparent;
+      background-clip: padding-box; */
+      cursor: pointer;
+    }
+  }
+  &:hover {
+    .fileRight {
+      display: flex;
+    }
+  }
 }
 .table {
   .size(100%,100%);
