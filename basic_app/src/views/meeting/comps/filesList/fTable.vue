@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-02-07 15:50:22
+ * @LastEditTime: 2023-02-07 17:38:40
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -15,12 +15,17 @@ import { useType } from "./useType";
 import { useRoute } from "vue-router";
 import { getAllFileByMeetId } from "@/apis/meet";
 import { useBytesUnit } from "@/hooks/useTools";
+import { useMsgTimeShow } from "@/hooks/useMsgTime";
+import hdObj from "_v/setting/handleData";
+import { join } from "path";
+const fs = require("fs");
+const downloadPath = hdObj.getConfigItem("download").downloadPath;
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 // props
 /* let props = withDefaults(
   defineProps<{
-    columns: any[]; 
+    columns: any[];
   }>(),
   {
     columns: () => [],
@@ -62,7 +67,18 @@ const columns = [
                   },
                   params.row.realName
                 ),
-                h("p", { class: "fileStatus" }, "已下载"),
+                h(
+                  "p",
+                  {
+                    class: "fileStatus",
+                    style: {
+                      color: params.row.dStatus
+                        ? "var(--success)"
+                        : "var(--fontColor)",
+                    },
+                  },
+                  params.row.dStatus ? "已下载" : "未下载"
+                ),
               ]),
             ]
           ),
@@ -111,10 +127,17 @@ const columns = [
     key: "createTime",
     width: 150,
     sortable: true,
+    render: (h: any, params: any) => {
+      return h(
+        "div",
+        { class: "fileSize" },
+        useMsgTimeShow(params.row.createTime)
+      );
+    },
   },
   {
     title: "下载时间",
-    key: "updateTime",
+    key: "dCTime",
     width: 150,
     sortable: true,
   },
@@ -132,7 +155,20 @@ onMounted(() => {
 });
 const getData = () => {
   getAllFileByMeetId({ meetId: queryParams.id }).then((res) => {
-    res.data.map((item: any, index: number) => tData.push(item));
+    res.data.map((item: any, index: number) => {
+      let tempPath = join(
+        downloadPath,
+        `/${queryParams.name}.${queryParams.id}/${item.realName}`
+      );
+      if (fs.existsSync(tempPath)) {
+        item.dStatus = true;
+        item.dCTime = useMsgTimeShow(fs.statSync(tempPath).ctime);
+      } else {
+        item.dStatus = false;
+      }
+      tData.push(item);
+    });
+    console.log(tData, "tData");
   });
 };
 </script>

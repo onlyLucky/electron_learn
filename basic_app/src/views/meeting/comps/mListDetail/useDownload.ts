@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-30 18:00:53
  * @LastEditors: fg
- * @LastEditTime: 2023-02-02 16:31:06
+ * @LastEditTime: 2023-02-07 17:02:59
  * @Description: 会议详情下载
  */
 
@@ -14,6 +14,9 @@ import { ipcRenderer } from "electron"
 import _ from "lodash"
 const fs = require('fs')
 
+
+// 文件存在
+const downloadPath = hdObj.getConfigItem('download').downloadPath
 
 export const useDownload = async (meetId: number, meetName: string) => {
   // 下载文件
@@ -48,8 +51,7 @@ export const useDownload = async (meetId: number, meetName: string) => {
       }
     }) */
   }
-  // 文件存在
-  const downloadPath = hdObj.getConfigItem('download').downloadPath
+
   const isExistMeetFile = () => {
     // 判断当前是否存在会议文件夹
     downloadUse.needDownloadArr = [];
@@ -109,6 +111,10 @@ export const useDownload = async (meetId: number, meetName: string) => {
   })
 
   return downloadUse
+}
+
+export const useHasFiles = (path: string) => {
+  return fs.existsSync(join(downloadPath, path))
 }
 export type DownloadType = {
   fileList: any[],
