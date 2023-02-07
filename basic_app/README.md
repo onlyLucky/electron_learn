@@ -12,7 +12,7 @@
 - [Directory](#directory)
 - [FAQ](#faq)
   - [开发中遇到的问题](#开发中遇到的问题)
-    - [Q1. Electron failed to install correctly, please delete node\_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
+    - [Q1. Electron failed to install correctly, please delete node_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
     - [Q2. tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法](#q2-tsx-写法引用样式文件没有样式隔离可以使用-vite-内部的-css-module-css-in-js-的解决方法)
     - [Q3: electron 顶部允许拖动，hover 等 css 样式效果失效](#q3-electron-顶部允许拖动hover-等-css-样式效果失效)
     - [Q4: \[tsx\]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）](#q4-tsx的写法对于目前的问题总结或许是自己未找到解决的方案或配置后面使用-react-的格式会进行解决)
@@ -30,10 +30,11 @@
     - [Q2: tsconfig.json 文件报错 JSON schema for the TypeScript compiler‘s configuration file](#q2-tsconfigjson-文件报错-json-schema-for-the-typescript-compilers-configuration-file)
     - [Q3: ts 忽略报错](#q3-ts-忽略报错)
     - [Q4: “元素隐式具有 “any“ 类型，因为类型为 “string“ 的表达式不能用于索引类型”（for in）](#q4-元素隐式具有-any-类型因为类型为-string-的表达式不能用于索引类型for-in)
+    - [Q5: TypeScript 中使用 parseInt()](#q5-typescript-中使用-parseint)
   - [报错处理](#报错处理)
     - [E1: 控制台： \[Violation\] Added non-passive event listener to a scroll-blocking 'mousewheel' event](#e1-控制台-violation-added-non-passive-event-listener-to-a-scroll-blocking-mousewheel-event)
   - [view-ui-plus 框架在 electron 问题](#view-ui-plus-框架在-electron-问题)
-    - [V1: (ERROR:CONSOLE(1)\] "Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}", source: devtools://devtools/bundled/core/protocol\_client/protocol\_client.js (1)) 报错处理：](#v1-errorconsole1-request-storagegetstoragekeyforframe-failed-code-32602messageframe-tree-node-for-given-frame-not-found-source-devtoolsdevtoolsbundledcoreprotocol_clientprotocol_clientjs-1-报错处理)
+    - [V1: (ERROR:CONSOLE(1)\] "Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)) 报错处理：](#v1-errorconsole1-request-storagegetstoragekeyforframe-failed-code-32602messageframe-tree-node-for-given-frame-not-found-source-devtoolsdevtoolsbundledcoreprotocol_clientprotocol_clientjs-1-报错处理)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -443,6 +444,32 @@ for (key in this.config) {
 直接将 key 的类型 赋值为 keyof ConfigType
 
 [处理方式](https://blog.csdn.net/m0_47670683/article/details/124025972)
+
+#### Q5: TypeScript 中使用 parseInt()
+
+使用过程中会有**类型“number”的参数不能赋给类型“string”的参数。** 报错：
+
+```ts
+parseInt(string:string,radix?:number):number
+```
+
+看到上面 parseInt 函数传参类型就可以很快看到问题所在，第一个参数是 string 类型，js 使用时通常传 number,可以使用`toSting()`函数转化成为 string 类型
+
+#### Q6: ts 两个 Date 类型对象相减
+
+```ts
+let localTime: Date = new Date(); //当前系统时间
+let createTime: Date = new Date(time); //消息创建时间
+let diff = localTime - createTime; // 报错：算术运算左侧必须是 "any"、"number"、"bigint" 或枚举类型。
+```
+
+通常情况下 js上面的操作能够获取到两个Date对象中的时间戳之差。但是在ts之中会报错类型不对，可以使用getTime或者valueOf函数处理
+
+```ts
+let localTime: Date = new Date(); //当前系统时间
+let createTime: Date = new Date(time); //消息创建时间
+let diff = localTime.valueOf() - createTime.valueOf();
+```
 
 ### 报错处理
 
