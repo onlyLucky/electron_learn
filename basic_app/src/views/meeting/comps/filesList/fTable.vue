@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-02-07 15:35:22
+ * @LastEditTime: 2023-02-07 15:50:22
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -14,6 +14,7 @@
 import { useType } from "./useType";
 import { useRoute } from "vue-router";
 import { getAllFileByMeetId } from "@/apis/meet";
+import { useBytesUnit } from "@/hooks/useTools";
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 // props
@@ -101,6 +102,9 @@ const columns = [
     key: "fileSize",
     width: 150,
     sortable: true,
+    render: (h: any, params: any) => {
+      return h("div", { class: "fileSize" }, useBytesUnit(params.row.fileSize));
+    },
   },
   {
     title: "上传时间",
@@ -122,6 +126,9 @@ let tData = reactive<any[]>([]);
 onMounted(() => {
   tableHeight.value = refTable.value?.clientHeight;
   getData();
+  window.onresize = () => {
+    tableHeight.value = refTable.value?.clientHeight;
+  };
 });
 const getData = () => {
   getAllFileByMeetId({ meetId: queryParams.id }).then((res) => {
@@ -177,6 +184,9 @@ const getData = () => {
       display: flex;
     }
   }
+}
+:deep(.fileSize) {
+  .size(100%,100%);
 }
 .table {
   .size(100%,100%);
