@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-08 09:36:54
+ * @LastEditTime: 2023-02-08 11:34:36
  * @Description: 会议纪要
 -->
 <template>
@@ -57,7 +57,47 @@
         </div>
       </div>
     </div>
-    <div class="footer"></div>
+    <div class="footer f-col-c-c">
+      <p class="fTotal f-row-c-c">(1/2)</p>
+      <div class="audioCtl f-row-b-c">
+        <div class="ctlLeft f-row-b-c">
+          <svg-icon
+            iconName="icon-48shangyishou"
+            className="audioIcon"
+            size="24"
+            color="var(--f_color_active)"
+          ></svg-icon>
+          <div class="iconCtrl">
+            <svg-icon
+              iconName="icon-zanting"
+              className="ctrlItem"
+              size="36"
+              color="var(--f_color_active)"
+            ></svg-icon>
+          </div>
+          <svg-icon
+            iconName="icon-49xiayishou"
+            className="audioIcon"
+            size="24"
+            color="var(--f_color_active)"
+          ></svg-icon>
+        </div>
+        <div class="ctlCenter f-row-c-c">
+          <slider
+            class="cenSlider"
+            value=""
+            show-tip="never"
+            backgroundColor="#e9e9e9"
+            block-size="40"
+            block-color="#ffffff"
+          >
+          </slider>
+        </div>
+        <div class="ctlRight f-row-e-c">
+          <p>00:40/08:00</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -66,6 +106,18 @@ import SvgIcon from "@/commons/SvgIcon/index.vue";
 import { transform } from "lodash";
 </script>
 <style scoped lang="less">
+:deep(.ivu-slider-wrap),
+:deep(.ivu-slider-bar) {
+  height: 6px;
+  border-radius: 8px;
+}
+:deep(.ivu-slider-bar) {
+  background: @f_color_active;
+}
+:deep(.ivu-slider-button) {
+  .size(16px,16px);
+  border-color: @f_color_active;
+}
 .summary {
   .size(100vw,100vh);
 
@@ -82,7 +134,7 @@ import { transform } from "lodash";
   }
   .content {
     width: 100%;
-    height: calc(100% - 121px);
+    height: calc(100% - 124px);
     padding: 20px;
     box-sizing: border-box;
     .conHeader {
@@ -148,9 +200,39 @@ import { transform } from "lodash";
     }
   }
   .footer {
-    .size(100%, 73px);
+    .size(100%, 76px);
     border-top: 1px solid @meet_summary_bbc;
     background: url("@/assets/images/meet/summary_bbg.png") no-repeat;
+    background-size: 100% 100%;
+    .fTotal {
+      .size(100%,20px);
+      font-size: 14px;
+      line-height: 10px;
+      color: @f_color_active;
+    }
+    .audioCtl {
+      .size(100%,50px);
+      padding: 0 20px;
+      box-sizing: border-box;
+      .ctlLeft {
+        .size(120px, 100%);
+        flex-shrink: 0;
+        margin-right: 36px;
+      }
+      .ctlCenter {
+        .size(100%,100%);
+        .cenSlider {
+          width: 100%;
+        }
+      }
+      .ctlRight {
+        .size(100px,100%);
+        margin-left: 10px;
+        flex-shrink: 0;
+        font-size: 14px;
+        color: @f_color_active;
+      }
+    }
   }
 }
 </style>
