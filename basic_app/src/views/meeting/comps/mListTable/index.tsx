@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-29 10:13:16
  * @LastEditors: fg
- * @LastEditTime: 2023-02-08 13:34:17
+ * @LastEditTime: 2023-02-08 14:46:27
  * @Description: 会议列表数据表格组件
  */
 
@@ -275,6 +275,7 @@ const columns = reactive<any[]>([
                   icon: "ios-folder",
                   size: "small",
                   shape: "circle",
+                  disabled: params.row.fileUpload == 0,
                   style: {
                     margin: "0 2px",
                   },
@@ -309,6 +310,7 @@ const columns = reactive<any[]>([
                   icon: "ios-bookmark",
                   size: "small",
                   shape: "circle",
+                  disabled: params.row.fileUpload == 0,
                   style: {
                     margin: "0 2px",
                   },
@@ -316,7 +318,7 @@ const columns = reactive<any[]>([
                     // console.log(params.row);
                     const result = await ipcRenderer.invoke("open-win", {
                       type: 0,
-                      urlName: `models/meet/summary?id=${params.row.id}`,
+                      urlName: `models/meet/summary?name=${params.row.name}&id=${params.row.id}`,
                       width: 1024,
                       height: 700,
                       minWidth: 1024,
@@ -344,6 +346,7 @@ const columns = reactive<any[]>([
                   icon: "ios-videocam",
                   size: "small",
                   shape: "circle",
+                  disabled: params.row.fileUpload == 0,
                   style: {
                     margin: "0 2px",
                   },

@@ -2,14 +2,13 @@
  * @Author: fg
  * @Date: 2023-01-30 18:00:53
  * @LastEditors: fg
- * @LastEditTime: 2023-02-07 17:02:59
+ * @LastEditTime: 2023-02-08 16:19:37
  * @Description: 会议详情下载
  */
 
 import { getAllFileByMeetId } from "@/apis/meet"
 import hdObj from "_v/setting/handleData"
 import { join } from 'path'
-import { ReactiveEffect, Ref } from "vue"
 import { ipcRenderer } from "electron"
 import _ from "lodash"
 const fs = require('fs')
@@ -59,7 +58,7 @@ export const useDownload = async (meetId: number, meetName: string) => {
       // 判读当前会议的本地文件是否完整(every 检测文件无法检测完全)
       downloadUse.fileList.map((item: any, index: number) => {
         // console.log(fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)), join(downloadPath, `/${meetName}.${meetId}/${item.realName}`))
-        console.log(item.realName, fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)));
+        // console.log(item.realName, fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)));
         if (!fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`))) {
           downloadUse.needDownloadArr.push(index)
         }
@@ -67,7 +66,7 @@ export const useDownload = async (meetId: number, meetName: string) => {
       return downloadUse.needDownloadArr.length == 0
     } else {
       // 当前没有会议文件夹
-      console.log('当前没有会议文件夹', downloadPath)
+      // console.log('当前没有会议文件夹', downloadPath)
       downloadUse.needDownloadArr = Array.apply(null, { length: downloadUse.fileList.length } as any[]).map((item, index) => {
         return index
       })

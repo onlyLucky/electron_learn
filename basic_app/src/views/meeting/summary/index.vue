@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-08 13:24:33
+ * @LastEditTime: 2023-02-08 16:41:53
  * @Description: 会议纪要
 -->
 <template>
@@ -58,7 +58,7 @@
       </div>
     </div>
     <div class="footer f-col-c-c">
-      <p class="fTotal f-row-c-c">(1/2)</p>
+      <p class="fTotal f-row-c-e">(1/2)</p>
       <div class="audioCtl f-row-b-c">
         <div class="ctlLeft f-row-b-c">
           <svg-icon
@@ -68,9 +68,15 @@
             color="var(--f_color_active)"
           ></svg-icon>
           <div class="iconCtrl">
-            <svg-icon
+            <!-- <svg-icon
               iconName="icon-zanting"
               className="ctrlItem"
+              size="36"
+              color="var(--f_color_active)"
+            ></svg-icon> -->
+            <svg-icon
+              iconName="icon-jiazaizhong"
+              className="ctrlItem ctrlItemLoading"
               size="36"
               color="var(--f_color_active)"
             ></svg-icon>
@@ -94,7 +100,7 @@
           </slider>
         </div>
         <div class="ctlRight f-row-e-c">
-          <p>00:40/08:00</p>
+          <p>00:40 / 08:00</p>
         </div>
       </div>
     </div>
@@ -103,8 +109,9 @@
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import SvgIcon from "@/commons/SvgIcon/index.vue";
-import { getMTListByMeetId } from "@/apis/meet";
+import { getMTListByMeetId, getAudioByMeetId } from "@/apis/meet";
 import { useRoute } from "vue-router";
+import { useHasFiles } from "../comps/mListDetail/useDownload";
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 let pageNum = ref<number>(1);
@@ -113,10 +120,31 @@ const getData = () => {
     pageSize: 20,
     pageNum: pageNum.value,
     meetId: queryParams.id,
-  }).then((res) => {});
+  }).then((res) => {
+    console.log(res, "res");
+  });
+};
+// 音频列表
+let audioList = reactive<any[]>([]);
+const getAudioInfo = () => {
+  return getAudioByMeetId({
+    meetId: queryParams.id,
+  }).then((res) => {
+    // 获取音频列表 下载音频
+    res.data.map((item: any, index: number) => {
+      if (
+        !useHasFiles(`/${queryParams.name}.${queryParams.id}/${item.realName}`)
+      ) {
+      }
+
+      audioList.push(item);
+    });
+    console.log(res, "res");
+  });
 };
 onMounted(() => {
   getData();
+  getAudioInfo();
 });
 </script>
 <style scoped lang="less">
@@ -221,7 +249,7 @@ onMounted(() => {
     .fTotal {
       .size(100%,20px);
       font-size: 14px;
-      line-height: 10px;
+      line-height: 4px;
       color: @f_color_active;
     }
     .audioCtl {
@@ -232,6 +260,24 @@ onMounted(() => {
         .size(120px, 100%);
         flex-shrink: 0;
         margin-right: 36px;
+        .audioIcon,
+        .ctrlItem {
+          cursor: pointer;
+        }
+        .ctrlItemLoading {
+          animation: ani-demo-spin 1s linear infinite;
+        }
+        @keyframes ani-demo-spin {
+          from {
+            transform: rotate(0deg);
+          }
+          50% {
+            transform: rotate(180deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
       }
       .ctlCenter {
         .size(100%,100%);
