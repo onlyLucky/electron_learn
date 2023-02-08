@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-08 11:34:36
+ * @LastEditTime: 2023-02-08 13:24:33
  * @Description: 会议纪要
 -->
 <template>
@@ -103,7 +103,21 @@
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import SvgIcon from "@/commons/SvgIcon/index.vue";
-import { transform } from "lodash";
+import { getMTListByMeetId } from "@/apis/meet";
+import { useRoute } from "vue-router";
+const route = useRoute();
+const queryParams = reactive<FileQPType>(route.query as FileQPType);
+let pageNum = ref<number>(1);
+const getData = () => {
+  return getMTListByMeetId({
+    pageSize: 20,
+    pageNum: pageNum.value,
+    meetId: queryParams.id,
+  }).then((res) => {});
+};
+onMounted(() => {
+  getData();
+});
 </script>
 <style scoped lang="less">
 :deep(.ivu-slider-wrap),

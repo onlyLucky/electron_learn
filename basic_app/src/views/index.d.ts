@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-29 14:17:06
  * @LastEditors: fg
- * @LastEditTime: 2023-02-06 16:51:37
+ * @LastEditTime: 2023-02-08 13:26:21
  * @Description: views index.d.ts
  */
 type MeetDetailType = {
@@ -22,7 +22,7 @@ type ConfigKey = 'basic' | 'windows' | 'language' | 'network' | 'download'
 
 // 文件列表路由query传参类型
 type FileQPType = {
-  name: string;
+  name?: string;
   id: any;
 };
 // 文件列表类筛选型
