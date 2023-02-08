@@ -8,6 +8,7 @@
 - [目录](#目录)
 - [场景](#场景)
   - [01.Map,Object 数据类型相互转换](#01mapobject-数据类型相互转换)
+  - [02.js 对象解构赋值重命名设置默认值](#02js-对象解构赋值重命名设置默认值)
 - [参考链接](#参考链接)
 
 ## 场景
@@ -39,6 +40,20 @@ let map = new Map([
 ]);
 let obj = Object.fromEntries(map.entries());
 obj.name; // "foo";
+```
+
+### 02.js 对象解构赋值重命名设置默认值
+
+```js
+const temp = {
+  a: "foo",
+  b: 20,
+  sex: true,
+};
+
+const { a: name, b: age, sex = "default" } = temp;
+
+// name
 ```
 
 ## 参考链接
