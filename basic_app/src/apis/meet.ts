@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-28 13:44:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-07 15:06:17
+ * @LastEditTime: 2023-02-08 09:31:28
  * @Description: 会议api
  */
 
@@ -19,7 +19,7 @@ const path = {
   getMeetingById: '/meet/getMeetingById',
   deleteByIds: '/meet/deleteByIds',
   putMeet: '/meet',
-  getListByMeetId: '/meetText/getListByMeetId',
+  getMTListByMeetId: '/meetText/getListByMeetId',
   getMeetingUserBymeetId: '/meet/getMeetingUserBymeetIdAndNickname',
   deleteMeetConf: '/meet/deleteMeetConf',
   getAllFileByMeetId: "/meetFile/getAllFileByMeetId"
@@ -69,9 +69,9 @@ export const getMeetDetailById = (id: number): Promise<ResultData<any>> => {
   return http.get(`${path.putMeet}/${id}`)
 }
 
-// 通过会议id查询会议列表
-export const getListByMeetId = (params: any): Promise<ResultData<any>> => {
-  return http.get(path.getListByMeetId, params)
+// 通过会议id查询会议纪要列表
+export const getMTListByMeetId = (params: any): Promise<ResultData<any>> => {
+  return http.get(path.getMTListByMeetId, params)
 }
 
 type MeetIdPT = {

@@ -2,8 +2,8 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-01-28 10:29:06
- * @Description: content
+ * @LastEditTime: 2023-02-08 09:36:54
+ * @Description: 会议纪要
 -->
 <template>
   <div class="summary">

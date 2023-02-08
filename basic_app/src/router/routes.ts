@@ -14,7 +14,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/models/meet/summary',
     name: 'meet_summary',
-    component: () => import("_v/meeting/summary.vue")
+    component: () => import("@/views/meeting/summary/index.vue")
   },
   {
     path: '/models/meet/file',
