@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-09 18:38:38
+ * @LastEditTime: 2023-02-09 19:37:48
  * @Description: 会议纪要
 -->
 <template>
@@ -82,7 +82,7 @@
         </div>
       </div>
       <div class="conCon">
-        <div class="conBox" v-show="pageList.length > 0">
+        <div class="conBox" v-show="pageList.length > 0" @scroll="onConScroll">
           <div
             class="conItem active f-row-b-c"
             v-for="(item, index) in pageList"
@@ -95,9 +95,11 @@
               color="var(--meet_summary_icon_time)"
             ></SvgIcon>
           </div>
+
           <div class="conFooter f-row-c-c">
             <span
               class="conFooterLink"
+              v-debounce="goNextPage"
               v-show="!(pageTotal - pageList.length < pageSize)"
               >查看更多</span
             >
@@ -108,6 +110,15 @@
             >
           </div>
         </div>
+        <!-- 加载 -->
+        <Spin :show="loading" fix size="large" class="loading">
+          <Icon
+            type="ios-loading"
+            size="26"
+            class="conLoading iconLoading"
+          ></Icon>
+          <div class="conLoadingTxt">加载中...</div>
+        </Spin>
 
         <div class="noDataCon f-col-s-c" v-show="pageList.length <= 0">
           <img src="@/assets/images/no_data.png" alt="" />
@@ -217,20 +228,46 @@ let pageNum = ref<number>(1);
 let pageTotal = ref<number>(0);
 let pageSize = ref<number>(20);
 let pageList = reactive<any[]>([]);
+let loading = ref<boolean>(false);
 const getData = () => {
+  loading.value = true;
   return getMTListByMeetId({
     pageSize: pageSize.value,
     pageNum: pageNum.value,
     meetId: queryParams.id,
-  }).then((res) => {
-    if (pageNum.value == 1) {
-      pageList = [...res.data.records];
-    } else {
-      pageList.push(res.data.records);
+  })
+    .then((res) => {
+      loading.value = false;
+      if (pageNum.value == 1) {
+        pageList = [...res.data.records];
+      } else {
+        pageList.push(res.data.records);
+      }
+      console.log(res, "res");
+      pageTotal.value = res.data.total;
+    })
+    .catch((err) => {
+      // 数据加载失败之后 页面减一
+      if (pageNum.value !== 1) {
+        pageNum.value = pageNum.value - 1;
+      }
+      loading.value = false;
+    });
+};
+//查看下一页
+const goNextPage = () => {
+  pageNum.value = pageNum.value + 1;
+  getData();
+};
+// 滚动区域监听
+const onConScroll = (e: any) => {
+  const { scrollTop, clientHeight, scrollHeight } = e.target;
+  if (scrollTop + clientHeight === scrollHeight) {
+    // console.log("滚动到底部");
+    if (pageTotal.value - pageList.length >= pageSize.value) {
+      goNextPage();
     }
-    console.log(res, "res");
-    pageTotal.value = res.data.total;
-  });
+  }
 };
 // 音频列表
 let audioList = reactive<any[]>([]);
@@ -350,6 +387,7 @@ onMounted(async () => {
     .conCon {
       width: 100%;
       height: calc(100% - 74px);
+      position: relative;
       .conBox {
         .size(100%,100%);
         overflow: auto;
@@ -394,7 +432,16 @@ onMounted(async () => {
           }
         }
       }
-
+      .loading {
+        .size(100%,100%);
+        background-color: rgba(255, 255, 255, 0.7);
+        .conLoading {
+          margin-bottom: 10px;
+        }
+        .conLoadingTxt {
+          font-size: 14px;
+        }
+      }
       .noDataCon {
         .size(100%,100%);
         img {

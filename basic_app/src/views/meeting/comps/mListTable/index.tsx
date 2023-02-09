@@ -511,7 +511,7 @@ export const MListTable = defineComponent({
             >
               <Icon
                 type="ios-loading"
-                size={22}
+                size={26}
                 class={style.spinLoading}
               ></Icon>
               <div style={{ marginTop: "10px", fontSize: "14px" }}>
