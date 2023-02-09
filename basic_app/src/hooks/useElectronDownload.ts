@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-08 15:07:47
  * @LastEditors: fg
- * @LastEditTime: 2023-02-09 13:59:19
+ * @LastEditTime: 2023-02-09 17:31:53
  * @Description: electron 文件下载处理
  */
 import hdObj from "_v/setting/handleData"

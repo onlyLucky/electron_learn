@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-09 15:19:42
+ * @LastEditTime: 2023-02-09 18:38:38
  * @Description: 会议纪要
 -->
 <template>
@@ -35,23 +35,50 @@
             <span>{{ detail.createTime }}</span>
           </div>
         </div>
-        <div class="cHRight download f-row-c-c">
+        <div class="cHRight download f-row-c-c" v-debounce="goDownloadDoc">
+          <!-- <div class="downloadBg"></div> -->
+          <!-- 未下载 -->
           <SvgIcon
-            v-show="downloadStatus == 2"
+            v-show="downloadDocStatus == 0"
             iconName="icon-yunxiazai-"
             className="cHRightIcon"
             size="20"
             :style="{ width: '20px', height: '20px', marginRight: '5px' }"
             color="var(--bg)"
           ></SvgIcon>
+          <!-- 加载中 -->
           <svg-icon
-            v-show="downloadStatus != 2"
+            v-show="downloadStatus != 2 || downloadDocStatus == 1"
             iconName="icon-jiazaizhong"
             className="cHRightIcon iconLoading"
             size="20"
             color="var(--bg)"
           ></svg-icon>
-          <span>下载</span>
+          <!-- 已下载 -->
+          <svg-icon
+            v-show="downloadDocStatus == 2"
+            iconName="icon-duihao"
+            className="cHRightIcon"
+            size="20"
+            color="var(--bg)"
+          ></svg-icon>
+          <!-- 下载失败 -->
+          <svg-icon
+            v-show="downloadDocStatus == 3"
+            iconName="icon-shibai"
+            className="cHRightIcon"
+            size="20"
+            color="var(--bg)"
+          ></svg-icon>
+          <span>{{
+            downloadDocStatus == 0
+              ? "下载"
+              : downloadDocStatus == 1
+              ? "下载中"
+              : downloadDocStatus == 2
+              ? "已下载"
+              : "下载失败"
+          }}</span>
         </div>
       </div>
       <div class="conCon">
@@ -107,7 +134,7 @@
               color="var(--f_color_active)"
             ></svg-icon>
             <svg-icon
-              v-show="downloadStatus != 2 && audioDownloadFlag"
+              v-show="downloadStatus != 2"
               iconName="icon-jiazaizhong"
               className="ctrlItem iconLoading"
               size="36"
@@ -146,12 +173,45 @@ import {
   getMTListByMeetId,
   getAudioByMeetId,
   getMeetDetailById,
+  getMeetSummary,
 } from "@/apis/meet";
 import { useRoute } from "vue-router";
 import { useDownload, useDownloadOpt } from "@/hooks/useElectronDownload";
+import hdObj from "_v/setting/handleData";
+import { join } from "path";
+import { Message } from "view-ui-plus";
+const fs = require("fs");
+
+// 文件存在
+const downloadPath = hdObj.getConfigItem("download").downloadPath;
 
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
+
+// 会议纪要下载
+let downloadDocStatus = ref<0 | 1 | 2 | 3>(0); //0 下载 1下载中 2已下载 3下载失败
+const goDownloadDoc = () => {
+  let temp = `/${queryParams.name}.${queryParams.id}/${queryParams.name}_${queryParams.id}.docx`;
+  if (fs.existsSync(join(downloadPath, temp))) {
+    // 查看文件
+    return false;
+  }
+  downloadDocStatus.value = 1;
+  getMeetSummary({ meetId: queryParams.id }).then((res) => {
+    let writeStream = fs.createWriteStream(join(downloadPath, temp));
+    writeStream.write(res, "UTF8");
+    // 标注结束
+    writeStream.end();
+    writeStream.on("finish", function () {
+      downloadDocStatus.value = 2;
+    });
+    writeStream.on("error", function (err: any) {
+      downloadDocStatus.value = 3;
+      Message.error(err.stack || "会议纪要文件写入失败");
+    });
+  });
+};
+
 // 会议纪要主体内容列表
 let pageNum = ref<number>(1);
 let pageTotal = ref<number>(0);
@@ -189,7 +249,6 @@ const getDetail = () => {
     Object.assign(detail, res.data);
   });
 };
-let audioDownloadFlag = ref<boolean>(true); // 音频是否正在下载
 const { progress, downloadStatus } = useDownload();
 onMounted(async () => {
   await getDetail();
@@ -199,10 +258,11 @@ onMounted(async () => {
   useDownloadOpt({
     list: audioList,
     directory: `${queryParams.name}.${queryParams.id}`,
-    onSuccess: () => {
-      audioDownloadFlag.value = false;
-    },
+    onSuccess: () => {},
   });
+  // 会议纪要文档文件检测
+  let temp = `/${queryParams.name}.${queryParams.id}/${queryParams.name}_${queryParams.id}.docx`;
+  downloadDocStatus.value = fs.existsSync(join(downloadPath, temp)) ? 2 : 0;
 });
 </script>
 <style scoped lang="less">
@@ -260,14 +320,27 @@ onMounted(async () => {
       .cHRight {
         .size(96px, 36px);
         border-radius: 18px;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
         .cHRightIcon {
           margin-right: 5px;
+          z-index: 2;
         }
         span {
-          font-size: 16px;
+          font-size: 14px;
+          z-index: 2;
+        }
+        .downloadBg {
+          .size(50%,100%);
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 1;
+          background-color: rgba(0, 0, 0, 0.4);
         }
       }
-      .download {
+      .cHRight.download {
         background-color: @f_color_active;
         span {
           color: @bg;

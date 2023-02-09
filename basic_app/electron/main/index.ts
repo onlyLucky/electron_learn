@@ -133,6 +133,7 @@ function createWindow() {
   })
   // win 主场口downloadItem 下载任务监听
   win.webContents.session.on('will-download', (event, item, webContents) => {
+    downloadTotal += item.getTotalBytes()
     // new URL(item.getURL()).searchParams.get('id') 获取id
     let temp = DownloadDataMap.get(`${item.getFilename()}_${new URL(item.getURL()).searchParams.get('id')}`)
     // TODO: 静态资源服务器不支持文件断点续传 暂时储存downloadItem 方便后面的操作
@@ -154,6 +155,7 @@ function createWindow() {
           // 想渲染端传递更新数据
           win.webContents.send('downloadUpload', {
             total: _.sum(downloadState),//多个会议文件的下载size
+            needTotal: downloadTotal,//需要下载的总量。
             progress: item.getReceivedBytes(),// 当前文件的下载size
             fileName: temp.fileName//当前正在下载的文件名称，用于后续文件列表下载识别
           })
@@ -364,7 +366,7 @@ ipcMain.on('download', function (event, list) {
     downloadState = new Array(list.length).fill(0);
     list.map((item, index) => {
       item.id = index;
-      downloadTotal += item.fileSize
+      // downloadTotal += item.fileSize
       // _.last(item.path.split('/'))
       DownloadDataMap.set(`${_.last(item.path.split('/'))}_${item.fId}`, item)
       BrowserWindow.getFocusedWindow().webContents.downloadURL(`${item.path}?id=${item.fId}`)
