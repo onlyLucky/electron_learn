@@ -12,7 +12,7 @@
 - [Directory](#directory)
 - [FAQ](#faq)
   - [开发中遇到的问题](#开发中遇到的问题)
-    - [Q1. Electron failed to install correctly, please delete node\_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
+    - [Q1. Electron failed to install correctly, please delete node_modules/electron and try installing again](#q1-electron-failed-to-install-correctly-please-delete-node_moduleselectron-and-try-installing-again)
     - [Q2. tsx 写法引用样式文件没有样式隔离，可以使用 vite 内部的 css module css-in-js 的解决方法](#q2-tsx-写法引用样式文件没有样式隔离可以使用-vite-内部的-css-module-css-in-js-的解决方法)
     - [Q3: electron 顶部允许拖动，hover 等 css 样式效果失效](#q3-electron-顶部允许拖动hover-等-css-样式效果失效)
     - [Q4: \[tsx\]的写法对于目前的问题总结，或许是自己未找到解决的方案或配置（后面使用 react 的格式会进行解决）](#q4-tsx的写法对于目前的问题总结或许是自己未找到解决的方案或配置后面使用-react-的格式会进行解决)
@@ -35,7 +35,7 @@
   - [报错处理](#报错处理)
     - [E1: 控制台： \[Violation\] Added non-passive event listener to a scroll-blocking 'mousewheel' event](#e1-控制台-violation-added-non-passive-event-listener-to-a-scroll-blocking-mousewheel-event)
   - [view-ui-plus 框架在 electron 问题](#view-ui-plus-框架在-electron-问题)
-    - [V1: (ERROR:CONSOLE(1)\] "Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}", source: devtools://devtools/bundled/core/protocol\_client/protocol\_client.js (1)) 报错处理：](#v1-errorconsole1-request-storagegetstoragekeyforframe-failed-code-32602messageframe-tree-node-for-given-frame-not-found-source-devtoolsdevtoolsbundledcoreprotocol_clientprotocol_clientjs-1-报错处理)
+    - [V1: (ERROR:CONSOLE(1)\] "Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)) 报错处理：](#v1-errorconsole1-request-storagegetstoragekeyforframe-failed-code-32602messageframe-tree-node-for-given-frame-not-found-source-devtoolsdevtoolsbundledcoreprotocol_clientprotocol_clientjs-1-报错处理)
 - [配置](#配置)
   - [托盘部分](#托盘部分)
   - [通信](#通信)
@@ -498,6 +498,12 @@ UI 框架使用的部分功能在 electron 中，会有额外的问题
 - 最初是以为是 Text 引入组件与 html 中的 text 原生标签有冲突，更改了引入标签名称，但是没有效果
 - 后面发现会议纪要中也有一样的组件使用，但是没有报错，但是两者的属性配置都是一样的。
 - 最后发现上面有一个 class 属性，注释过后报错停止。试着将 class 属性名称设置为 className,报错停止。
+
+#### 总结： 目前不推荐使用 view-ui-plus 在 vue3 的结构项目中
+
+- 框架本身对于 vue3 的支持上不太友好（原本 vue2 上面的项目搬移过来的，项目里面的 ts 几乎没有）
+- 框架本身的功能用户交互还是不错的，但是本身开源项目，其主要是向定制化发展，开源项目则是次之。
+- 项目本身更新不太频繁，issues start 较少，vue3 中遇到一些报错问题找到的解决方案会更难
 
 ## 配置
 
