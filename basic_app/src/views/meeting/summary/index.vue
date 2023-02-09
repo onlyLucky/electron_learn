@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-08 16:41:53
+ * @LastEditTime: 2023-02-09 15:19:42
  * @Description: 会议纪要
 -->
 <template>
@@ -24,7 +24,7 @@
             ellipsis
             placement="bottom-start"
           >
-            可立即批注简称可立批，PC端界面设计讨论会议可立即批注简称可立
+            {{ queryParams.name }}
           </Text>
           <div class="timeCon f-row-s-c">
             <SvgIcon
@@ -32,28 +32,59 @@
               :style="{ width: '18px', height: '18px' }"
               color="var(--meet_summary_icon_time)"
             ></SvgIcon>
-            <span>2022-12-12 11:30-14:00</span>
+            <span>{{ detail.createTime }}</span>
           </div>
         </div>
         <div class="cHRight download f-row-c-c">
           <SvgIcon
+            v-show="downloadStatus == 2"
             iconName="icon-yunxiazai-"
+            className="cHRightIcon"
+            size="20"
             :style="{ width: '20px', height: '20px', marginRight: '5px' }"
             color="var(--bg)"
           ></SvgIcon>
+          <svg-icon
+            v-show="downloadStatus != 2"
+            iconName="icon-jiazaizhong"
+            className="cHRightIcon iconLoading"
+            size="20"
+            color="var(--bg)"
+          ></svg-icon>
           <span>下载</span>
         </div>
       </div>
       <div class="conCon">
-        <div class="conItem active f-row-b-c">
-          <span
-            >可立即批注简称可立批，PC端界面设计讨论会议可立即批注简称可立批，PC端界面设计讨论会议可立即批注简称可立批，PC端界面设计讨论会议可立即批注简称可立批，PC端界面设计讨论会议可立即批注简称可立批，PC端界面设计讨论会议</span
+        <div class="conBox" v-show="pageList.length > 0">
+          <div
+            class="conItem active f-row-b-c"
+            v-for="(item, index) in pageList"
+            :key="index"
           >
-          <SvgIcon
-            iconName="icon-Wi-Fi1"
-            className="conIcon"
-            color="var(--meet_summary_icon_time)"
-          ></SvgIcon>
+            <span>{{ item.text }}</span>
+            <SvgIcon
+              iconName="icon-Wi-Fi1"
+              className="conIcon iconShark"
+              color="var(--meet_summary_icon_time)"
+            ></SvgIcon>
+          </div>
+          <div class="conFooter f-row-c-c">
+            <span
+              class="conFooterLink"
+              v-show="!(pageTotal - pageList.length < pageSize)"
+              >查看更多</span
+            >
+            <span
+              class="conFooterTxt"
+              v-show="pageTotal - pageList.length < pageSize"
+              >已经到底了哦</span
+            >
+          </div>
+        </div>
+
+        <div class="noDataCon f-col-s-c" v-show="pageList.length <= 0">
+          <img src="@/assets/images/no_data.png" alt="" />
+          <span>当前暂无会议纪要</span>
         </div>
       </div>
     </div>
@@ -68,15 +99,17 @@
             color="var(--f_color_active)"
           ></svg-icon>
           <div class="iconCtrl">
-            <!-- <svg-icon
+            <svg-icon
+              v-show="downloadStatus == 2"
               iconName="icon-zanting"
               className="ctrlItem"
               size="36"
               color="var(--f_color_active)"
-            ></svg-icon> -->
+            ></svg-icon>
             <svg-icon
+              v-show="downloadStatus != 2 && audioDownloadFlag"
               iconName="icon-jiazaizhong"
-              className="ctrlItem ctrlItemLoading"
+              className="ctrlItem iconLoading"
               size="36"
               color="var(--f_color_active)"
             ></svg-icon>
@@ -100,7 +133,7 @@
           </slider>
         </div>
         <div class="ctlRight f-row-e-c">
-          <p>00:40 / 08:00</p>
+          <p>00:00 / 08:00</p>
         </div>
       </div>
     </div>
@@ -109,19 +142,34 @@
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import SvgIcon from "@/commons/SvgIcon/index.vue";
-import { getMTListByMeetId, getAudioByMeetId } from "@/apis/meet";
+import {
+  getMTListByMeetId,
+  getAudioByMeetId,
+  getMeetDetailById,
+} from "@/apis/meet";
 import { useRoute } from "vue-router";
-import { useHasFiles } from "../comps/mListDetail/useDownload";
+import { useDownload, useDownloadOpt } from "@/hooks/useElectronDownload";
+
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
+// 会议纪要主体内容列表
 let pageNum = ref<number>(1);
+let pageTotal = ref<number>(0);
+let pageSize = ref<number>(20);
+let pageList = reactive<any[]>([]);
 const getData = () => {
   return getMTListByMeetId({
-    pageSize: 20,
+    pageSize: pageSize.value,
     pageNum: pageNum.value,
     meetId: queryParams.id,
   }).then((res) => {
+    if (pageNum.value == 1) {
+      pageList = [...res.data.records];
+    } else {
+      pageList.push(res.data.records);
+    }
     console.log(res, "res");
+    pageTotal.value = res.data.total;
   });
 };
 // 音频列表
@@ -131,20 +179,30 @@ const getAudioInfo = () => {
     meetId: queryParams.id,
   }).then((res) => {
     // 获取音频列表 下载音频
-    res.data.map((item: any, index: number) => {
-      if (
-        !useHasFiles(`/${queryParams.name}.${queryParams.id}/${item.realName}`)
-      ) {
-      }
-
-      audioList.push(item);
-    });
-    console.log(res, "res");
+    audioList = [...res.data];
   });
 };
-onMounted(() => {
-  getData();
-  getAudioInfo();
+// 获取会议详情
+let detail = reactive<any>({});
+const getDetail = () => {
+  return getMeetDetailById(queryParams.id).then((res) => {
+    Object.assign(detail, res.data);
+  });
+};
+let audioDownloadFlag = ref<boolean>(true); // 音频是否正在下载
+const { progress, downloadStatus } = useDownload();
+onMounted(async () => {
+  await getDetail();
+  await getData();
+  await getAudioInfo();
+  // 音频下载处理
+  useDownloadOpt({
+    list: audioList,
+    directory: `${queryParams.name}.${queryParams.id}`,
+    onSuccess: () => {
+      audioDownloadFlag.value = false;
+    },
+  });
 });
 </script>
 <style scoped lang="less">
@@ -202,6 +260,9 @@ onMounted(() => {
       .cHRight {
         .size(96px, 36px);
         border-radius: 18px;
+        .cHRightIcon {
+          margin-right: 5px;
+        }
         span {
           font-size: 16px;
         }
@@ -216,27 +277,61 @@ onMounted(() => {
     .conCon {
       width: 100%;
       height: calc(100% - 74px);
-      overflow: auto;
-      .conItem {
-        .size(100%,auto);
-        padding: 12px 16px;
-        box-sizing: border-box;
-        border: 1px solid @meet_summary_item_bc;
-        border-radius: 6px;
-        span {
-          font-size: 16px;
-          color: @fontColor;
-          margin-right: 20px;
+      .conBox {
+        .size(100%,100%);
+        overflow: auto;
+        .conItem {
+          .size(100%,auto);
+          padding: 12px 16px;
+          box-sizing: border-box;
+          border: 1px solid @meet_summary_item_bc;
+          border-radius: 6px;
+          margin-bottom: 12px;
+          &:last-child {
+            margin-bottom: 0;
+          }
+          span {
+            font-size: 16px;
+            color: @fontColor;
+            margin-right: 20px;
+          }
+          .conIcon {
+            .size(20px,20px);
+            flex-shrink: 0;
+            transform: rotate(90deg);
+          }
         }
-        .conIcon {
-          .size(20px,20px);
-          flex-shrink: 0;
-          transform: rotate(90deg);
+        .conItem.active {
+          span {
+            color: @f_color_active;
+          }
+        }
+        .conFooter {
+          .size(100%,20px);
+          span {
+            font-size: 14px;
+            padding: 0px 10px;
+          }
+          span.conFooterLink {
+            cursor: pointer;
+            color: @f_color_active;
+          }
+          span.conFooterTxt {
+            color: @fontColor;
+          }
         }
       }
-      .active {
+
+      .noDataCon {
+        .size(100%,100%);
+        img {
+          .size(200px,200px);
+          margin-top: 50px;
+          margin-bottom: 10px;
+        }
         span {
-          color: @f_color_active;
+          font-size: 14px;
+          color: @fontColor;
         }
       }
     }
@@ -264,20 +359,6 @@ onMounted(() => {
         .ctrlItem {
           cursor: pointer;
         }
-        .ctrlItemLoading {
-          animation: ani-demo-spin 1s linear infinite;
-        }
-        @keyframes ani-demo-spin {
-          from {
-            transform: rotate(0deg);
-          }
-          50% {
-            transform: rotate(180deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
       }
       .ctlCenter {
         .size(100%,100%);
@@ -293,6 +374,31 @@ onMounted(() => {
         color: @f_color_active;
       }
     }
+  }
+}
+.iconLoading {
+  animation: ani-demo-spin 1s linear infinite;
+}
+@keyframes ani-demo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.iconShark {
+  animation: blink 0.8s ease-in-out infinite;
+}
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 </style>

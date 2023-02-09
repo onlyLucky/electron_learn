@@ -1,5 +1,8 @@
 <template>
+  <!-- 异步组件补充处理 -->
+  <!-- <Suspense> -->
   <router-view />
+  <!-- </Suspense> -->
 </template>
 
 <script setup lang="ts">
