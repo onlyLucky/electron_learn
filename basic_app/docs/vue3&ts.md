@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>vue3</h1>
+  <h1>vue3&ts</h1>
 </div>
 
 ## 目录
@@ -8,6 +8,9 @@
 - [Vue](#vue)
   - [V1.vue 中 hooks 的使用](#v1vue-中-hooks-的使用)
     - [01.方便使用](#01方便使用)
+- [ts](#ts)
+  - [报错处理](#报错处理)
+    - [01.赋值表达式的左侧不能是可选属性访问](#01赋值表达式的左侧不能是可选属性访问)
 - [使用场景](#使用场景)
   - [01.ref 获取 dom 标签 ts 类型](#01ref-获取-dom-标签-ts-类型)
 - [参考链接](#参考链接)
@@ -47,6 +50,26 @@ import { useTap, handleTap } from "./useTap.ts";
 const { tapFlag } = useTap();
 </script>
 ```
+
+## ts
+
+### 报错处理
+
+#### 01.赋值表达式的左侧不能是可选属性访问
+
+报错代码
+
+```ts
+refAudio.value?.currentTime = 20;
+```
+
+解决报错
+
+```ts
+refAudio.value!.currentTime = 20;
+```
+
+!not null 的断言操作符，不执行运行时检查，告诉编译器只需要知道这个东西
 
 ## 使用场景
 
