@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-09 19:37:48
+ * @LastEditTime: 2023-02-10 18:01:29
  * @Description: 会议纪要
 -->
 <template>
@@ -39,7 +39,7 @@
           <!-- <div class="downloadBg"></div> -->
           <!-- 未下载 -->
           <SvgIcon
-            v-show="downloadDocStatus == 0"
+            v-show="downloadDocStatus == 0 && downloadStatus == 2"
             iconName="icon-yunxiazai-"
             className="cHRightIcon"
             size="20"
@@ -161,12 +161,13 @@
         </div>
         <div class="ctlCenter f-row-c-c">
           <slider
+            :model-value="sliderVal"
             class="cenSlider"
-            value=""
             show-tip="never"
             backgroundColor="#e9e9e9"
             block-size="40"
             block-color="#ffffff"
+            @on-change="onSliderChange"
           >
           </slider>
         </div>
@@ -175,11 +176,18 @@
         </div>
       </div>
     </div>
+    <!-- 音频播放组件 -->
+    <AudioComps
+      :src="audioSrc"
+      ref="refAudioComps"
+      @change="onAudioChange"
+    ></AudioComps>
   </div>
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import SvgIcon from "@/commons/SvgIcon/index.vue";
+import AudioComps from "@/commons/AudioComps/index.vue";
 import {
   getMTListByMeetId,
   getAudioByMeetId,
@@ -278,6 +286,19 @@ const getAudioInfo = () => {
     // 获取音频列表 下载音频
     audioList = [...res.data];
   });
+};
+// 音频操作交互
+let sliderVal = ref<number>(0);
+const refAudioComps = ref<InstanceType<typeof AudioComps>>();
+let audioSrc = reactive([
+  "https://m801.music.126.net/20230210095355/6a44ab660525af0af6f395ac8a8532f8/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/14096426578/ff65/7348/d83f/36ab528a5935b3ee552768bd939af6cf.mp3",
+]);
+const onSliderChange = (value: number) => {
+  refAudioComps.value?.seek(value);
+};
+const onAudioChange = (info: any) => {
+  // console.log(info.progress);
+  sliderVal.value = info.progress;
 };
 // 获取会议详情
 let detail = reactive<any>({});
