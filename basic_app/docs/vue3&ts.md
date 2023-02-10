@@ -13,6 +13,7 @@
     - [01.赋值表达式的左侧不能是可选属性访问](#01赋值表达式的左侧不能是可选属性访问)
 - [使用场景](#使用场景)
   - [01.ref 获取 dom 标签 ts 类型](#01ref-获取-dom-标签-ts-类型)
+  - [02.ts Event 类型处理](#02ts-event-类型处理)
 - [参考链接](#参考链接)
 
 ## Vue
@@ -206,6 +207,26 @@ const refAudio = ref<HTMLAudioElement>();
     "video": HTMLVideoElement;
     "wbr": HTMLElement;
 
+```
+
+### 02.ts Event 类型处理
+
+如果不知道当前 event 事件类型，可以参考下面的处理：
+
+```vue
+<template>
+  <audio @timeupdate="onPlayChange"></audio>
+</template>
+<script setup lang="ts">
+/**
+ * @description: 监听timeupdate事件触发
+ * @param {*} e 事件对象
+ * @return {*}
+ */
+const onPlayChange = (e: Event) => {
+  console.log((e.target as HTMLAudioElement).currentTime);
+};
+</script>
 ```
 
 ## 参考链接
