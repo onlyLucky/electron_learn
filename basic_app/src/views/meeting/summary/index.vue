@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-10 18:01:29
+ * @LastEditTime: 2023-02-11 17:27:02
  * @Description: 会议纪要
 -->
 <template>
@@ -84,15 +84,25 @@
       <div class="conCon">
         <div class="conBox" v-show="pageList.length > 0" @scroll="onConScroll">
           <div
-            class="conItem active f-row-b-c"
+            :class="
+              audioTxtIndex == index
+                ? 'conItem active f-row-b-c'
+                : 'conItem f-row-b-c'
+            "
             v-for="(item, index) in pageList"
             :key="index"
           >
             <span>{{ item.text }}</span>
             <SvgIcon
               iconName="icon-Wi-Fi1"
-              className="conIcon iconShark"
-              color="var(--meet_summary_icon_time)"
+              :className="
+                audioTxtIndex == index ? 'conIcon iconShark' : 'conIcon'
+              "
+              :color="
+                audioTxtIndex == index
+                  ? 'var(--f_color_active)'
+                  : 'var(--meet_summary_icon_time)'
+              "
             ></SvgIcon>
           </div>
 
@@ -127,23 +137,41 @@
       </div>
     </div>
     <div class="footer f-col-c-c">
-      <p class="fTotal f-row-c-e">(1/2)</p>
+      <p class="fTotal f-row-c-e">
+        <span v-show="audioSrc.length > 0"
+          >({{ audioCurrent }}/{{ audioSrc.length }})</span
+        >
+      </p>
       <div class="audioCtl f-row-b-c">
         <div class="ctlLeft f-row-b-c">
           <svg-icon
             iconName="icon-48shangyishou"
-            className="audioIcon"
+            v-debounce="handlePrevious"
+            :className="audioCurrent == 1 ? 'audioIcon disabled' : 'audioIcon'"
             size="24"
             color="var(--f_color_active)"
           ></svg-icon>
           <div class="iconCtrl">
-            <svg-icon
+            <div
+              class="ctrlBtn f-row-c-c"
+              @click="audioCtrl"
               v-show="downloadStatus == 2"
-              iconName="icon-zanting"
-              className="ctrlItem"
-              size="36"
-              color="var(--f_color_active)"
-            ></svg-icon>
+            >
+              <svg-icon
+                v-show="!audioInfo.playing"
+                iconName="icon-zanting"
+                className="ctrlItem"
+                size="34"
+                color="var(--f_color_active)"
+              ></svg-icon>
+              <svg-icon
+                v-show="audioInfo.playing"
+                iconName="icon-zanting1"
+                className="ctrlItem"
+                size="36"
+                color="var(--f_color_active)"
+              ></svg-icon>
+            </div>
             <svg-icon
               v-show="downloadStatus != 2"
               iconName="icon-jiazaizhong"
@@ -154,14 +182,19 @@
           </div>
           <svg-icon
             iconName="icon-49xiayishou"
-            className="audioIcon"
+            :className="
+              audioCurrent == audioSrc.length
+                ? 'audioIcon disabled'
+                : 'audioIcon'
+            "
+            v-debounce="handleNext"
             size="24"
             color="var(--f_color_active)"
           ></svg-icon>
         </div>
         <div class="ctlCenter f-row-c-c">
           <slider
-            :model-value="sliderVal"
+            :model-value="audioInfo.progress"
             class="cenSlider"
             show-tip="never"
             backgroundColor="#e9e9e9"
@@ -172,7 +205,10 @@
           </slider>
         </div>
         <div class="ctlRight f-row-e-c">
-          <p>00:00 / 08:00</p>
+          <p>
+            {{ audioInfo.currentTimeTxt || "00:00" }} /
+            {{ audioInfo.durationTxt || "00:00" }}
+          </p>
         </div>
       </div>
     </div>
@@ -187,7 +223,7 @@
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import SvgIcon from "@/commons/SvgIcon/index.vue";
-import AudioComps from "@/commons/AudioComps/index.vue";
+import AudioComps, { AudioInfoType } from "@/commons/AudioComps/index.vue";
 import {
   getMTListByMeetId,
   getAudioByMeetId,
@@ -288,17 +324,55 @@ const getAudioInfo = () => {
   });
 };
 // 音频操作交互
-let sliderVal = ref<number>(0);
+let audioInfo = reactive<AudioInfoType>({} as AudioInfoType);
+let audioTxtIndex = ref<number>(-1); // 会议纪要列表active 下标
 const refAudioComps = ref<InstanceType<typeof AudioComps>>();
-let audioSrc = reactive([
-  "https://m801.music.126.net/20230210095355/6a44ab660525af0af6f395ac8a8532f8/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/14096426578/ff65/7348/d83f/36ab528a5935b3ee552768bd939af6cf.mp3",
-]);
+let audioSrc = reactive<string[]>([]);
+let audioCurrent = ref<number>(1);
 const onSliderChange = (value: number) => {
   refAudioComps.value?.seek(value);
 };
-const onAudioChange = (info: any) => {
+const onAudioChange = (info: any, index: number) => {
   // console.log(info.progress);
-  sliderVal.value = info.progress;
+  audioCurrent.value = index + 1;
+  // 处理会议纪要当前第几段
+  let tempFlag = pageList.some((item, i) => {
+    /* console.log(
+      item.paragraph,
+      audioCurrent.value,
+      info.currentTime * 1000,
+      item.bgTime,
+      item.edTime,
+      "pageList" + i
+    ); */
+    if (
+      item.paragraph == audioCurrent.value &&
+      info.currentTime * 1000 >= item.bgTime &&
+      info.currentTime * 1000 <= item.edTime
+    ) {
+      audioTxtIndex.value = i;
+    }
+    return (
+      item.paragraph == audioCurrent.value &&
+      info.currentTime * 1000 >= item.bgTime &&
+      info.currentTime * 1000 <= item.edTime
+    );
+  });
+  if (!tempFlag) {
+    audioTxtIndex.value = -1;
+  }
+  // console.log(info.currentTime, audioTxtIndex.value, audioCurrent.value);
+  Object.assign(audioInfo, info);
+};
+const audioCtrl = () => {
+  refAudioComps.value?.handlePlay();
+  Object.assign(audioInfo, refAudioComps.value?.audioInfo);
+};
+const handlePrevious = () => {
+  refAudioComps.value?.previous();
+};
+const handleNext = () => {
+  refAudioComps.value?.next();
 };
 // 获取会议详情
 let detail = reactive<any>({});
@@ -316,7 +390,13 @@ onMounted(async () => {
   useDownloadOpt({
     list: audioList,
     directory: `${queryParams.name}.${queryParams.id}`,
-    onSuccess: () => {},
+    onSuccess: () => {
+      audioList.map((item) => {
+        let temp = `/${queryParams.name}.${queryParams.id}/${item.realName}`;
+        audioSrc.push(join(downloadPath, temp));
+      });
+      console.log(audioSrc);
+    },
   });
   // 会议纪要文档文件检测
   let temp = `/${queryParams.name}.${queryParams.id}/${queryParams.name}_${queryParams.id}.docx`;
@@ -497,6 +577,17 @@ onMounted(async () => {
         flex-shrink: 0;
         margin-right: 36px;
         .audioIcon,
+        .iconCtrl {
+          .size(36px,36px);
+          cursor: pointer;
+          .ctrlBtn {
+            .size(100%,100%);
+          }
+        }
+        .audioIcon.disabled {
+          cursor: not-allowed;
+        }
+
         .ctrlItem {
           cursor: pointer;
         }
