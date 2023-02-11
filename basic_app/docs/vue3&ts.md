@@ -14,6 +14,7 @@
 - [使用场景](#使用场景)
   - [01.ref 获取 dom 标签 ts 类型](#01ref-获取-dom-标签-ts-类型)
   - [02.ts Event 类型处理](#02ts-event-类型处理)
+  - [03.自定义组件 export 类型](#03自定义组件-export-类型)
 - [参考链接](#参考链接)
 
 ## Vue
@@ -227,6 +228,37 @@ const onPlayChange = (e: Event) => {
   console.log((e.target as HTMLAudioElement).currentTime);
 };
 </script>
+```
+
+### 03.自定义组件 export 类型
+
+自定义组件中
+
+```vue
+<!-- Comps.vue -->
+<template>
+  <div class="meetListCon">
+    <h1>meet List</h1>
+  </div>
+</template>
+<script setup lang="ts">
+export type CompType = {
+  name: string;
+};
+</script>
+<style scoped lang="less">
+.meetListCon {
+  h1 {
+    font-size: 30px;
+  }
+}
+</style>
+```
+
+引入使用
+
+```ts
+import Comps, { CompType } from "./Comps.vue";
 ```
 
 ## 参考链接
