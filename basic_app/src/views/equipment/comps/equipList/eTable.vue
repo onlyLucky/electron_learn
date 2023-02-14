@@ -1,0 +1,274 @@
+<!--
+ * @Author: fg
+ * @Date: 2023-02-14 10:26:32
+ * @LastEditors: fg
+ * @LastEditTime: 2023-02-14 16:18:44
+ * @Description: 设备列表
+-->
+<template>
+  <div class="eTable" ref="refTable">
+    <Table :columns="columns" :data="tData" :height="tableHeight"></Table>
+  </div>
+</template>
+<script setup lang="ts">
+import { useBytesUnit } from "@/hooks/useTools";
+import { getDevicePage } from "@/apis/equipment";
+export type ParamsType = {
+  pageSize: number;
+  pageNum: number;
+  name?: string;
+};
+const columns = [
+  {
+    type: "selection",
+    width: 60,
+    align: "center",
+  },
+  {
+    title: "设备",
+    key: "name",
+    render: (h: any, params: any) => {
+      return h(
+        "div",
+        {
+          class: "equipName f-row-b-c",
+        },
+        [
+          h(
+            "div",
+            {
+              class: "equipLeft f-row-s-c",
+            },
+            [
+              h("div", { class: "equipValue f-col-c-s" }, [
+                h(
+                  resolveComponent("Circle"),
+                  {
+                    percent:
+                      (params.row.localStoreUseSize / params.row.hardDiskSize) *
+                      100,
+                    size: 80,
+                    strokeWidth: 7,
+                    trailWidth: 7,
+                    dashboard: true,
+                    strokeColor: "var(--f_color_active)",
+                  },
+                  () => [
+                    h("div", { class: "equipValueTxt" }, [
+                      h("p", { class: "eValueTxt1" }, "剩余"),
+                      h(
+                        "p",
+                        { class: "eValueTxt2" },
+                        useBytesUnit(
+                          params.row.hardDiskSize - params.row.localStoreUseSize
+                        )
+                      ),
+                    ]),
+                  ]
+                ),
+              ]),
+              h("div", { class: "equipInfo f-col-b-s" }, [
+                h(
+                  resolveComponent("Text"),
+                  {
+                    placement: "bottom-start",
+                    ellipsis: true,
+                    style: { fontSize: "16px" },
+                    "ellipsis-config": { tooltip: true },
+                  },
+                  () => params.row.name
+                ),
+                h(
+                  "div",
+                  {
+                    class: "equipBottom f-row-s-c",
+                    style: {},
+                  },
+                  [
+                    h(
+                      "div",
+                      {
+                        class: "equipStatus",
+                        style: {
+                          color:
+                            params.row.status == 10 || params.row.status == 20
+                              ? "var(--success)"
+                              : "var(--fontColor)",
+                        },
+                      },
+                      params.row.status == 10
+                        ? "已创建"
+                        : params.row.status == 20
+                        ? "使用中"
+                        : "停用中"
+                    ),
+                    h(
+                      "span",
+                      { class: "equipBite" },
+                      `${useBytesUnit(
+                        params.row.localStoreUseSize
+                      )} / ${useBytesUnit(params.row.hardDiskSize)}`
+                    ),
+                  ]
+                ),
+              ]),
+            ]
+          ),
+          h(
+            "div",
+            {
+              class: "equipRight f-row-e-c",
+            },
+            [
+              h(
+                resolveComponent("Tooltip"),
+                {
+                  content: "更多",
+                  placement: "top",
+                  transfer: true,
+                },
+                // <Icon type="ios-more" />
+                {
+                  default: () => [
+                    h(resolveComponent("Icon"), {
+                      type: "ios-more",
+                      class: "iconOpt",
+                      size: "26",
+                    }),
+                  ],
+                }
+              ),
+              // h(SvgIcon,{})
+            ]
+          ),
+        ]
+      );
+    },
+  },
+  {
+    title: "mac地址",
+    key: "macAddress",
+    width: 200,
+  },
+  {
+    title: "软件版本",
+    key: "softwareVersion",
+    width: 100,
+  },
+  {
+    title: "鼠标数量",
+    align: "center",
+    key: "mouseNum",
+    width: 100,
+  },
+];
+const refTable = ref<HTMLElement>();
+let tableHeight = ref<number>();
+let tData = reactive<any[]>([]);
+onMounted(() => {
+  tableHeight.value = refTable.value?.clientHeight;
+  window.onresize = () => {
+    tableHeight.value = refTable.value?.clientHeight;
+  };
+});
+
+let loading = ref<boolean>(false);
+const getData = (params: ParamsType, callBack: Function) => {
+  loading.value = true;
+  getDevicePage(params)
+    .then((res) => {
+      // tData = [...res.data.records];
+      res.data.records.map((item: any) => {
+        tData.push(item);
+      });
+      if (callBack) {
+        callBack(res);
+      }
+      loading.value = false;
+    })
+    .catch((err) => {
+      loading.value = false;
+    });
+};
+defineExpose({
+  getData,
+});
+</script>
+<style scoped lang="less">
+:deep(.ivu-table th) {
+  background-color: @bg;
+  border-bottom: none;
+  color: @fontColor;
+  font-weight: 400;
+}
+:deep(.ivu-table td) {
+  border-bottom: none;
+}
+:deep(.ivu-table:before) {
+  display: none;
+}
+:deep(.ivu-typography) {
+  color: @f_color_h3;
+}
+:deep(.ivu-table-header thead tr th) {
+  padding: 16px 0px;
+}
+:deep(.equipName) {
+  .size(100%, 86px);
+
+  .equipLeft {
+    .size(100%,100%);
+    .equipValue {
+      .size(80px,100px);
+      flex-shrink: 0;
+      margin-right: 24px;
+      .equipValueTxt {
+        color: @fontColor;
+        .eValueTxt1 {
+          font-size: 10px;
+          margin-bottom: 4px;
+        }
+        .eValueTxt2 {
+          font-size: 12px;
+        }
+      }
+    }
+    .equipInfo {
+      height: 100px;
+      padding: 20px 0;
+      box-sizing: border-box;
+      .equipBottom {
+        font-size: 12px;
+        color: @fontColor;
+        .equipBite {
+        }
+        .equipStatus {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  .equipRight {
+    display: none;
+    .size(auto, 100%);
+    padding-left: 10px;
+    flex-shrink: 0;
+    .iconOpt {
+      /* border: 10px solid transparent;
+      background-clip: padding-box; */
+      cursor: pointer;
+    }
+  }
+  &:hover {
+    .equipRight {
+      display: flex;
+    }
+  }
+}
+.eTable {
+  .size(100%,100%);
+  h1 {
+    font-size: 30px;
+  }
+}
+</style>

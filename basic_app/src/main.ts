@@ -9,7 +9,7 @@ import router from './router';
 import ViewUIPlus from 'view-ui-plus';
 import i18n from '@/locale'
 // iview 
-import { Button, Input, Icon, DatePicker, Table, Row, Col, Poptip, Page, Tooltip, Tag, Switch, Checkbox, CheckboxGroup, Text, Title, Select, Option, RadioGroup, Radio, Slider, Space, Skeleton, SkeletonItem, Progress, Dropdown, DropdownMenu, DropdownItem, Spin } from 'view-ui-plus'
+import { Button, Input, Icon, DatePicker, Table, Row, Col, Poptip, Page, Tooltip, Tag, Switch, Checkbox, CheckboxGroup, Text, Title, Select, Option, RadioGroup, Radio, Slider, Space, Skeleton, SkeletonItem, Progress, Dropdown, DropdownMenu, DropdownItem, Spin, Circle } from 'view-ui-plus'
 import SvgIcon from "@/commons/SvgIcon/index.vue";
 import './assets/iconfont/iconfont.js';
 // 样式文件引入
@@ -62,6 +62,7 @@ app.component('Dropdown', Dropdown);
 app.component('DropdownMenu', DropdownMenu);
 app.component('DropdownItem', DropdownItem);
 app.component('Spin', Spin);
+app.component('Circle', Circle);
 app.component('Progress', Progress);
 app.mount('#app').$nextTick(() => {
   postMessage({ payload: 'removeLoading' }, '*')

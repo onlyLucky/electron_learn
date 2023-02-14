@@ -82,10 +82,10 @@ let downloadTotal = 0
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1024,
-    height: 700,
-    minWidth: 1024,
-    minHeight: 700,
+    width: 1200,
+    height: 800,
+    minWidth: 1200,
+    minHeight: 800,
     // @ts-ignore i18n.global.t('appName')
     title: lang.appName,
     icon: join(process.env.PUBLIC, 'logo.ico'),

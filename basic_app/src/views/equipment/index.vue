@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-13 18:05:22
+ * @LastEditTime: 2023-02-14 16:20:05
  * @Description: content
 -->
 <template>
@@ -89,13 +89,19 @@
         </Dropdown>
       </div>
     </div>
-    <div class="content"></div>
+    <div class="content">
+      <ETable ref="refETable"></ETable>
+    </div>
+    <div class="footer f-row-e-c">
+      <Page :total="pageTotal" show-sizer show-total />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 // TODO: 列表添加模式 列表加载更多 底部分页模式
 
 import { Input } from "view-ui-plus";
+import ETable, { ParamsType } from "./comps/equipList/eTable.vue";
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -108,6 +114,24 @@ const showSearch = (flag: boolean) => {
     }
   });
 };
+//
+let refETable = ref<InstanceType<typeof ETable>>();
+let listParams = reactive<ParamsType>({
+  pageSize: 8,
+  pageNum: 1,
+  name: "",
+});
+let pageTotal = ref<number>(0);
+const getTableData = () => {
+  refETable.value?.getData(listParams, (res: any) => {
+    pageTotal.value = res.data.total;
+  });
+};
+onMounted(() => {
+  nextTick(() => {
+    getTableData();
+  });
+});
 </script>
 <style scoped lang="less">
 :deep(.ivu-input) {
@@ -179,6 +203,13 @@ const showSearch = (flag: boolean) => {
         }
       }
     }
+  }
+  .content {
+    .size(100%, calc(100% - 96px));
+  }
+  .footer {
+    .size(100%,50px);
+    border-top: 1px solid @search_bottom_border;
   }
 }
 .menuTitle {
