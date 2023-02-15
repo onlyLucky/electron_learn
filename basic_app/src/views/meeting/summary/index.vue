@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-11 17:27:02
+ * @LastEditTime: 2023-02-15 16:56:00
  * @Description: 会议纪要
 -->
 <template>
@@ -231,7 +231,11 @@ import {
   getMeetSummary,
 } from "@/apis/meet";
 import { useRoute } from "vue-router";
-import { useDownload, useDownloadOpt } from "@/hooks/useElectronDownload";
+import {
+  useDownload,
+  useDownloadOpt,
+  useNodeStreamDownload,
+} from "@/hooks/useElectronDownload";
 import hdObj from "_v/setting/handleData";
 import { join } from "path";
 import { Message } from "view-ui-plus";
@@ -253,17 +257,19 @@ const goDownloadDoc = () => {
   }
   downloadDocStatus.value = 1;
   getMeetSummary({ meetId: queryParams.id }).then((res) => {
-    let writeStream = fs.createWriteStream(join(downloadPath, temp));
-    writeStream.write(res, "UTF8");
-    // 标注结束
-    writeStream.end();
-    writeStream.on("finish", function () {
-      downloadDocStatus.value = 2;
-    });
-    writeStream.on("error", function (err: any) {
-      downloadDocStatus.value = 3;
-      Message.error(err.stack || "会议纪要文件写入失败");
-    });
+    useNodeStreamDownload(
+      {
+        path: join(downloadPath, temp),
+        streamContent: res,
+      },
+      () => {
+        downloadDocStatus.value = 2;
+      },
+      (err: any) => {
+        downloadDocStatus.value = 3;
+        Message.error(err.stack || "会议纪要文件写入失败");
+      }
+    );
   });
 };
 

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-08 15:07:47
  * @LastEditors: fg
- * @LastEditTime: 2023-02-09 17:31:53
+ * @LastEditTime: 2023-02-15 16:58:14
  * @Description: electron 文件下载处理
  */
 import hdObj from "_v/setting/handleData"
@@ -141,11 +141,29 @@ const initData = () => {
   needDownloadArr = [];
   // 初始化下载文件夹
   directoryName.value = ''
-
+}
+type NodeStreamOptType = {
+  path: string;
+  encoding?: string;
+  streamContent: any;
+}
+const useNodeStreamDownload = (opt: NodeStreamOptType, finishCallback?: Function, errorCallback?: Function) => {
+  let writeStream = fs.createWriteStream(opt.path);
+  writeStream.write(opt.streamContent, "UTF8");
+  // 标注结束
+  writeStream.end();
+  writeStream.on("finish", function () {
+    if (finishCallback) finishCallback();
+  });
+  writeStream.on("error", function (err: any) {
+    if (errorCallback) errorCallback(err);
+  });
 }
 
 export {
+  downloadPath,
   isHasFile,
   useDownload,
-  useDownloadOpt
+  useDownloadOpt,
+  useNodeStreamDownload
 }
