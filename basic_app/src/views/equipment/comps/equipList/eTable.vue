@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-14 16:18:44
+ * @LastEditTime: 2023-02-14 16:31:47
  * @Description: 设备列表
 -->
 <template>
@@ -175,6 +175,7 @@ onMounted(() => {
 let loading = ref<boolean>(false);
 const getData = (params: ParamsType, callBack: Function) => {
   loading.value = true;
+  tData.length = 0;
   getDevicePage(params)
     .then((res) => {
       // tData = [...res.data.records];

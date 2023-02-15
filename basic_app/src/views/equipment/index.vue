@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-14 16:20:05
+ * @LastEditTime: 2023-02-15 10:35:38
  * @Description: content
 -->
 <template>
@@ -27,10 +27,12 @@
           </Tooltip>
           <div class="searchCon f-row-c-c" v-show="searchFlag">
             <Input
+              v-model="listParams.name"
               type="text"
               ref="refSearchInput"
               placeholder="设备名称搜索"
               clearable
+              @on-change="onSearchNameChange"
             ></Input>
             <span @click="showSearch(false)">取消</span>
           </div>
@@ -93,7 +95,15 @@
       <ETable ref="refETable"></ETable>
     </div>
     <div class="footer f-row-e-c">
-      <Page :total="pageTotal" show-sizer show-total />
+      <Page
+        show-sizer
+        show-total
+        :total="pageTotal"
+        :page-size="listParams.pageSize"
+        :page-size-opts="[8, 16, 24]"
+        @on-page-size-change="pSizeChange"
+        @on-change="pageChange"
+      />
     </div>
   </div>
 </template>
@@ -102,6 +112,7 @@
 
 import { Input } from "view-ui-plus";
 import ETable, { ParamsType } from "./comps/equipList/eTable.vue";
+import _ from "lodash";
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -126,6 +137,21 @@ const getTableData = () => {
   refETable.value?.getData(listParams, (res: any) => {
     pageTotal.value = res.data.total;
   });
+};
+const pSizeChange = (size: number) => {
+  listParams.pageSize = size;
+  getTableData();
+};
+const pageChange = (page: number) => {
+  listParams.pageNum = page;
+  getTableData();
+};
+const onSearchNameChange = (e: any) => {
+  _.debounce(() => {
+    listParams.name = e.target.value;
+    listParams.pageNum = 1;
+    getTableData();
+  }, 400)();
 };
 onMounted(() => {
   nextTick(() => {
