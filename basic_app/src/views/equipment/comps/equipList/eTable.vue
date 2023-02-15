@@ -2,12 +2,17 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 11:44:52
+ * @LastEditTime: 2023-02-15 14:54:40
  * @Description: 设备列表
 -->
 <template>
   <div class="eTable" ref="refTable">
-    <Table :columns="columns" :data="tData" :height="tableHeight"></Table>
+    <Table
+      :columns="columns"
+      :data="tData"
+      :height="tableHeight"
+      @on-selection-change="onSelect"
+    ></Table>
   </div>
 </template>
 <script setup lang="ts">
@@ -18,6 +23,9 @@ export type ParamsType = {
   pageNum: number;
   name?: string;
 };
+let emit = defineEmits<{
+  (e: "onSelectChange", len: number): void;
+}>();
 const columns = [
   {
     type: "selection",
@@ -125,19 +133,65 @@ const columns = [
               h(
                 resolveComponent("Tooltip"),
                 {
-                  content: "更多",
+                  content: "编辑",
                   placement: "top",
                   transfer: true,
                 },
                 // <Icon type="ios-more" />
                 {
                   default: () => [
-                    h(resolveComponent("Icon"), {
-                      type: "ios-more",
+                    h(resolveComponent("SvgIcon"), {
+                      iconName: "icon-bianji",
                       class: "iconOpt",
-                      size: "26",
+                      color: "var(--f_color_h3)",
+                      size: "22",
                     }),
                   ],
+                }
+              ),
+              h(
+                resolveComponent("Dropdown"),
+                { trigger: "click", placement: "bottom-start" },
+                {
+                  default: () =>
+                    h(
+                      resolveComponent("Tooltip"),
+                      {
+                        content: "更多",
+                        placement: "top",
+                        transfer: true,
+                      },
+                      // <Icon type="ios-more" />
+                      {
+                        default: () => [
+                          h(resolveComponent("SvgIcon"), {
+                            iconName: "icon-gengduo",
+                            color: "var(--f_color_h3)",
+                            class: "iconOpt",
+                            size: "22",
+                          }),
+                        ],
+                      }
+                    ),
+                  list: () =>
+                    h(
+                      resolveComponent("DropdownMenu"),
+                      {},
+                      {
+                        default: () => [
+                          h(
+                            resolveComponent("DropdownItem"),
+                            {},
+                            { default: () => "设置管理员" }
+                          ),
+                          h(
+                            resolveComponent("DropdownItem"),
+                            {},
+                            { default: () => "删除设备" }
+                          ),
+                        ],
+                      }
+                    ),
                 }
               ),
               // h(SvgIcon,{})
@@ -195,6 +249,11 @@ const columns = [
 const refTable = ref<HTMLElement>();
 let tableHeight = ref<number>();
 let tData = reactive<any[]>([]);
+let selectArr = ref<any[]>([]);
+const onSelect = (selection: any) => {
+  selectArr.value = selection;
+  emit("onSelectChange", selection.length);
+};
 onMounted(() => {
   tableHeight.value = refTable.value?.clientHeight;
   window.onresize = () => {
@@ -222,6 +281,7 @@ const getData = (params: ParamsType, callBack: Function) => {
     });
 };
 defineExpose({
+  selectArr,
   getData,
 });
 </script>
@@ -295,6 +355,7 @@ defineExpose({
       /* border: 10px solid transparent;
       background-clip: padding-box; */
       cursor: pointer;
+      margin-left: 10px;
     }
   }
   &:hover {

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 10:35:38
+ * @LastEditTime: 2023-02-15 15:03:58
  * @Description: content
 -->
 <template>
@@ -51,14 +51,16 @@
         </Tooltip>
 
         <Tooltip placement="bottom-end" content="删除设备">
-          <div class="optItem f-row-c-c">
-            <svg-icon
-              iconName="icon-shanchu1"
-              className="optIcon"
-              size="22"
-              color="var(--fontColor)"
-            ></svg-icon>
-          </div>
+          <Badge :count="delBadgeNum">
+            <div class="optItem f-row-c-c">
+              <svg-icon
+                iconName="icon-shanchu1"
+                className="optIcon"
+                size="22"
+                color="var(--fontColor)"
+              ></svg-icon>
+            </div>
+          </Badge>
         </Tooltip>
         <div class="optLine"></div>
         <Dropdown placement="bottom-start">
@@ -92,7 +94,7 @@
       </div>
     </div>
     <div class="content">
-      <ETable ref="refETable"></ETable>
+      <ETable ref="refETable" @onSelectChange="onETableSChange"></ETable>
     </div>
     <div class="footer f-row-e-c">
       <Page
@@ -127,6 +129,10 @@ const showSearch = (flag: boolean) => {
 };
 //
 let refETable = ref<InstanceType<typeof ETable>>();
+let delBadgeNum = ref<number>(0); // 删除选中的角标
+const onETableSChange = (len: number) => {
+  delBadgeNum.value = len;
+};
 let listParams = reactive<ParamsType>({
   pageSize: 8,
   pageNum: 1,
