@@ -377,9 +377,28 @@ ipcMain.on('download', function (event, list) {
       message: '当前已有下载任务执行中，请等待下载任务结束'
     })
   }
-
   /* DownloadDataMap.set(_.last(args.path.split('/')), args)
   BrowserWindow.getFocusedWindow().webContents.downloadURL(args.path) */
+})
+
+// 保存文件触发文件储存地址选择
+ipcMain.on('showSaveFile', function (event, data) {
+  // console.log(data, 'data')
+  dialog.showSaveDialog({
+    title: '另存为',
+    defaultPath: join(Config.download.downloadPath, data.name),
+    buttonLabel: "保存",
+    filters: data.filters || [],
+    properties: ['showHiddenFiles']
+  }).then(res => {
+    if (!res.canceled) {
+      BrowserWindow.getFocusedWindow().webContents.send('sendSaveFileResult', {
+        filePath: res.filePath
+      })
+    }
+  }).catch(err => {
+    console.log(err, 'err')
+  });
 })
 
 

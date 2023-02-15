@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 15:47:15
+ * @LastEditTime: 2023-02-15 18:07:22
  * @Description: content
 -->
 <template>
@@ -86,7 +86,9 @@
               <p>导入设备</p>
             </div>
             <DropdownMenu>
-              <DropdownItem>下载模板</DropdownItem>
+              <DropdownItem v-debounce="onDownloadTemplate"
+                >下载模板</DropdownItem
+              >
               <DropdownItem>导入设备</DropdownItem>
             </DropdownMenu>
           </template>
@@ -112,9 +114,13 @@
 <script setup lang="ts">
 // TODO: 列表添加模式 列表加载更多 底部分页模式
 
-import { Input, Modal } from "view-ui-plus";
+import { Input, Modal, Notice } from "view-ui-plus";
 import ETable, { ParamsType } from "./comps/equipList/eTable.vue";
 import _ from "lodash";
+import { getDownloadTemplate } from "@/apis/equipment";
+import { ipcRenderer } from "electron";
+import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
+import { withDirectives, resolveDirective } from "vue";
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -133,6 +139,7 @@ let delBadgeNum = ref<number>(0); // 删除选中的角标
 const onETableSChange = (len: number) => {
   delBadgeNum.value = len;
 };
+// 删除
 const onDelEquip = () => {
   if (delBadgeNum.value > 0) {
     Modal.confirm({
@@ -145,6 +152,13 @@ const onDelEquip = () => {
       },
     });
   }
+};
+// 模板下载
+const onDownloadTemplate = () => {
+  ipcRenderer.send("showSaveFile", {
+    name: "设备导入模板.xlsx",
+    filters: [{ name: "xlsx", extensions: ["xlsx"] }],
+  });
 };
 let listParams = reactive<ParamsType>({
   pageSize: 8,
@@ -172,9 +186,61 @@ const onSearchNameChange = (e: any) => {
     getTableData();
   }, 400)();
 };
+const onOpenFile = () => {
+  console.log("onOpenFile");
+};
+// 自定义指令获取
+const vDebounce = resolveDirective("debounce");
 onMounted(() => {
   nextTick(() => {
     getTableData();
+    // 监听主程序返回文件保存地址
+
+    ipcRenderer.on("sendSaveFileResult", (e, data) => {
+      console.log(data, "data");
+      let fileName = _.last(data.filePath.split("\\"));
+      Notice.success({
+        title: "下载成功",
+        desc: `${fileName}, 打开文件`,
+        duration: 6,
+        render: (h: any) => {
+          return h(
+            "p",
+            {
+              class: "fileLink",
+              style: { color: "var(--fontColor)", userSelect: "none" },
+            },
+            [
+              `${fileName}，`,
+              withDirectives(
+                h(
+                  "span",
+                  {
+                    style: {
+                      color: "var(--f_color_active)",
+                      cursor: "pointer",
+                      borderBottom: "1px solid var(--f_color_active)",
+                    },
+                  },
+                  "打开文件"
+                ),
+                [[vDebounce, onOpenFile]]
+              ),
+            ]
+          );
+        },
+      });
+      /* getDownloadTemplate().then((res) => {
+        useNodeStreamDownload(
+          {
+            path: data.filePath,
+            streamContent: res,
+          },
+          () => {},
+          () => {}
+        );
+      }); */
+    });
   });
 });
 </script>
@@ -182,8 +248,8 @@ onMounted(() => {
 :deep(.ivu-input) {
   border-radius: 50px;
 }
-:deep(.ivu-modal) {
-  top: 200px;
+:deep(.fileLink) {
+  color: pink;
 }
 .equipment {
   .size(100%,100%);
