@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 15:03:58
+ * @LastEditTime: 2023-02-15 15:47:15
  * @Description: content
 -->
 <template>
@@ -52,7 +52,7 @@
 
         <Tooltip placement="bottom-end" content="删除设备">
           <Badge :count="delBadgeNum">
-            <div class="optItem f-row-c-c">
+            <div class="optItem f-row-c-c" v-debounce="onDelEquip">
               <svg-icon
                 iconName="icon-shanchu1"
                 className="optIcon"
@@ -112,7 +112,7 @@
 <script setup lang="ts">
 // TODO: 列表添加模式 列表加载更多 底部分页模式
 
-import { Input } from "view-ui-plus";
+import { Input, Modal } from "view-ui-plus";
 import ETable, { ParamsType } from "./comps/equipList/eTable.vue";
 import _ from "lodash";
 
@@ -132,6 +132,19 @@ let refETable = ref<InstanceType<typeof ETable>>();
 let delBadgeNum = ref<number>(0); // 删除选中的角标
 const onETableSChange = (len: number) => {
   delBadgeNum.value = len;
+};
+const onDelEquip = () => {
+  if (delBadgeNum.value > 0) {
+    Modal.confirm({
+      title: "是否确认删除已选择的设备",
+      loading: true,
+      onOk: () => {
+        refETable.value?.onDel(() => {
+          Modal.remove();
+        });
+      },
+    });
+  }
 };
 let listParams = reactive<ParamsType>({
   pageSize: 8,
@@ -168,6 +181,9 @@ onMounted(() => {
 <style scoped lang="less">
 :deep(.ivu-input) {
   border-radius: 50px;
+}
+:deep(.ivu-modal) {
+  top: 200px;
 }
 .equipment {
   .size(100%,100%);

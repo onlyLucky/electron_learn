@@ -280,9 +280,17 @@ const getData = (params: ParamsType, callBack: Function) => {
       loading.value = false;
     });
 };
+const onDel = (cb: Function) => {
+  setTimeout(() => {
+    if (cb) {
+      cb();
+    }
+  }, 2000);
+};
 defineExpose({
   selectArr,
   getData,
+  onDel,
 });
 </script>
 <style scoped lang="less">
