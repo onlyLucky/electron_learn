@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 18:07:22
+ * @LastEditTime: 2023-02-15 19:53:43
  * @Description: content
 -->
 <template>
@@ -118,9 +118,10 @@ import { Input, Modal, Notice } from "view-ui-plus";
 import ETable, { ParamsType } from "./comps/equipList/eTable.vue";
 import _ from "lodash";
 import { getDownloadTemplate } from "@/apis/equipment";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, shell } from "electron";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { withDirectives, resolveDirective } from "vue";
+const iconv = require("iconv-lite");
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -186,11 +187,43 @@ const onSearchNameChange = (e: any) => {
     getTableData();
   }, 400)();
 };
-const onOpenFile = () => {
-  console.log("onOpenFile");
-};
 // 自定义指令获取
 const vDebounce = resolveDirective("debounce");
+const handleNotice = (data: any) => {
+  let fileName = _.last(data.filePath.split("\\"));
+  let tempName = iconv.encode(data.filePath, "ascii").toString("binary");
+  Notice.success({
+    title: "下载成功",
+    desc: `${fileName}, 打开文件`,
+    duration: 6,
+    render: (h: any) => {
+      return h(
+        "p",
+        {
+          class: "fileLink",
+          style: { color: "var(--fontColor)", userSelect: "none" },
+        },
+        [
+          `${fileName}，`,
+          h(
+            "span",
+            {
+              style: {
+                color: "var(--f_color_active)",
+                cursor: "pointer",
+                borderBottom: "1px solid var(--f_color_active)",
+              },
+              onclick: () => {
+                shell.openExternal(tempName);
+              },
+            },
+            "打开文件"
+          ),
+        ]
+      );
+    },
+  });
+};
 onMounted(() => {
   nextTick(() => {
     getTableData();
@@ -198,48 +231,19 @@ onMounted(() => {
 
     ipcRenderer.on("sendSaveFileResult", (e, data) => {
       console.log(data, "data");
-      let fileName = _.last(data.filePath.split("\\"));
-      Notice.success({
-        title: "下载成功",
-        desc: `${fileName}, 打开文件`,
-        duration: 6,
-        render: (h: any) => {
-          return h(
-            "p",
-            {
-              class: "fileLink",
-              style: { color: "var(--fontColor)", userSelect: "none" },
-            },
-            [
-              `${fileName}，`,
-              withDirectives(
-                h(
-                  "span",
-                  {
-                    style: {
-                      color: "var(--f_color_active)",
-                      cursor: "pointer",
-                      borderBottom: "1px solid var(--f_color_active)",
-                    },
-                  },
-                  "打开文件"
-                ),
-                [[vDebounce, onOpenFile]]
-              ),
-            ]
-          );
-        },
-      });
-      /* getDownloadTemplate().then((res) => {
+
+      getDownloadTemplate().then((res) => {
         useNodeStreamDownload(
           {
             path: data.filePath,
             streamContent: res,
           },
-          () => {},
+          () => {
+            handleNotice(data);
+          },
           () => {}
         );
-      }); */
+      });
     });
   });
 });
