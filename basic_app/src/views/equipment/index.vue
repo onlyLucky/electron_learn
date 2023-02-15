@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 19:53:43
+ * @LastEditTime: 2023-02-15 20:04:32
  * @Description: content
 -->
 <template>
@@ -149,6 +149,7 @@ const onDelEquip = () => {
       onOk: () => {
         refETable.value?.onDel(() => {
           Modal.remove();
+          getTableData();
         });
       },
     });
@@ -232,7 +233,7 @@ onMounted(() => {
     ipcRenderer.on("sendSaveFileResult", (e, data) => {
       console.log(data, "data");
 
-      getDownloadTemplate().then((res) => {
+      getDownloadTemplate().then((res: any) => {
         useNodeStreamDownload(
           {
             path: data.filePath,

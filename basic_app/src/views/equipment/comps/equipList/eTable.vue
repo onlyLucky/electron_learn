@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 14:54:40
+ * @LastEditTime: 2023-02-15 20:01:07
  * @Description: 设备列表
 -->
 <template>
@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import { useBytesUnit } from "@/hooks/useTools";
-import { getDevicePage } from "@/apis/equipment";
+import { getDevicePage, deleteEquipByIds } from "@/apis/equipment";
 export type ParamsType = {
   pageSize: number;
   pageNum: number;
@@ -251,7 +251,12 @@ let tableHeight = ref<number>();
 let tData = reactive<any[]>([]);
 let selectArr = ref<any[]>([]);
 const onSelect = (selection: any) => {
-  selectArr.value = selection;
+  let temp: any[] = [];
+  selection.map((item: any) => {
+    temp.push(item.id);
+  });
+  selectArr.value = temp;
+
   emit("onSelectChange", selection.length);
 };
 onMounted(() => {
@@ -281,11 +286,12 @@ const getData = (params: ParamsType, callBack: Function) => {
     });
 };
 const onDel = (cb: Function) => {
-  setTimeout(() => {
+  deleteEquipByIds({ ids: selectArr.value.toString() }).then((res) => {
     if (cb) {
       cb();
     }
-  }, 2000);
+    emit("onSelectChange", 0);
+  });
 };
 defineExpose({
   selectArr,

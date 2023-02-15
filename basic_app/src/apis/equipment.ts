@@ -16,6 +16,7 @@ import http from "@/libs/request"
 const path = {
   device: '/device',//获取设备列表表格
   downloadTemplate: '/device/downloadTemplate',//获取导入设备模板
+  deleteBatch: '/device/deleteBatch',// 删除多个设备
 }
 
 // 获取设备列表表格
@@ -28,6 +29,8 @@ export const getDevicePage = (params: GetDevicePagePT): Promise<ResultData<any>>
   return http.get<any[]>(path.device, params)
 }
 
-export const getDownloadTemplate = (params?: any): Promise<any> => {
-  return http.get(path.downloadTemplate, params)
+// 根据id批量删除设备
+export const deleteEquipByIds = (params?: { ids: string }): Promise<ResultData<any>> => {
+  return http.delete<any>(path.deleteBatch, params)
 }
+
