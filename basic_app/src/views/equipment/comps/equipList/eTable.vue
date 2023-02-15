@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-14 16:31:47
+ * @LastEditTime: 2023-02-15 11:44:52
  * @Description: 设备列表
 -->
 <template>
@@ -27,6 +27,7 @@ const columns = [
   {
     title: "设备",
     key: "name",
+    minWidth: 450,
     render: (h: any, params: any) => {
       return h(
         "div",
@@ -73,6 +74,7 @@ const columns = [
                   {
                     placement: "bottom-start",
                     ellipsis: true,
+                    class: "equipNameTxt",
                     style: { fontSize: "16px" },
                     "ellipsis-config": { tooltip: true },
                   },
@@ -146,14 +148,42 @@ const columns = [
     },
   },
   {
-    title: "mac地址",
-    key: "macAddress",
-    width: 200,
+    title: "设备编码",
+    key: "code",
+    minWidth: 160,
+    maxWidth: 300,
+    render: (h: any, params: any) => {
+      return h(
+        resolveComponent("Text"),
+        {
+          placement: "bottom-start",
+          ellipsis: true,
+          class: "equipTItem",
+          style: { fontSize: "14px" },
+          "ellipsis-config": { tooltip: true },
+        },
+        () => params.row.code
+      );
+    },
   },
   {
     title: "软件版本",
     key: "softwareVersion",
-    width: 100,
+    minWidth: 160,
+    maxWidth: 300,
+    render: (h: any, params: any) => {
+      return h(
+        resolveComponent("Text"),
+        {
+          placement: "bottom-start",
+          ellipsis: true,
+          class: "equipTItem",
+          style: { fontSize: "14px" },
+          "ellipsis-config": { tooltip: true },
+        },
+        () => params.row.softwareVersion
+      );
+    },
   },
   {
     title: "鼠标数量",
@@ -214,6 +244,9 @@ defineExpose({
 :deep(.ivu-table-header thead tr th) {
   padding: 16px 0px;
 }
+:deep(.equipTItem) {
+  color: @f_color_h3;
+}
 :deep(.equipName) {
   .size(100%, 86px);
 
@@ -238,6 +271,10 @@ defineExpose({
       height: 100px;
       padding: 20px 0;
       box-sizing: border-box;
+      .equipNameTxt {
+        cursor: pointer;
+        color: @f_color_active;
+      }
       .equipBottom {
         font-size: 12px;
         color: @fontColor;
