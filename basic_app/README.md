@@ -54,6 +54,8 @@
   - [electron 调用打开第三方 exe 应用配置](#electron-调用打开第三方-exe-应用配置)
   - [全局配置 config.json 处理逻辑](#全局配置-configjson-处理逻辑)
   - [electron 文件下载器开发配置](#electron-文件下载器开发配置)
+  - [文件另存为配置](#文件另存为配置)
+    - [二进制文件处理（另存为）](#二进制文件处理另存为)
 - [技术点总结](#技术点总结)
   - [T1: vue3 使用 render 函数 h](#t1-vue3-使用-render-函数-h)
   - [T2: Javascript Object 和 Map 之间的转换](#t2-javascript-object-和-map-之间的转换)
@@ -826,6 +828,115 @@ const STORE_PATH = app.getPath("userData"); // 获取应用的用户目录 C:\Us
 - 同步下载数配置化控制
 - 多文件下载进度计算监听处理。
 - 多窗口同时下载逻辑处理
+
+### 文件另存为配置
+
+这里如果需要文件另存为，我们大致不止步骤分为：
+
+- 调用 electron 文件选择 dialog
+- 拿到对话框的地址后，获取下载资源
+- 下载资源，写入文件
+
+具体细节可以自己添加，中间过程中处理报错，文件下载之后弹出 notion 查看下载文件之类的
+
+#### 二进制文件处理（另存为）
+
+常见的二进制文件类型为 ArrayBuffer Blob,后端返回数据可以通过` responseType=``blob `或者`arraybuffer`
+
+**这里后端返回的二进制数据会出现乱码现象**
+
+eg: `���j�...`，这里我想下载的 xlsx 文件格式的二进制文件，下载完成之后，点击文件无法打开
+
+出现原因：因为文件未设置类型，打开文件无法识别文件类型
+
+处理方式：Blob 的类型对象中可以设置文件 type,设置过 type 为 xlsx 文件格式类型`application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`,设置正确类型之后，转成 ArrayBuffer=>Buffer=>fs 模块的文件流写入，详细不分参考下面的伪代码
+
+```ts
+// 接口设置 responseType
+export const getDownloadTemplate = (params?: any): Promise<any> => {
+  // { responseType: 'arraybuffer' }
+  return http.get(path.downloadTemplate, params, {
+    responseType: "arraybuffer",
+    headers: { "Content-Type": "application/octet-stream" },
+  });
+};
+```
+
+```ts
+getDownloadTemplate().then((res: any) => {
+  // fs.writeFileSync(data.filePath, res, { encoding: "UTF8" });
+  // console.log(res);
+  let blob = new Blob([res], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  blob.arrayBuffer().then((buf) => {
+    console.log(buf instanceof ArrayBuffer, "res instanceof ArrayBuffer");
+    const buffer = Buffer.from(buf);
+    useNodeStreamDownload(
+      {
+        path: data.filePath,
+        streamContent: buffer,
+      },
+      () => {
+        // 处理notion
+        handleNotice(data);
+      },
+      () => {}
+    );
+  });
+});
+```
+
+useNodeStreamDownload hook 函数
+
+```ts
+type NodeStreamOptType = {
+  path: string;
+  encoding?: string;
+  streamContent: any;
+};
+const useNodeStreamDownload = (
+  opt: NodeStreamOptType,
+  finishCallback?: Function,
+  errorCallback?: Function
+) => {
+  let writeStream = fs.createWriteStream(opt.path, { encoding: "utf8" });
+  writeStream.write(opt.streamContent, "UTF8");
+  // 标注结束
+  writeStream.end();
+  writeStream.on("finish", function () {
+    if (finishCallback) finishCallback();
+  });
+  writeStream.on("error", function (err: any) {
+    console.log(err, "err--");
+    if (errorCallback) errorCallback(err);
+  });
+};
+```
+
+- `Blob` `ArrayBuffer` `Buffer` 之间的转换
+
+```js
+// Buffer转ArrayBuffer
+const buf = Buffer.from("this is a test");
+console.log(buf);
+console.log(buf.toString());
+var arrayBuf = buf.buffer; //Buffer的buffer属性返回arrayBuf
+console.log(arrayBuf);
+
+//ArrayBuffer转Buffer
+var arrayBuffer = new ArrayBuffer(16);
+const buffer = Buffer.from(arrayBuffer);
+console.log(buffer.buffer === arrayBuffer);
+
+// Blob转ArrayBuffer
+const blob = new Blob([1, 2, 3]);
+blob.arrayBuffer().then((buf) => {
+  console.log(buf);
+});
+```
+
+- [blob type 文件类型属性设置表格](https://blog.csdn.net/yin_you_yu/article/details/116261304)
 
 ## 技术点总结
 
