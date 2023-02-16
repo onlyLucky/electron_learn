@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 14:41:51
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 15:52:17
+ * @LastEditTime: 2023-02-16 14:07:26
  * @Description: 设备功能api
  */
 
@@ -27,6 +27,11 @@ type GetDevicePagePT = {
 };
 export const getDevicePage = (params: GetDevicePagePT): Promise<ResultData<any>> => {
   return http.get<any[]>(path.device, params)
+}
+
+export const getDownloadTemplate = (params?: any): Promise<any> => {
+  // { responseType: 'arraybuffer' }
+  return http.get(path.downloadTemplate, params, { responseType: 'arraybuffer', headers: { "Content-Type": "application/octet-stream" } })
 }
 
 // 根据id批量删除设备

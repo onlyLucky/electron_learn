@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 20:04:32
+ * @LastEditTime: 2023-02-16 15:33:48
  * @Description: content
 -->
 <template>
@@ -121,7 +121,6 @@ import { getDownloadTemplate } from "@/apis/equipment";
 import { ipcRenderer, shell } from "electron";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { withDirectives, resolveDirective } from "vue";
-const iconv = require("iconv-lite");
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -161,6 +160,15 @@ const onDownloadTemplate = () => {
     name: "设备导入模板.xlsx",
     filters: [{ name: "xlsx", extensions: ["xlsx"] }],
   });
+  /* getDownloadTemplate().then((res: any) => {
+    let blob = new Blob([res], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    blob.arrayBuffer().then((res) => {
+      console.log(res instanceof ArrayBuffer, "res instanceof ArrayBuffer");
+    });
+    console.log(blob instanceof Blob, "blob instanceof Blob");
+  }); */
 };
 let listParams = reactive<ParamsType>({
   pageSize: 8,
@@ -192,7 +200,6 @@ const onSearchNameChange = (e: any) => {
 const vDebounce = resolveDirective("debounce");
 const handleNotice = (data: any) => {
   let fileName = _.last(data.filePath.split("\\"));
-  let tempName = iconv.encode(data.filePath, "ascii").toString("binary");
   Notice.success({
     title: "下载成功",
     desc: `${fileName}, 打开文件`,
@@ -215,7 +222,7 @@ const handleNotice = (data: any) => {
                 borderBottom: "1px solid var(--f_color_active)",
               },
               onclick: () => {
-                shell.openExternal(tempName);
+                shell.openPath(data.filePath);
               },
             },
             "打开文件"
@@ -234,16 +241,25 @@ onMounted(() => {
       console.log(data, "data");
 
       getDownloadTemplate().then((res: any) => {
-        useNodeStreamDownload(
-          {
-            path: data.filePath,
-            streamContent: res,
-          },
-          () => {
-            handleNotice(data);
-          },
-          () => {}
-        );
+        // fs.writeFileSync(data.filePath, res, { encoding: "UTF8" });
+        // console.log(res);
+        let blob = new Blob([res], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        blob.arrayBuffer().then((buf) => {
+          console.log(buf instanceof ArrayBuffer, "res instanceof ArrayBuffer");
+          const buffer = Buffer.from(buf);
+          useNodeStreamDownload(
+            {
+              path: data.filePath,
+              streamContent: buffer,
+            },
+            () => {
+              handleNotice(data);
+            },
+            () => {}
+          );
+        });
       });
     });
   });

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-08 15:07:47
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 19:41:22
+ * @LastEditTime: 2023-02-16 15:42:26
  * @Description: electron 文件下载处理
  */
 import hdObj from "_v/setting/handleData"
@@ -10,6 +10,7 @@ import { join } from 'path'
 import { ipcRenderer } from "electron"
 import _ from "lodash"
 const fs = require('fs')
+import { Blob, Buffer } from 'node:buffer';
 
 // 文件存在
 const downloadPath = hdObj.getConfigItem('download').downloadPath
@@ -148,7 +149,7 @@ type NodeStreamOptType = {
   streamContent: any;
 }
 const useNodeStreamDownload = (opt: NodeStreamOptType, finishCallback?: Function, errorCallback?: Function) => {
-  let writeStream = fs.createWriteStream(opt.path, { flags: 'a+', encoding: 'utf8' });
+  let writeStream = fs.createWriteStream(opt.path, { encoding: 'utf8' });
   writeStream.write(opt.streamContent, "UTF8");
   // 标注结束
   writeStream.end();
@@ -156,6 +157,7 @@ const useNodeStreamDownload = (opt: NodeStreamOptType, finishCallback?: Function
     if (finishCallback) finishCallback();
   });
   writeStream.on("error", function (err: any) {
+    console.log(err, 'err--')
     if (errorCallback) errorCallback(err);
   });
 }
