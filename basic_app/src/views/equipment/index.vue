@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-16 15:33:48
+ * @LastEditTime: 2023-02-16 16:59:38
  * @Description: content
 -->
 <template>
@@ -14,6 +14,9 @@
       <div class="hRight f-row-c-c">
         <!-- search -->
         <div class="searchBox f-row-c-c">
+          <Upload action="//jsonplaceholder.typicode.com/posts/">
+            <Button icon="ios-cloud-upload-outline">Upload files</Button>
+          </Upload>
           <Tooltip placement="bottom-end" content="搜索设备">
             <div class="optItem f-row-c-c" v-show="!searchFlag">
               <svg-icon
@@ -96,7 +99,11 @@
       </div>
     </div>
     <div class="content">
-      <ETable ref="refETable" @onSelectChange="onETableSChange"></ETable>
+      <ETable
+        ref="refETable"
+        @onSelectChange="onETableSChange"
+        @onDel="delEquip"
+      ></ETable>
     </div>
     <div class="footer f-row-e-c">
       <Page
@@ -142,17 +149,20 @@ const onETableSChange = (len: number) => {
 // 删除
 const onDelEquip = () => {
   if (delBadgeNum.value > 0) {
-    Modal.confirm({
-      title: "是否确认删除已选择的设备",
-      loading: true,
-      onOk: () => {
-        refETable.value?.onDel(() => {
-          Modal.remove();
-          getTableData();
-        });
-      },
-    });
+    delEquip();
   }
+};
+const delEquip = () => {
+  Modal.confirm({
+    title: "是否确认删除设备",
+    loading: true,
+    onOk: () => {
+      refETable.value?.onDel(() => {
+        Modal.remove();
+        getTableData();
+      });
+    },
+  });
 };
 // 模板下载
 const onDownloadTemplate = () => {

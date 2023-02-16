@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 20:01:07
+ * @LastEditTime: 2023-02-16 16:57:16
  * @Description: 设备列表
 -->
 <template>
@@ -18,12 +18,14 @@
 <script setup lang="ts">
 import { useBytesUnit } from "@/hooks/useTools";
 import { getDevicePage, deleteEquipByIds } from "@/apis/equipment";
+import _ from "lodash";
 export type ParamsType = {
   pageSize: number;
   pageNum: number;
   name?: string;
 };
 let emit = defineEmits<{
+  (e: "onDel"): void;
   (e: "onSelectChange", len: number): void;
 }>();
 const columns = [
@@ -186,7 +188,14 @@ const columns = [
                           ),
                           h(
                             resolveComponent("DropdownItem"),
-                            {},
+                            {
+                              onClick: _.debounce(function () {
+                                console.log(params.row);
+                                console.log("onClick");
+                                selectArr.value = [params.row.id];
+                                emit("onDel");
+                              }, 300),
+                            },
                             { default: () => "删除设备" }
                           ),
                         ],
