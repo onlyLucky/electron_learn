@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-16 16:59:38
+ * @LastEditTime: 2023-02-17 11:45:52
  * @Description: content
 -->
 <template>
@@ -42,7 +42,7 @@
         </div>
         <div class="optLine"></div>
         <Tooltip placement="bottom-end" content="新增设备">
-          <div class="optItem f-row-c-c">
+          <div class="optItem f-row-c-c" v-debounce="showAdd">
             <svg-icon
               iconName="icon-icon-xinzeng"
               className="optIcon"
@@ -116,6 +116,7 @@
         @on-change="pageChange"
       />
     </div>
+    <EquipAdd ref="refEquipAdd"></EquipAdd>
   </div>
 </template>
 <script setup lang="ts">
@@ -128,6 +129,7 @@ import { getDownloadTemplate } from "@/apis/equipment";
 import { ipcRenderer, shell } from "electron";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { withDirectives, resolveDirective } from "vue";
+import EquipAdd from "./comps/modal/equipAdd.vue";
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -164,6 +166,12 @@ const delEquip = () => {
     },
   });
 };
+// 新增设备
+const refEquipAdd = ref<InstanceType<typeof EquipAdd>>();
+const showAdd = () => {
+  refEquipAdd.value?.handleShow();
+};
+
 // 模板下载
 const onDownloadTemplate = () => {
   ipcRenderer.send("showSaveFile", {
