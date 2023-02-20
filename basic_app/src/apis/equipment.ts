@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 14:41:51
  * @LastEditors: fg
- * @LastEditTime: 2023-02-16 14:07:26
+ * @LastEditTime: 2023-02-20 11:42:57
  * @Description: 设备功能api
  */
 
@@ -29,6 +29,15 @@ export const getDevicePage = (params: GetDevicePagePT): Promise<ResultData<any>>
   return http.get<any[]>(path.device, params)
 }
 
+export const postDevice = (params: any): Promise<ResultData<any>> => {
+  return http.post<any>(path.device, params, {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+}
+
+//获取导入设备模板
 export const getDownloadTemplate = (params?: any): Promise<any> => {
   // { responseType: 'arraybuffer' }
   return http.get(path.downloadTemplate, params, { responseType: 'arraybuffer', headers: { "Content-Type": "application/octet-stream" } })

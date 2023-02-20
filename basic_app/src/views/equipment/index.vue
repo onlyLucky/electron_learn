@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-17 11:45:52
+ * @LastEditTime: 2023-02-20 13:52:06
  * @Description: content
 -->
 <template>
@@ -116,7 +116,7 @@
         @on-change="pageChange"
       />
     </div>
-    <EquipAdd ref="refEquipAdd"></EquipAdd>
+    <EquipAdd ref="refEquipAdd" @on-success="getTableData"></EquipAdd>
   </div>
 </template>
 <script setup lang="ts">

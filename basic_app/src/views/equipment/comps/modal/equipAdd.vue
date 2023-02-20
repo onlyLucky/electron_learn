@@ -2,15 +2,16 @@
  * @Author: fg
  * @Date: 2023-02-17 10:44:17
  * @LastEditors: fg
- * @LastEditTime: 2023-02-17 17:54:39
+ * @LastEditTime: 2023-02-20 13:43:49
  * @Description: 新增设备
 -->
 <template>
   <Modal
     v-model="isShow"
     width="520"
+    :loading="loading"
     class-name="addModal f-row-c-c"
-    ok-text="新增"
+    :mask-closable="!loading"
   >
     <template #header>
       <h1 class="mTitle">新增设备</h1>
@@ -18,7 +19,7 @@
     <div class="content">
       <!-- <h1 class="cTitle">基本信息</h1> -->
       <div class="conBox">
-        <Form :model="form" class="conForm" :rules="ruleForm">
+        <Form :model="form" class="conForm" :rules="ruleForm" ref="refForm">
           <FormItem label="" prop="code" class="formItem">
             <div class="formLabel f-row-s-c">
               <span class="labelTag">*</span>
@@ -82,20 +83,22 @@
             <div class="formLabel f-row-s-c">
               <p>本地硬盘大小</p>
             </div>
-            <div class="formValCon">
-              <Input v-model="form.hardDiskSize" placeholder="请输入硬盘大小">
-                <template #append>
-                  <Select v-model="biteUnit" style="width: 80px">
-                    <Option
-                      :value="item"
-                      :key="index"
-                      v-for="(item, index) in biteUnitArr"
-                    >
-                      {{ item }}
-                    </Option>
-                  </Select>
-                </template>
-              </Input>
+            <div class="formValCon f-row-b-c">
+              <InputNumber
+                class="formBite"
+                :min="1"
+                v-model="biteUnitSize"
+                placeholder="请输入硬盘大小"
+              ></InputNumber>
+              <Select v-model="biteUnit" class="formUnit">
+                <Option
+                  :value="item.value"
+                  :key="index"
+                  v-for="(item, index) in biteUnitArr"
+                >
+                  {{ item.name }}
+                </Option>
+              </Select>
             </div>
           </FormItem>
           <FormItem label="" prop="status" class="formItem" style="width: 100%">
@@ -117,12 +120,21 @@
         </Form>
       </div>
     </div>
-    <!-- <template #footer>
-      <Button type="error" size="large" long>Delete</Button>
-    </template> -->
+    <template #footer>
+      <Button type="text" v-debounce="formCancel">取消</Button>
+      <Button type="primary" :loading="loading" v-debounce="formConfirm"
+        >新增</Button
+      >
+    </template>
   </Modal>
 </template>
 <script setup lang="ts">
+import { Form, Message } from "view-ui-plus";
+import { postDevice } from "@/apis/equipment";
+
+let emit = defineEmits<{
+  (e: "onSuccess"): void;
+}>();
 let isShow = ref<boolean>(false);
 type FormType = {
   code: string;
@@ -147,17 +159,71 @@ let ruleForm = {
   code: [{ required: true, message: "设备编码不能为空", trigger: "blur" }],
   name: [{ required: true, message: "设备编码不能为空", trigger: "blur" }],
 };
-let biteUnitArr = ["KB", "MB", "GB", "TB"];
+let biteUnitArr = [
+  { name: "KB", value: 1 },
+  { name: "MB", value: 2 },
+  { name: "GB", value: 3 },
+  { name: "TB", value: 4 },
+];
 let statusType = [
   { name: "已创建", value: "10" },
   { name: "使用中", value: "20" },
   { name: "已停用", value: "30" },
 ];
-let biteUnit = ref<string>("GB");
+let biteUnit = ref<number>(3);
+let biteUnitSize = ref<number>(1);
 const handleShow = () => {
   isShow.value = true;
 };
+// 表单加载
+let loading = ref<boolean>(false);
+let refForm = ref<InstanceType<typeof Form>>();
+// resetFields
+const initData = () => {
+  let tempData = {
+    code: "",
+    name: "",
+    status: "10",
+    hardDiskSize: "",
+    mouseNum: 1,
+    productionDate: "",
+    softwareVersion: "",
+  };
+  biteUnitSize.value = 1;
+  biteUnit.value = 3;
+};
 
+const formConfirm = () => {
+  form.hardDiskSize = biteUnitSize.value * Math.pow(1024, biteUnit.value);
+  (refForm.value?.validate as any)((valid: any) => {
+    if (valid) {
+      loading.value = true;
+      Message.destroy();
+      postDevice({ ...form })
+        .then((res) => {
+          console.log(res);
+          loading.value = false;
+          isShow.value = false;
+          Message.success("新增设备操作成功");
+          emit("onSuccess");
+        })
+        .catch((err) => {
+          loading.value = false;
+          Message.error(err || "新增设备操作失败");
+        });
+    } else {
+      return false;
+    }
+  });
+  initData();
+};
+const formCancel = () => {
+  (refForm.value?.resetFields as any)();
+  isShow.value = false;
+};
+const modalBeforeClose = () => {
+  console.log("close", loading.value, "loading.value");
+};
 defineExpose({
   handleShow,
 });
@@ -229,6 +295,28 @@ defineExpose({
               top: 8px;
               left: -14px;
               background-color: @search_bottom_border;
+            }
+            .formBite {
+              width: calc(100% - 80px);
+              border: none;
+              .ivu-input-number-input-wrap .ivu-input-number-input {
+                text-align: left;
+              }
+              &:hover {
+                .ivu-input-number-handler-wrap {
+                  display: none;
+                }
+              }
+            }
+            .formUnit {
+              width: 80px;
+              .ivu-select-selection {
+                border: none;
+                box-shadow: none;
+              }
+            }
+            .ivu-input-number-focused {
+              box-shadow: none;
             }
           }
           &:nth-child(2n + 1) {
