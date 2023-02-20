@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-20 13:52:06
+ * @LastEditTime: 2023-02-20 18:02:22
  * @Description: content
 -->
 <template>
@@ -14,9 +14,6 @@
       <div class="hRight f-row-c-c">
         <!-- search -->
         <div class="searchBox f-row-c-c">
-          <Upload action="//jsonplaceholder.typicode.com/posts/">
-            <Button icon="ios-cloud-upload-outline">Upload files</Button>
-          </Upload>
           <Tooltip placement="bottom-end" content="搜索设备">
             <div class="optItem f-row-c-c" v-show="!searchFlag">
               <svg-icon
@@ -66,7 +63,7 @@
           </Badge>
         </Tooltip>
         <div class="optLine"></div>
-        <Dropdown placement="bottom-start">
+        <Dropdown placement="bottom-start" trigger="click">
           <div class="optItem f-row-c-c">
             <svg-icon
               iconName="icon-gengduo"
@@ -89,10 +86,18 @@
               <p>导入设备</p>
             </div>
             <DropdownMenu>
-              <DropdownItem v-debounce="onDownloadTemplate"
-                >下载模板</DropdownItem
-              >
-              <DropdownItem>导入设备</DropdownItem>
+              <DropdownItem v-debounce="onDownloadTemplate">
+                下载模板
+              </DropdownItem>
+              <DropdownItem>
+                <Upload
+                  accept=".xls, .xlsx"
+                  :show-upload-list="false"
+                  :before-upload="handleUpload"
+                >
+                  导入设备
+                </Upload>
+              </DropdownItem>
             </DropdownMenu>
           </template>
         </Dropdown>
@@ -116,7 +121,10 @@
         @on-change="pageChange"
       />
     </div>
+    <!-- 新增设备modal -->
     <EquipAdd ref="refEquipAdd" @on-success="getTableData"></EquipAdd>
+    <!-- 导入设备列表modal -->
+    <ImportList ref="refImportList"></ImportList>
   </div>
 </template>
 <script setup lang="ts">
@@ -125,11 +133,12 @@
 import { Input, Modal, Notice } from "view-ui-plus";
 import ETable, { ParamsType } from "./comps/equipList/eTable.vue";
 import _ from "lodash";
-import { getDownloadTemplate } from "@/apis/equipment";
+import { getDownloadTemplate, postUploadDeviceFile } from "@/apis/equipment";
 import { ipcRenderer, shell } from "electron";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { withDirectives, resolveDirective } from "vue";
 import EquipAdd from "./comps/modal/equipAdd.vue";
+import ImportList from "./comps/modal/importList.vue";
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -150,6 +159,7 @@ const onETableSChange = (len: number) => {
 };
 // 删除
 const onDelEquip = () => {
+  refImportList.value?.handleShow();
   if (delBadgeNum.value > 0) {
     delEquip();
   }
@@ -187,6 +197,19 @@ const onDownloadTemplate = () => {
     });
     console.log(blob instanceof Blob, "blob instanceof Blob");
   }); */
+};
+// 模板文件上传
+const refImportList = ref<InstanceType<typeof ImportList>>();
+const handleUpload = (file: any) => {
+  postUploadDeviceFile({ file: file })
+    .then((res) => {
+      refImportList.value?.handleShow();
+      refImportList.value?.handleData(res.data);
+    })
+    .catch((err) => {
+      console.log(err, "err");
+    });
+  return false;
 };
 let listParams = reactive<ParamsType>({
   pageSize: 8,

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 14:41:51
  * @LastEditors: fg
- * @LastEditTime: 2023-02-20 11:42:57
+ * @LastEditTime: 2023-02-20 18:23:11
  * @Description: 设备功能api
  */
 
@@ -17,6 +17,8 @@ const path = {
   device: '/device',//获取设备列表表格
   downloadTemplate: '/device/downloadTemplate',//获取导入设备模板
   deleteBatch: '/device/deleteBatch',// 删除多个设备
+  uploadDeviceFile: '/device/validationImportDevice',//上传设备
+  importDevice: "/device/importDevice",//表格文件导入返回数据提交新增设备
 }
 
 // 获取设备列表表格
@@ -29,6 +31,7 @@ export const getDevicePage = (params: GetDevicePagePT): Promise<ResultData<any>>
   return http.get<any[]>(path.device, params)
 }
 
+// 新增设备
 export const postDevice = (params: any): Promise<ResultData<any>> => {
   return http.post<any>(path.device, params, {
     headers: {
@@ -36,7 +39,14 @@ export const postDevice = (params: any): Promise<ResultData<any>> => {
     }
   })
 }
-
+// 上传导入设备文件
+export const postUploadDeviceFile = (params: any): Promise<ResultData<any>> => {
+  return http.post<any>(path.uploadDeviceFile, params)
+}
+// 表格文件导入返回数据提交新增设备
+export const postImportDevice = (params: any): Promise<ResultData<any>> => {
+  return http.post<any>(path.importDevice, params)
+}
 //获取导入设备模板
 export const getDownloadTemplate = (params?: any): Promise<any> => {
   // { responseType: 'arraybuffer' }

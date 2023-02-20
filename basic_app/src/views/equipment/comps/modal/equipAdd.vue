@@ -9,7 +9,6 @@
   <Modal
     v-model="isShow"
     width="520"
-    :loading="loading"
     class-name="addModal f-row-c-c"
     :mask-closable="!loading"
   >
