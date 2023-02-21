@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-21 11:08:15
+ * @LastEditTime: 2023-02-21 15:06:40
  * @Description: content
 -->
 <template>
@@ -126,7 +126,7 @@
     <EquipAdd ref="refEquipAdd" @on-success="getTableData"></EquipAdd>
     <!-- 导入设备列表modal -->
     <ImportList ref="refImportList"></ImportList>
-    <!--  -->
+    <!-- 设备详情 -->
     <EquipDetail ref="refEquipDetail"></EquipDetail>
   </div>
 </template>
@@ -163,7 +163,6 @@ const onETableSChange = (len: number) => {
 };
 // 删除
 const onDelEquip = () => {
-  refImportList.value?.handleShow();
   if (delBadgeNum.value > 0) {
     delEquip();
   }
@@ -188,8 +187,9 @@ const showAdd = () => {
 
 // 设备详情
 const refEquipDetail = ref<InstanceType<typeof EquipDetail>>();
-const onDetail = () => {
+const onDetail = (item: any) => {
   refEquipDetail.value?.handleShow();
+  refEquipDetail.value?.getData(item);
 };
 
 // 模板下载

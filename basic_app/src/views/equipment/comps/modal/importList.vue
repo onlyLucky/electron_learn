@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-20 15:34:10
  * @LastEditors: fg
- * @LastEditTime: 2023-02-21 10:11:20
+ * @LastEditTime: 2023-02-21 14:20:02
  * @Description: 导入设备列表
 -->
 <template>
@@ -330,7 +330,6 @@ defineExpose({
   }
   .content {
     .size(100%, 500px);
-    background-color: pink;
   }
   .ivu-modal {
     top: 0;

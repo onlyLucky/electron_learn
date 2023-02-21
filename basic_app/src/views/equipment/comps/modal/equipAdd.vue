@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-17 10:44:17
  * @LastEditors: fg
- * @LastEditTime: 2023-02-20 13:43:49
+ * @LastEditTime: 2023-02-21 15:54:28
  * @Description: 新增设备
 -->
 <template>
@@ -235,7 +235,7 @@ defineExpose({
     line-height: 50px;
     font-size: 16px;
     // @fontColor
-    color: #666;
+    color: @f_color_h6;
   }
   .content {
     .size(100%,auto);
