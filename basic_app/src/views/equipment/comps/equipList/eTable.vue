@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-20 15:58:35
+ * @LastEditTime: 2023-02-21 10:14:10
  * @Description: 设备列表
 -->
 <template>
@@ -11,8 +11,20 @@
       :columns="columns"
       :data="tData"
       :height="tableHeight"
+      :loading="loading"
       @on-selection-change="onSelect"
-    ></Table>
+    >
+      <template #loading>
+        <Spin :show="loading" fix size="large" class="loading">
+          <Icon
+            type="ios-loading"
+            size="26"
+            class="conLoading iconLoading"
+          ></Icon>
+          <div class="conLoadingTxt">加载中...</div>
+        </Spin>
+      </template>
+    </Table>
   </div>
 </template>
 <script setup lang="ts">
@@ -386,6 +398,10 @@ defineExpose({
       display: flex;
     }
   }
+}
+.conLoadingTxt {
+  margin-top: 10px;
+  white-space: nowrap;
 }
 .eTable {
   .size(100%,100%);

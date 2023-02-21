@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-20 15:34:10
  * @LastEditors: fg
- * @LastEditTime: 2023-02-20 18:32:27
+ * @LastEditTime: 2023-02-21 10:11:20
  * @Description: 导入设备列表
 -->
 <template>
@@ -19,9 +19,21 @@
       <Table
         :columns="columns"
         :data="tData"
+        :loading="loading"
         height="500"
         @on-selection-change="onSelect"
-      ></Table>
+      >
+        <template #loading>
+          <Spin :show="loading" fix size="large" class="loading">
+            <Icon
+              type="ios-loading"
+              size="26"
+              class="conLoading iconLoading"
+            ></Icon>
+            <div class="conLoadingTxt">加载中...</div>
+          </Spin>
+        </template>
+      </Table>
     </div>
     <template #footer>
       <Badge :count="selectArr.length">
@@ -280,11 +292,16 @@ let loading = ref<boolean>(false);
 // 确认导入
 const formImport = () => {
   if (selectArr.value.length > 0) {
+    loading.value = true;
     postImportDevice({ importData: selectArr.value })
       .then((res) => {
+        loading.value = false;
+        isShow.value = false;
         Message.success("设备导入成功");
       })
       .catch((err) => {
+        loading.value = false;
+        isShow.value = false;
         Message.error(err || "设备导入失败");
       });
   } else {
@@ -298,6 +315,10 @@ defineExpose({
 });
 </script>
 <style lang="less">
+.conLoadingTxt {
+  margin-top: 10px;
+  white-space: nowrap;
+}
 .Modal {
   user-select: none;
   .mTitle {
