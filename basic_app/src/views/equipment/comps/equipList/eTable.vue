@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-21 10:14:10
+ * @LastEditTime: 2023-02-21 11:05:55
  * @Description: 设备列表
 -->
 <template>
@@ -39,6 +39,7 @@ export type ParamsType = {
 let emit = defineEmits<{
   (e: "onDel"): void;
   (e: "onSelectChange", len: number): void;
+  (e: "onDetail", item: any): void;
 }>();
 const columns = [
   {
@@ -99,6 +100,9 @@ const columns = [
                     class: "equipNameTxt",
                     style: { fontSize: "16px" },
                     "ellipsis-config": { tooltip: true },
+                    onClick: _.debounce(function () {
+                      emit("onDetail", params.row);
+                    }, 300),
                   },
                   () => params.row.name
                 ),

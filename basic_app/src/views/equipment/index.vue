@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-20 18:02:22
+ * @LastEditTime: 2023-02-21 11:08:15
  * @Description: content
 -->
 <template>
@@ -108,6 +108,7 @@
         ref="refETable"
         @onSelectChange="onETableSChange"
         @onDel="delEquip"
+        @onDetail="onDetail"
       ></ETable>
     </div>
     <div class="footer f-row-e-c">
@@ -125,6 +126,8 @@
     <EquipAdd ref="refEquipAdd" @on-success="getTableData"></EquipAdd>
     <!-- 导入设备列表modal -->
     <ImportList ref="refImportList"></ImportList>
+    <!--  -->
+    <EquipDetail ref="refEquipDetail"></EquipDetail>
   </div>
 </template>
 <script setup lang="ts">
@@ -139,6 +142,7 @@ import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { withDirectives, resolveDirective } from "vue";
 import EquipAdd from "./comps/modal/equipAdd.vue";
 import ImportList from "./comps/modal/importList.vue";
+import EquipDetail from "./comps/modal/equipDetail.vue";
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -180,6 +184,12 @@ const delEquip = () => {
 const refEquipAdd = ref<InstanceType<typeof EquipAdd>>();
 const showAdd = () => {
   refEquipAdd.value?.handleShow();
+};
+
+// 设备详情
+const refEquipDetail = ref<InstanceType<typeof EquipDetail>>();
+const onDetail = () => {
+  refEquipDetail.value?.handleShow();
 };
 
 // 模板下载
