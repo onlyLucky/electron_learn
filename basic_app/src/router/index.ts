@@ -13,7 +13,7 @@ const router = createRouter({
 // 全局守卫：登录拦截 本地没有存token,请重新登录
 router.beforeEach((to, from, next) => {
   // 判断有没有登录
-  ViewUIPlus.LoadingBar.start();
+  // ViewUIPlus.LoadingBar.start();
   /* if (!localStorage.getItem('token')) {
     if (to.name == "login") {
       next();
@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
   next();
 });
 router.afterEach((to, from, next) => {
-  ViewUIPlus.LoadingBar.finish()
+  // ViewUIPlus.LoadingBar.finish()
   console.log(to, 'to')
   window.scrollTo(0, 0)
 })
