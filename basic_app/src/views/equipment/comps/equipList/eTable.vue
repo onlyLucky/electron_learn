@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-21 17:43:41
+ * @LastEditTime: 2023-02-22 16:48:59
  * @Description: 设备列表
 -->
 <template>
@@ -39,7 +39,7 @@ export type ParamsType = {
 let emit = defineEmits<{
   (e: "onDel"): void;
   (e: "onSelectChange", len: number): void;
-  (e: "onDetail", item: any): void;
+  (e: "onDetail", item: any, flag: boolean): void;
 }>();
 const columns = [
   {
@@ -69,7 +69,9 @@ const columns = [
                   resolveComponent("Circle"),
                   {
                     percent:
-                      (params.row.localStoreUseSize / params.row.hardDiskSize) *
+                      ((params.row.hardDiskSize -
+                        params.row.localStoreUseSize) /
+                        params.row.hardDiskSize) *
                       100,
                     size: 80,
                     strokeWidth: 7,
@@ -101,7 +103,7 @@ const columns = [
                     style: { fontSize: "16px" },
                     "ellipsis-config": { tooltip: true },
                     onClick: _.debounce(function () {
-                      emit("onDetail", params.row);
+                      emit("onDetail", params.row, false);
                     }, 300),
                   },
                   () => params.row.name
@@ -163,6 +165,9 @@ const columns = [
                       class: "iconOpt",
                       color: "var(--f_color_h3)",
                       size: "22",
+                      onClick: _.debounce(function () {
+                        emit("onDetail", params.row, true);
+                      }, 300),
                     }),
                   ],
                 }

@@ -2,13 +2,18 @@
  * @Author: fg
  * @Date: 2023-02-21 10:52:25
  * @LastEditors: fg
- * @LastEditTime: 2023-02-22 16:41:47
+ * @LastEditTime: 2023-02-22 20:01:56
  * @Description: 设备详情modal
 -->
 <template>
-  <Modal v-model="isShow" width="520" class-name="ModalDetail f-row-c-c">
+  <Modal
+    v-model="isShow"
+    width="520"
+    class-name="ModalDetail f-row-c-c"
+    @on-cancel="onCancel"
+  >
     <template #header>
-      <h1 class="mTitle">设备管理</h1>
+      <h1 class="mTitle">{{ isEdit ? "设备编辑" : "设备查看" }}</h1>
     </template>
     <div class="content">
       <div class="headerInfo f-row-s-c">
@@ -33,10 +38,10 @@
               :ellipsis-config="{ tooltip: true }"
               ellipsis
               placement="bottom-start"
-              >测试设备</Text
+              >{{ form.name }}</Text
             >
             <div class="optBox f-row-c-c">
-              <Tooltip placement="bottom" content="编辑">
+              <Tooltip placement="bottom" content="编辑" v-show="!isEdit">
                 <svg-icon
                   iconName="icon-bianji"
                   v-debounce="handleChange"
@@ -52,7 +57,7 @@
               <p>使用中</p>
             </div>
             <p class="storeTxt">
-              {{ useBytesUnit(detailDate.localStoreUseSize || 0) }}/{{
+              {{ useBytesUnit(form.localStoreUseSize || 0) }}/{{
                 useBytesUnit(form.hardDiskSize || 0)
               }}
             </p>
@@ -269,19 +274,20 @@
       </div>
     </div>
     <template #footer>
-      <div></div>
-      <!-- <Badge :count="selectArr.length">
-        <Button type="primary" :loading="loading" v-debounce="formImport">
-          确认导入
-        </Button>
-      </Badge> -->
+      <div v-show="!isEdit"></div>
+      <Button v-show="isEdit" type="text" v-debounce="handleChange"
+        >退出编辑</Button
+      >
+      <Button v-show="isEdit" type="primary" v-debounce="handleSave"
+        >保存</Button
+      >
     </template>
   </Modal>
 </template>
 <script setup lang="ts">
-import { Message } from "view-ui-plus";
+import { Message, Form } from "view-ui-plus";
 import { useBytesUnit } from "@/hooks/useTools";
-import { getDeviceDetail, getMouseByDevice } from "@/apis/equipment";
+import { getDeviceDetail, getMouseByDevice, putDevice } from "@/apis/equipment";
 import _ from "lodash";
 
 let emit = defineEmits<{
@@ -292,28 +298,14 @@ let isEdit = ref<boolean>(false); // 编辑状态 查看状态
 const handleChange = () => {
   isEdit.value = !isEdit.value;
 };
+const exportEditModal = (flag: boolean) => {
+  isEdit.value = flag;
+};
 const handleShow = () => {
   isShow.value = true;
 };
-type FormType = {
-  code: string;
-  name: string;
-  status: "10" | "20" | "30";
-  hardDiskSize?: number | "";
-  mouseNum?: number;
-  productionDate?: string;
-  softwareVersion?: string;
-};
 // 新增表单
-let form = reactive<FormType>({
-  code: "",
-  name: "",
-  status: "10",
-  hardDiskSize: "",
-  mouseNum: 1,
-  productionDate: "",
-  softwareVersion: "",
-});
+let form = reactive<any>({});
 let ruleForm = {
   code: [{ required: true, message: "设备编码不能为空", trigger: "blur" }],
   name: [{ required: true, message: "设备编码不能为空", trigger: "blur" }],
@@ -333,7 +325,6 @@ let statusType = [
 let biteUnit = ref<number>(3);
 let biteUnitSize = ref<number>(1);
 // 字体选择配置
-let fontSize = ref<number>(1);
 const sliderMarks = { 1: "1", 2: "3", 3: "5", 4: "7", 5: "9" };
 let mouseDeviceList = ref<any[]>([]);
 const computedHardDiskSize = computed(() => {
@@ -343,42 +334,65 @@ const computedHardDiskSize = computed(() => {
   return 0;
 });
 const computedRemainderDisk = computed(() => {
-  if (detailDate.hardDiskSize && detailDate.localStoreUseSize) {
-    return useBytesUnit(detailDate.hardDiskSize - detailDate.localStoreUseSize);
+  if (form.hardDiskSize && form.localStoreUseSize) {
+    return useBytesUnit(form.hardDiskSize - form.localStoreUseSize);
   }
   return 0;
 });
 let percent = ref<number>(0);
-let detailDate = reactive<any>({});
 const getData = (item: any) => {
-  getDeviceDetail(item.id).then((res) => {
-    Object.assign(
-      form,
-      _.pick(res.data, [
-        "name",
-        "code",
-        "hardDiskSize",
-        "mouseNum",
-        "productionDate",
-        "softwareVersion",
-      ])
-    );
+  getDetail(item.id);
+  getMouseByDevice({ deviceCode: item.code }).then((res) => {
+    mouseDeviceList.value = res.data;
+  });
+};
+
+const getDetail = (id: any) => {
+  getDeviceDetail(id).then((res) => {
+    Object.assign(form, res.data);
     percent.value =
       ((res.data.hardDiskSize - res.data.localStoreUseSize) /
         res.data.hardDiskSize) *
       100;
+    let temp = useBytesUnit(res.data.hardDiskSize).split(" ");
+    biteUnitSize.value = Number(temp[0]);
+    biteUnitArr.map((item) => {
+      if (item.name == temp[1]) {
+        biteUnit.value = item.value;
+      }
+    });
 
-    Object.assign(detailDate, res.data);
     form.status = res.data.status.toString();
   });
-  getMouseByDevice({ deviceCode: item.code }).then((res) => {
-    mouseDeviceList.value = res.data;
+};
+let loading = ref<boolean>(false);
+let refForm = ref<InstanceType<typeof Form>>();
+const onCancel = () => {
+  (refForm.value?.resetFields as any)();
+};
+const handleSave = () => {
+  (refForm.value?.validate as any)((valid: any) => {
+    if (valid) {
+      form.hardDiskSize = biteUnitSize.value * Math.pow(1024, biteUnit.value);
+      loading.value = true;
+      putDevice({ ...form })
+        .then((res) => {
+          loading.value = false;
+          isShow.value = false;
+          emit("onSuccess");
+          console.log(res);
+        })
+        .catch((err) => {
+          loading.value = false;
+        });
+    }
   });
 };
 
 defineExpose({
   handleShow,
   getData,
+  exportEditModal,
 });
 </script>
 <style lang="less">
@@ -411,8 +425,9 @@ defineExpose({
       margin-bottom: 10px;
       .circle {
         margin-right: 20px;
+        color: @fontColor;
         .eValueTxt1 {
-          font-size: 14px;
+          font-size: 10px;
           margin-bottom: 4px;
         }
         .eValueTxt2 {

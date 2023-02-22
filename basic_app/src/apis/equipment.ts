@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 14:41:51
  * @LastEditors: fg
- * @LastEditTime: 2023-02-21 13:38:53
+ * @LastEditTime: 2023-02-22 18:56:30
  * @Description: 设备功能api
  */
 
@@ -67,4 +67,9 @@ export const getDeviceDetail = (id: any): Promise<ResultData<any>> => {
 // 获取设备鼠标详情
 export const getMouseByDevice = (params: any): Promise<ResultData<any>> => {
   return http.get<any[]>(path.getMouseByDevice, params)
+}
+
+// 编辑设备信息
+export const putDevice = (params: any): Promise<ResultData<any>> => {
+  return http.put<any>(path.device, params)
 }
