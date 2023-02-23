@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-22 19:29:41
+ * @LastEditTime: 2023-02-23 09:25:03
  * @Description: content
 -->
 <template>
@@ -91,6 +91,7 @@
               </DropdownItem>
               <DropdownItem>
                 <Upload
+                  action="/"
                   accept=".xls, .xlsx"
                   :show-upload-list="false"
                   :before-upload="handleUpload"

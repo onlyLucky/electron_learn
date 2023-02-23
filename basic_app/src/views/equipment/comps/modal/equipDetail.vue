@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-21 10:52:25
  * @LastEditors: fg
- * @LastEditTime: 2023-02-22 20:01:56
+ * @LastEditTime: 2023-02-23 11:28:04
  * @Description: 设备详情modal
 -->
 <template>
@@ -19,10 +19,10 @@
       <div class="headerInfo f-row-s-c">
         <Circle
           class="circle"
-          size="80"
+          :size="80"
           :percent="80"
-          strokeWidth="7"
-          trailWidth="7"
+          :strokeWidth="7"
+          :trailWidth="7"
           strokeColor="var(--f_color_active)"
           dashboard
         >
@@ -54,7 +54,20 @@
           </div>
           <div class="hLeftBottom f-row-s-c">
             <div class="status">
-              <p>使用中</p>
+              <p v-show="!isEdit">{{ computedEquipStatus }}</p>
+              <Select
+                v-show="isEdit"
+                v-model="form.status"
+                size="small"
+                style="width: 100px"
+              >
+                <Option
+                  v-for="(item, index) in statusType"
+                  :value="item.value"
+                  :key="index"
+                  >{{ item.name }}</Option
+                >
+              </Select>
             </div>
             <p class="storeTxt">
               {{ useBytesUnit(form.localStoreUseSize || 0) }}/{{
@@ -252,6 +265,14 @@
                     :marks="sliderMarks"
                     show-tip="never"
                   ></Slider>
+                  <div class="optBox f-row-e-e">
+                    <Button
+                      type="primary"
+                      size="small"
+                      v-debounce="handleFontSave"
+                      >保存</Button
+                    >
+                  </div>
                 </div>
               </template>
             </Poptip>
@@ -297,6 +318,9 @@ let isShow = ref<boolean>(false);
 let isEdit = ref<boolean>(false); // 编辑状态 查看状态
 const handleChange = () => {
   isEdit.value = !isEdit.value;
+  if (!isEdit.value) {
+    getDetail(form.id);
+  }
 };
 const exportEditModal = (flag: boolean) => {
   isEdit.value = flag;
@@ -321,12 +345,20 @@ let statusType = [
   { name: "使用中", value: "20" },
   { name: "已停用", value: "30" },
 ];
-
+let statusTypeMap = new Map<string, string>([
+  ["10", "已创建"],
+  ["20", "使用中"],
+  ["30", "已停用"],
+]);
+const onMenuChange = (item: any) => {
+  form.status = item.value;
+};
 let biteUnit = ref<number>(3);
 let biteUnitSize = ref<number>(1);
 // 字体选择配置
 const sliderMarks = { 1: "1", 2: "3", 3: "5", 4: "7", 5: "9" };
 let mouseDeviceList = ref<any[]>([]);
+const handleFontSave = () => {};
 const computedHardDiskSize = computed(() => {
   if (form.hardDiskSize) {
     return useBytesUnit(form.hardDiskSize);
@@ -338,6 +370,9 @@ const computedRemainderDisk = computed(() => {
     return useBytesUnit(form.hardDiskSize - form.localStoreUseSize);
   }
   return 0;
+});
+const computedEquipStatus = computed(() => {
+  return statusTypeMap.get(form.status);
 });
 let percent = ref<number>(0);
 const getData = (item: any) => {
@@ -465,6 +500,17 @@ defineExpose({
           font-size: 12px;
           .status {
             margin-right: 20px;
+            .editStatus {
+              color: var(--f_color_active);
+              cursor: pointer;
+            }
+            .ivu-select-visible .ivu-select-selection {
+              box-shadow: none;
+            }
+            .ivu-select-selection {
+              color: var(--f_color_active);
+              border: none;
+            }
           }
         }
       }
@@ -608,6 +654,9 @@ defineExpose({
                 top: -2px;
                 border: 1px solid @meet_summary_icon_time;
               }
+            }
+            .optBox {
+              .size(100%, 50px);
             }
           }
           .mItemOptIcon.optFontSize {
