@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 14:41:51
  * @LastEditors: fg
- * @LastEditTime: 2023-02-22 18:56:30
+ * @LastEditTime: 2023-02-23 13:53:39
  * @Description: 设备功能api
  */
 
@@ -20,6 +20,7 @@ const path = {
   uploadDeviceFile: '/device/validationImportDevice',//上传设备
   importDevice: "/device/importDevice",//表格文件导入返回数据提交新增设备
   getMouseByDevice: '/device/getMouseByDevice',//获取设备鼠标信息
+  updateMouse: '/device/updateMouse',//更新鼠标信息
 }
 
 // 获取设备列表表格
@@ -72,4 +73,9 @@ export const getMouseByDevice = (params: any): Promise<ResultData<any>> => {
 // 编辑设备信息
 export const putDevice = (params: any): Promise<ResultData<any>> => {
   return http.put<any>(path.device, params)
+}
+
+// 更新设备鼠标信息
+export const updateMouse = (params: any): Promise<ResultData<any>> => {
+  return http.put<any>(path.updateMouse, params)
 }

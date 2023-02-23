@@ -22,4 +22,8 @@ onMounted(() => {
   });
 });
 </script>
-<style lang="less"></style>
+<style lang="less">
+#app {
+  touch-action: none;
+}
+</style>

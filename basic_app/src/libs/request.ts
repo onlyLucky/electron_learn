@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-26 16:10:58
  * @LastEditors: fg
- * @LastEditTime: 2023-02-16 14:03:18
+ * @LastEditTime: 2023-02-23 14:57:51
  * @Description: 请求接口封装
  */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from "axios"
@@ -139,7 +139,6 @@ class Http {
 
   // 常用方法封装
   get<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {
-    console.log(config, 'config')
     return this.service.get(url, { params, ...config });
   }
   post<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {

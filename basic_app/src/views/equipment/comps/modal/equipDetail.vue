@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-21 10:52:25
  * @LastEditors: fg
- * @LastEditTime: 2023-02-23 11:28:04
+ * @LastEditTime: 2023-02-23 14:56:38
  * @Description: 设备详情modal
 -->
 <template>
@@ -264,12 +264,13 @@
                     :max="5"
                     :marks="sliderMarks"
                     show-tip="never"
+                    @on-change="onFontChange($event, index)"
                   ></Slider>
                   <div class="optBox f-row-e-e">
                     <Button
                       type="primary"
                       size="small"
-                      v-debounce="handleFontSave"
+                      @click="handleMouseSave(item)"
                       >保存</Button
                     >
                   </div>
@@ -277,7 +278,10 @@
               </template>
             </Poptip>
             <div class="mItemOptIcon colorSelect">
-              <ColorPicker :model-value="item.color"></ColorPicker>
+              <ColorPicker
+                :model-value="item.color"
+                @on-change="onColorChange($event, item, index)"
+              ></ColorPicker>
             </div>
 
             <!-- <svg-icon
@@ -308,7 +312,12 @@
 <script setup lang="ts">
 import { Message, Form } from "view-ui-plus";
 import { useBytesUnit } from "@/hooks/useTools";
-import { getDeviceDetail, getMouseByDevice, putDevice } from "@/apis/equipment";
+import {
+  getDeviceDetail,
+  getMouseByDevice,
+  putDevice,
+  updateMouse,
+} from "@/apis/equipment";
 import _ from "lodash";
 
 let emit = defineEmits<{
@@ -356,9 +365,30 @@ const onMenuChange = (item: any) => {
 let biteUnit = ref<number>(3);
 let biteUnitSize = ref<number>(1);
 // 字体选择配置
-const sliderMarks = { 1: "1", 2: "3", 3: "5", 4: "7", 5: "9" };
-let mouseDeviceList = ref<any[]>([]);
-const handleFontSave = () => {};
+const sliderMarks: any = { 1: "1", 2: "3", 3: "5", 4: "7", 5: "9" };
+let mouseDeviceList = reactive<any[]>([]);
+const onColorChange = (color: any, item: any, index: number) => {
+  mouseDeviceList[index].color = color;
+  putMouse(item);
+};
+const onFontChange = (val: any, index: number) => {
+  mouseDeviceList[index].brushSize = Number(sliderMarks[val]);
+};
+const handleMouseSave = (item: any) => {
+  putMouse(item);
+};
+const putMouse = (item: any) => {
+  updateMouse({
+    color: item.color,
+    brushSize: item.brushSize,
+    id: item.id,
+  }).then((res) => {
+    mouseDeviceList.length = 0;
+    getMouseByDevice({ deviceCode: form.code }).then((res) => {
+      mouseDeviceList.push(...res.data);
+    });
+  });
+};
 const computedHardDiskSize = computed(() => {
   if (form.hardDiskSize) {
     return useBytesUnit(form.hardDiskSize);
@@ -377,8 +407,9 @@ const computedEquipStatus = computed(() => {
 let percent = ref<number>(0);
 const getData = (item: any) => {
   getDetail(item.id);
+  mouseDeviceList.length = 0;
   getMouseByDevice({ deviceCode: item.code }).then((res) => {
-    mouseDeviceList.value = res.data;
+    mouseDeviceList.push(...res.data);
   });
 };
 
@@ -650,8 +681,8 @@ defineExpose({
               padding: 10px;
               box-sizing: border-box;
               .ivu-slider-stop {
-                .size(8px,8px);
-                top: -2px;
+                .size(10px,10px);
+                top: -3px;
                 border: 1px solid @meet_summary_icon_time;
               }
             }
