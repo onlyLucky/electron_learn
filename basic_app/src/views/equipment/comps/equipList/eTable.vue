@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-22 16:48:59
+ * @LastEditTime: 2023-02-23 16:09:28
  * @Description: 设备列表
 -->
 <template>

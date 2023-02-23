@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:05:24
  * @LastEditors: fg
- * @LastEditTime: 2023-01-11 13:39:14
+ * @LastEditTime: 2023-02-23 20:02:59
  * @Description: Index
 -->
 <template>
@@ -10,10 +10,26 @@
     <WaterMark :option="waterSetting"></WaterMark>
     <Header></Header>
     <div class="appContent f">
-      <div class="menuBox">
-        <Menu></Menu>
+      <div class="menuBox" :style="{ width: menuWidth + 'px' }">
+        <Menu :open="isOpen"></Menu>
+        <div class="hideOpt">
+          <div
+            class="optCon optLeft f-row-c-c"
+            v-show="isOpen"
+            v-debounce="changeStatus"
+          >
+            <Icon type="ios-arrow-back" size="24" color="#666" />
+          </div>
+          <div
+            class="optCon optRight f-row-c-c"
+            v-show="!isOpen"
+            v-debounce="changeStatus"
+          >
+            <Icon type="ios-arrow-forward" size="24" color="#666" />
+          </div>
+        </div>
       </div>
-      <div class="contentBox">
+      <div class="contentBox" :style="{ width: `calc(100% - ${menuWidth}px)` }">
         <div class="content">
           <router-view v-slot="{ Component }">
             <transition name="fade" mode="out-in">
@@ -33,6 +49,12 @@ const waterSetting = ref<SettingType>({
   textArr: ["可立批"],
   fillStyle: "rgba(0,0,0,.05)",
 });
+let isOpen = ref<boolean>(false);
+let menuWidth = ref<number>(100);
+const changeStatus = () => {
+  isOpen.value = !isOpen.value;
+  menuWidth.value = isOpen.value ? 200 : 100;
+};
 </script>
 <style scoped lang="less">
 .fade-enter-active,
@@ -55,17 +77,49 @@ const waterSetting = ref<SettingType>({
     position: relative;
     z-index: 1;
     .menuBox {
-      width: 200px;
+      width: 100px;
       height: 100%;
       background-color: @bg;
       box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
       position: relative;
       z-index: 1;
-      overflow: auto;
-      overflow-x: hidden;
+      position: relative;
+      transition: width 0.2s;
+      .hideOpt {
+        .size(60px,100px);
+        position: absolute;
+        top: 50%;
+        right: -30px;
+        transform: translateY(-50%);
+        // background-color: lightblue;
+        &:hover {
+          .optCon {
+            display: flex;
+          }
+        }
+        .optCon {
+          display: none;
+          .size(30px, 80px);
+          background-color: #e9e9e9;
+          position: absolute;
+          top: 50%;
+          box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+          transform: translateY(-50%);
+          cursor: pointer;
+        }
+        .optLeft {
+          left: 0px;
+          border-radius: 12px 0% 0% 12px;
+        }
+        .optRight {
+          right: 0;
+          border-radius: 0% 12px 12px 0%;
+        }
+      }
     }
     .contentBox {
-      width: calc(100% - 200px);
+      width: calc(100% - 100px);
+      transition: width 0.2s;
       height: 100%;
       padding: 10px;
       box-sizing: border-box;

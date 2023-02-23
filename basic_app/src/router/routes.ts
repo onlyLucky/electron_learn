@@ -55,13 +55,24 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
+        path: '/home',
+        name: 'home',
+        meta: {
+          hideInMenu: false,
+          title: '首页',
+          keepAlive: true,
+          icon: 'icon-shouye'
+        },
+        component: () => import('_v/meeting/index.vue')
+      },
+      {
         path: '/meeting',
         name: 'meeting',
         meta: {
           hideInMenu: false,
           title: '会议',
           keepAlive: true,
-          icon: 'ios-people'
+          icon: 'icon-changyonghuiyi'
         },
         component: () => import('_v/meeting/index.vue')
       },
@@ -72,7 +83,18 @@ const routes: RouteRecordRaw[] = [
           hideInMenu: false,
           title: '设备',
           keepAlive: true,
-          icon: 'ios-construct'
+          icon: 'icon-ziyuanxhdpi'
+        },
+        component: () => import('_v/equipment/index.vue')
+      },
+      {
+        path: '/person',
+        name: 'person',
+        meta: {
+          hideInMenu: false,
+          title: '人员',
+          keepAlive: true,
+          icon: 'icon-renyuan1'
         },
         component: () => import('_v/equipment/index.vue')
       }

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:04:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-02 09:21:33
+ * @LastEditTime: 2023-02-23 15:46:45
  * @Description: header
 -->
 <template>
@@ -51,6 +51,7 @@ const settingTap = async () => {
   width: 100vw;
   height: 48px;
   background-color: @bg;
+  // background-color: @f_color_active;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   /* 值为no-drag时不可拖拽 */
   -webkit-app-region: drag;
