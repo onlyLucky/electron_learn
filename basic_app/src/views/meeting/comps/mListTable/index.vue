@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-24 14:03:33
  * @LastEditors: fg
- * @LastEditTime: 2023-02-25 13:22:18
+ * @LastEditTime: 2023-02-25 16:04:12
  * @Description: 会议列表
 -->
 <template>
@@ -240,7 +240,24 @@ const columns = reactive<any[]>([
                     default: () => [
                       h(
                         resolveComponent("DropdownItem"),
-                        {},
+                        {
+                          onClick: _.debounce(async function () {
+                            const result = await ipcRenderer.invoke(
+                              "open-win",
+                              {
+                                type: 0,
+                                urlName: `models/meet/share?name=${params.row.name}&id=${params.row.id}`,
+                                width: 900,
+                                height: 600,
+                                minWidth: 900,
+                                minHeight: 600,
+                                resizable: false,
+                                title: `${params.row.name}_分享列表`,
+                              }
+                            );
+                            // console.log(params.row);
+                          }, 300),
+                        },
                         { default: () => "分享列表" }
                       ),
                       h(
@@ -281,8 +298,8 @@ const columns = reactive<any[]>([
                                 height: 700,
                                 minWidth: 1024,
                                 minHeight: 700,
-                                resizable: true,
-                                title: `${params.row.name}_文件列表`,
+                                resizable: false,
+                                title: `${params.row.name}_会议纪要`,
                               }
                             );
                           }, 300),
@@ -543,5 +560,9 @@ defineExpose({
   h1 {
     font-size: 30px;
   }
+}
+.conLoadingTxt {
+  margin-top: 10px;
+  white-space: nowrap;
 }
 </style>

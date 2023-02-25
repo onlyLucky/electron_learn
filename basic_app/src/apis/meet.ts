@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-28 13:44:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-09 16:37:56
+ * @LastEditTime: 2023-02-25 17:42:48
  * @Description: 会议api
  */
 
@@ -25,6 +25,7 @@ const path = {
   getAllFileByMeetId: "/meetFile/getAllFileByMeetId",
   getAudioByMeetId: "/meetText/getAudioByMeetId",// 会议纪要根据会议id获取音频信息
   getMeetSummary: '/meetText/getMeetSummary',// 获取会议纪要doc
+  getMeetShareByMeetId: '/meetShare/getMeetShareByMeetId',//获取会议分享列表
 }
 
 // 获取设备列表
@@ -97,4 +98,9 @@ export const getAudioByMeetId = (params: MeetIdPT): Promise<ResultData<any>> => 
 // 获取会议纪要doc
 export const getMeetSummary = (params: MeetIdPT): Promise<ResultData<any>> => {
   return http.get<{ data: any[] }>(path.getMeetSummary, params)
+}
+
+// 获取会议分享列表
+export const getMeetShareByMeetId = (params?: object): Promise<ResultData<any>> => {
+  return http.get<any>(path.getMeetShareByMeetId, params)
 }

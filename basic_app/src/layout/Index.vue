@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 14:05:24
  * @LastEditors: fg
- * @LastEditTime: 2023-02-23 20:02:59
+ * @LastEditTime: 2023-02-25 15:02:19
  * @Description: Index
 -->
 <template>
@@ -50,10 +50,10 @@ const waterSetting = ref<SettingType>({
   fillStyle: "rgba(0,0,0,.05)",
 });
 let isOpen = ref<boolean>(false);
-let menuWidth = ref<number>(100);
+let menuWidth = ref<number>(80);
 const changeStatus = () => {
   isOpen.value = !isOpen.value;
-  menuWidth.value = isOpen.value ? 200 : 100;
+  menuWidth.value = isOpen.value ? 200 : 80;
 };
 </script>
 <style scoped lang="less">
@@ -77,7 +77,7 @@ const changeStatus = () => {
     position: relative;
     z-index: 1;
     .menuBox {
-      width: 100px;
+      width: 80px;
       height: 100%;
       background-color: @bg;
       box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
@@ -118,7 +118,7 @@ const changeStatus = () => {
       }
     }
     .contentBox {
-      width: calc(100% - 100px);
+      width: calc(100% - 80px);
       transition: width 0.2s;
       height: 100%;
       padding: 10px;
