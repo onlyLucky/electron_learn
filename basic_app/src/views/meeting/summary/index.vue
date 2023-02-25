@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-15 16:56:00
+ * @LastEditTime: 2023-02-25 16:18:33
  * @Description: 会议纪要
 -->
 <template>
@@ -291,9 +291,9 @@ const getData = () => {
       if (pageNum.value == 1) {
         pageList = [...res.data.records];
       } else {
-        pageList.push(res.data.records);
+        pageList.push(...res.data.records);
       }
-      console.log(res, "res");
+      console.log(pageNum.value, "res", res.data.records);
       pageTotal.value = res.data.total;
     })
     .catch((err) => {
