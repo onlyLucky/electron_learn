@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-23 16:09:28
+ * @LastEditTime: 2023-02-25 11:27:56
  * @Description: 设备列表
 -->
 <template>
@@ -163,7 +163,7 @@ const columns = [
                     h(resolveComponent("SvgIcon"), {
                       iconName: "icon-bianji",
                       class: "iconOpt",
-                      color: "var(--f_color_h3)",
+                      color: "var(--f_color_h6)",
                       size: "22",
                       onClick: _.debounce(function () {
                         emit("onDetail", params.row, true);
@@ -189,7 +189,7 @@ const columns = [
                         default: () => [
                           h(resolveComponent("SvgIcon"), {
                             iconName: "icon-gengduo",
-                            color: "var(--f_color_h3)",
+                            color: "var(--f_color_h6)",
                             class: "iconOpt",
                             size: "22",
                           }),

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:43:56
  * @LastEditors: fg
- * @LastEditTime: 2023-02-23 19:59:38
+ * @LastEditTime: 2023-02-24 09:27:28
  * @Description: content
 -->
 <template>
@@ -98,7 +98,7 @@ watch(
   .menuItemCol {
     .size(64px,64px);
     border-radius: 6px;
-    margin-top: 8px;
+    margin-top: 18px;
     span {
       font-size: 12px;
       margin-top: 2px;

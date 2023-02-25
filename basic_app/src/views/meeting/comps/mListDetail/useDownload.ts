@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-30 18:00:53
  * @LastEditors: fg
- * @LastEditTime: 2023-02-08 16:19:37
+ * @LastEditTime: 2023-02-25 14:33:06
  * @Description: 会议详情下载
  */
 
@@ -89,7 +89,7 @@ export const useDownload = async (meetId: number, meetName: string) => {
   // 文件是否需要下载
   // 这里返回函数的true false 是异步函数 会堵塞赋值，无法进行响应式处理 v-show v-if 展示错误，虽然值是对的
   downloadUse.isNeedDownload = !isExistMeetFile()
-  console.log(downloadUse.isNeedDownload, 'isNeedDownload', downloadUse.needDownloadArr)
+  // console.log(downloadUse.isNeedDownload, 'isNeedDownload', downloadUse.needDownloadArr)
 
   downloadUse.status = 0
 

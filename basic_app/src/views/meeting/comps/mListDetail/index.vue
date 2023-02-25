@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-02-14 15:13:40
+ * @LastEditTime: 2023-02-25 14:36:37
  * @Description: 会议详情
 -->
 <template>
@@ -390,12 +390,14 @@ let props = withDefaults(
     mask?: boolean;
     mId: any;
     deviceName?: any;
+    isEdit: boolean;
   }>(),
   {
     modelValue: false,
     mask: false,
     mId: null,
     deviceName: null,
+    isEdit: false,
   }
 );
 let isShowBottomOpt = ref<boolean>(false);
@@ -406,6 +408,7 @@ let downloadUse = reactive<DownloadType>(
 watch(
   () => props.modelValue,
   async (val: boolean) => {
+    console.log(props.modelValue, "props.modelValue");
     if (val) {
       initData();
       loading.value = true;
@@ -415,6 +418,9 @@ watch(
       downloadUse = await useDownload(props.mId, detail.name);
       loading.value = false;
       handleBHeight();
+      if (props.isEdit) {
+        handleEdit();
+      }
     }
   }
 );
@@ -509,7 +515,7 @@ const switchChange = (val: number) => {
   dataNeedChange.value = true;
 };
 // 编辑处理
-let isEditStatus = ref<boolean>(false);
+let isEditStatus = ref<boolean>(props.isEdit);
 let editDetail = reactive({
   name: "",
   deviceName: "",
@@ -523,6 +529,7 @@ const handleEdit = () => {
   );
   isEditStatus.value = true;
   isShowBottomOpt.value = true;
+  console.log(isEditStatus.value, "isEditStatus");
 };
 
 let deviceList = reactive<any[]>([]);
@@ -592,6 +599,9 @@ const goFileWin = () => {
     title: `${detail.name}_文件列表`,
   });
 };
+defineExpose({
+  handleEdit,
+});
 </script>
 <style lang="less" scoped>
 :deep(.useItem .ivu-skeleton .ivu-skeleton-item) {
@@ -604,6 +614,32 @@ const goFileWin = () => {
 }
 :deep(.ivu-progress-show-info .ivu-progress-outer) {
   padding-right: 40px;
+}
+:deep(.mainTitle) {
+  .ivu-input {
+    border: none;
+    font-weight: 600;
+    padding: 4px 0px;
+    font-size: 16px;
+  }
+  .ivu-input:focus {
+    box-shadow: none;
+  }
+}
+:deep(.itemOInfo) {
+  .ivu-select-selection {
+    border: none;
+  }
+  .ivu-select-visible .ivu-select-selection {
+    box-shadow: none;
+  }
+  .ivu-date-picker-focused input:not([disabled]),
+  .ivu-input:focus {
+    box-shadow: none;
+  }
+  .ivu-input {
+    border: none;
+  }
 }
 .modelBox {
   width: 100%;
