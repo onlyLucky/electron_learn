@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:43:56
  * @LastEditors: fg
- * @LastEditTime: 2023-02-24 09:27:28
+ * @LastEditTime: 2023-02-27 16:44:23
  * @Description: content
 -->
 <template>
@@ -17,13 +17,28 @@
       :key="index"
       @click="handleMenuTap(item)"
     >
-      <!-- ios-construct ios-people -->
-      <SvgIcon
-        :iconName="item.meta?.icon"
-        :size="open ? '26' : activeRouteName == item.name ? '22' : '28'"
-        :color="activeRouteName == item.name ? 'var(--bg)' : 'var(--fontColor)'"
-      ></SvgIcon>
-      <span>{{ item.meta?.title }}</span>
+      <!-- <Dropdown placement="right-start"> -->
+      <div :class="[open ? 'f-row-s-c' : 'f-col-c-c']">
+        <SvgIcon
+          :iconName="item.meta?.icon"
+          :size="open ? '26' : activeRouteName == item.name ? '22' : '28'"
+          :color="
+            activeRouteName == item.name ? 'var(--bg)' : 'var(--fontColor)'
+          "
+        ></SvgIcon>
+        <span>{{ item.meta?.title }}</span>
+      </div>
+
+      <!-- <template #list>
+          <DropdownMenu>
+            <DropdownItem>驴打滚</DropdownItem>
+            <DropdownItem>炸酱面</DropdownItem>
+            <DropdownItem disabled>豆汁儿</DropdownItem>
+            <DropdownItem>冰糖葫芦</DropdownItem>
+            <DropdownItem divided>北京烤鸭</DropdownItem>
+          </DropdownMenu>
+        </template> -->
+      <!-- </Dropdown> -->
     </div>
   </div>
 </template>
@@ -32,6 +47,7 @@ import { RouteRecordRaw, useRoute, useRouter } from "vue-router";
 import routes from "@/router/routes";
 // Submenu
 import { ref, watch } from "vue";
+import { Dropdown } from "view-ui-plus";
 const props = withDefaults(
   defineProps<{
     open: boolean;
@@ -77,11 +93,30 @@ watch(
 :deep(.ivu-menu-vertical.ivu-menu-light:after) {
   display: none;
 }
+:deep(.ivu-dropdown) {
+  width: 100%;
+}
+:deep(.ivu-select-dropdown) {
+  width: 140px;
+  margin-left: 10px;
+}
+:deep(.menuItemRow) {
+  .ivu-select-dropdown {
+    margin-left: 24px;
+  }
+}
+:deep(.menuItemCol) {
+  .ivu-select-dropdown {
+    margin-left: 10px;
+  }
+}
 .menu {
   .size(100%,100%);
   user-select: none;
   overflow: auto;
-
+  .menuItemBox {
+    width: 100%;
+  }
   .menuItem {
     // background-color: pink;
     cursor: pointer;
