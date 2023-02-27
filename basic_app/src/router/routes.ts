@@ -22,6 +22,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/views/meeting/share/index.vue")
   },
   {
+    path: '/models/meet/video',
+    name: 'meet_share',
+    component: () => import("@/views/meeting/video/index.vue")
+  },
+  {
     path: '/models/meet/file',
     name: 'meet_file',
     component: () => import("_v/meeting/files/index.vue"),

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-24 14:03:33
  * @LastEditors: fg
- * @LastEditTime: 2023-02-25 16:04:12
+ * @LastEditTime: 2023-02-27 17:13:34
  * @Description: 会议列表
 -->
 <template>
@@ -310,6 +310,22 @@ const columns = reactive<any[]>([
                         resolveComponent("DropdownItem"),
                         {
                           disabled: params.row.fileUpload == 0,
+                          onClick: _.debounce(async function () {
+                            // console.log(params.row);
+                            const result = await ipcRenderer.invoke(
+                              "open-win",
+                              {
+                                type: 0,
+                                urlName: `models/meet/video?name=${params.row.name}&id=${params.row.id}`,
+                                width: 1024,
+                                height: 700,
+                                minWidth: 1024,
+                                minHeight: 700,
+                                resizable: true,
+                                title: `${params.row.name}_会议视频`,
+                              }
+                            );
+                          }, 300),
                         },
                         { default: () => "视频播放" }
                       ),
