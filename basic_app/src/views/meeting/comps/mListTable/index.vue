@@ -247,10 +247,10 @@ const columns = reactive<any[]>([
                               {
                                 type: 0,
                                 urlName: `models/meet/share?name=${params.row.name}&id=${params.row.id}`,
-                                width: 900,
-                                height: 600,
-                                minWidth: 900,
-                                minHeight: 600,
+                                width: 800,
+                                height: 700,
+                                minWidth: 800,
+                                minHeight: 700,
                                 resizable: false,
                                 title: `${params.row.name}_分享列表`,
                               }

@@ -10,13 +10,14 @@
     </div>
     <div class="content">
       <div class="conHeader f-row-b-c">
-        <Text
-          class="conTitle"
-          :ellipsis-config="{ tooltip: true }"
-          ellipsis
-          placement="bottom-start"
-          >{{ queryParams.name }}</Text
-        >
+        <div class="conTitle">
+          <Text
+            :ellipsis-config="{ tooltip: true }"
+            ellipsis
+            placement="bottom-start"
+            >{{ queryParams.name }}</Text
+          >
+        </div>
         <div class="optBox">
           <Dropdown placement="bottom-end" trigger="click">
             <div class="optItem f-row-c-c">
@@ -39,6 +40,7 @@
                       :loading="loading"
                       :true-value="1"
                       :false-value="0"
+                      @on-change="onSwitchChange"
                     ></Switch>
                   </div>
                 </DropdownItem>
@@ -85,10 +87,43 @@
 import SystemOpt from "@/commons/system_opt/index";
 import { getMeetShareByMeetId } from "@/apis/meet";
 import { useRoute } from "vue-router";
+import _ from "lodash";
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 
-const columns = [{}];
+const columns = reactive<any[]>([
+  {
+    title: "分享者",
+    key: "shareName",
+  },
+  {
+    title: "接收人",
+    key: "receiveName",
+  },
+  {
+    title: "时间",
+    key: "createTime",
+  },
+  {
+    title: "状态",
+    key: "status",
+    width: 150,
+    render: (h: any, params: any) => {
+      return h(
+        "div",
+        {
+          style: {
+            color:
+              params.row.status == 0
+                ? "var(--f_color_active)"
+                : "var(--fontColor)",
+          },
+        },
+        params.row.status == 0 ? "有效" : "失效"
+      );
+    },
+  },
+]);
 let tData = reactive<any[]>([]);
 
 let loading = ref<boolean>(false);
@@ -110,6 +145,7 @@ const getData = () => {
       loading.value = false;
       total.value = res.data.total;
       tData = [...res.data.records];
+      console.log(tData, res.data.records, "res.data.records");
     })
     .catch((err) => {
       loading.value = false;
@@ -123,7 +159,45 @@ const pageChange = (page: number) => {
   params.pageNum = page;
   getData();
 };
+const onSwitchChange = (val: 0 | 1) => {
+  switchValue.value = val;
+  params.type = switchValue.value;
+  if (val) {
+    columns.shift();
+    columns.push({
+      title: "操作",
+      key: "status",
+      width: 150,
+      render: (h: any, params: any) => {
+        return h(
+          "div",
+          {
+            style: {
+              cursor: "pointer",
+              color:
+                params.row.status == 0
+                  ? "var(--f_color_active)"
+                  : "var(--fontColor)",
+            },
+            onclick: _.debounce(function () {
+              console.log("tap");
+            }, 300),
+          },
+          params.row.status == 0 ? "撤回" : "已撤回"
+        );
+      },
+    });
+  } else {
+    columns.pop();
+    columns.unshift({
+      title: "分享者",
+      key: "shareName",
+    });
+  }
+  getData();
+};
 onMounted(() => {
+  getData();
   tableHeight.value = refTable.value?.clientHeight;
   window.onresize = () => {
     tableHeight.value = refTable.value?.clientHeight;
@@ -131,6 +205,22 @@ onMounted(() => {
 });
 </script>
 <style scoped lang="less">
+:deep(.ivu-table th) {
+  background-color: @bg;
+  border-bottom: none;
+  color: @fontColor;
+  font-weight: 400;
+  height: 50px;
+}
+:deep(.ivu-table td) {
+  border-bottom: none;
+}
+:deep(.ivu-table:before) {
+  display: none;
+}
+:deep(.ivu-typography) {
+  color: @f_color_h3;
+}
 :deep(.ivu-dropdown-item) {
   .menuItem {
     .size(140px,100%);
