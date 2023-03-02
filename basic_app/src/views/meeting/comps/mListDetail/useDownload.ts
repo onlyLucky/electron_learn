@@ -1,27 +1,85 @@
 /*
  * @Author: fg
- * @Date: 2023-01-30 18:00:53
+ * @Date: 2023-02-28 17:44:17
  * @LastEditors: fg
- * @LastEditTime: 2023-02-25 14:33:06
- * @Description: 会议详情下载
+ * @LastEditTime: 2023-03-02 11:21:35
+ * @Description: content
  */
-
 import { getAllFileByMeetId } from "@/apis/meet"
 import hdObj from "_v/setting/handleData"
 import { join } from 'path'
 import { ipcRenderer } from "electron"
 import _ from "lodash"
+import { Message } from "view-ui-plus"
 const fs = require('fs')
-
 
 // 文件存在
 const downloadPath = hdObj.getConfigItem('download').downloadPath
 
-export const useDownload = async (meetId: number, meetName: string) => {
-  // 下载文件
+export const useDownload = (meetId: number, meetName: string) => {
+  let resData = reactive<any>({})
+  let downloadUse = reactive<DownloadType>({
+    fileList: [],
+    needDownloadArr: [],
+    status: 0,
+    progress: 0,
+    isNeedDownload: false
+  })
+  // 计算下载总量
+  let downloadSize: number = 0
+
+  /**
+   * @description: 检测文件是否存在
+   * @return {*}
+   */
+  const isExistMeetFile = () => {
+    // 判断当前是否存在会议文件夹
+    if (fs.existsSync(join(downloadPath, `${meetName}.${meetId}`))) {
+      // 判读当前会议的本地文件是否完整(every 检测文件无法检测完全)
+      let temp: any[] = []
+      downloadUse.fileList.map((item: any, index: number) => {
+        // console.log(fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)), join(downloadPath, `/${meetName}.${meetId}/${item.realName}`))
+        // console.log(item.realName, fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)));
+        if (!fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`))) {
+          temp.push(index)
+        }
+      })
+      downloadUse.needDownloadArr = temp
+      return downloadUse.needDownloadArr.length == 0
+    } else {
+      // 当前没有会议文件夹
+      // console.log('当前没有会议文件夹', downloadPath)
+      downloadUse.needDownloadArr = Array.apply(null, { length: downloadUse.fileList.length } as any[]).map((item, index) => {
+        return index
+      })
+      return false
+    }
+  }
+
+
+  const doDownload = async () => {
+    initData()
+    // 获取会议文件列表
+    try {
+      const res = await getAllFileByMeetId({ meetId })
+      // 文件列表
+      // 添加暂存文件目录
+      let temp: any[] = []
+      res.data.map((item: any) => {
+        item.cachePath = join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)
+        temp.push(item)
+      })
+
+      downloadUse.fileList = temp
+    } catch (error) {
+      Message.error(error || '文件列表获取失败');
+    }
+    downloadUse.isNeedDownload = !isExistMeetFile()
+  }
+
   const handleDownload = () => {
     // 计算需要下载总量
-    downloadUse.progress = 0
+    initData()
     isExistMeetFile()
     let tempDownArr: any[] = []
     if (downloadUse.needDownloadArr.length > 0) {
@@ -50,53 +108,6 @@ export const useDownload = async (meetId: number, meetName: string) => {
       }
     }) */
   }
-
-  const isExistMeetFile = () => {
-    // 判断当前是否存在会议文件夹
-    downloadUse.needDownloadArr = [];
-    if (fs.existsSync(join(downloadPath, `${meetName}.${meetId}`))) {
-      // 判读当前会议的本地文件是否完整(every 检测文件无法检测完全)
-      downloadUse.fileList.map((item: any, index: number) => {
-        // console.log(fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)), join(downloadPath, `/${meetName}.${meetId}/${item.realName}`))
-        // console.log(item.realName, fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)));
-        if (!fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`))) {
-          downloadUse.needDownloadArr.push(index)
-        }
-      })
-      return downloadUse.needDownloadArr.length == 0
-    } else {
-      // 当前没有会议文件夹
-      // console.log('当前没有会议文件夹', downloadPath)
-      downloadUse.needDownloadArr = Array.apply(null, { length: downloadUse.fileList.length } as any[]).map((item, index) => {
-        return index
-      })
-      return false
-    }
-  }
-  let downloadUse = reactive<DownloadType>({
-    fileList: [],
-    needDownloadArr: [],// 需要下载的文件
-    status: 0,//下载状态 0未下载 1下载中 2下载结束
-    progress: 0,
-    isNeedDownload: true,
-    isExistMeetFile,
-    handleDownload,
-  })
-  const res = await getAllFileByMeetId({ meetId })
-  // 文件列表
-  downloadUse.fileList = res.data
-
-  // 文件是否需要下载
-  // 这里返回函数的true false 是异步函数 会堵塞赋值，无法进行响应式处理 v-show v-if 展示错误，虽然值是对的
-  downloadUse.isNeedDownload = !isExistMeetFile()
-  // console.log(downloadUse.isNeedDownload, 'isNeedDownload', downloadUse.needDownloadArr)
-
-  downloadUse.status = 0
-
-  // 计算下载总量
-  let downloadSize: number = 0
-  downloadUse.progress = 0;//当前进度
-
   // 监听下载进度
   ipcRenderer.on("downloadUpload", (event, args) => {
     downloadUse.progress = Math.trunc((args.total / downloadSize) * 100)
@@ -108,19 +119,24 @@ export const useDownload = async (meetId: number, meetName: string) => {
     downloadUse.status = 2
     downloadUse.isNeedDownload = false
   })
+  const initData = () => {
+    downloadUse.progress = 0
+    downloadUse.status = 0
+    downloadUse.needDownloadArr = []
+  }
+  if (isRef(meetId)) {
+    watchEffect(doDownload)
+  } else {
+    doDownload()
+  }
 
-  return downloadUse
+  return { downloadUse, handleDownload, isExistMeetFile }
 }
 
-export const useHasFiles = (path: string) => {
-  return fs.existsSync(join(downloadPath, path))
-}
 export type DownloadType = {
   fileList: any[],
   needDownloadArr: number[],
   status: 0 | 1 | 2,//下载状态 0未下载 1下载中 2下载结束
   progress: number,
-  isNeedDownload: boolean,
-  isExistMeetFile: Function,
-  handleDownload: Function
+  isNeedDownload: boolean
 }
