@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-02 14:34:18
+ * @LastEditTime: 2023-03-02 17:00:05
  * @Description: 视频播放
 -->
 <template>
@@ -92,6 +92,8 @@ import BControl from "../comps/video/BControl.vue";
 import RightTab from "../comps/video/rightTab.vue";
 import { useRoute } from "vue-router";
 import { useDownload, DownloadType } from "../comps/mListDetail/useDownload";
+import { useVideo } from "./useVideo";
+import console from "console";
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 
@@ -99,6 +101,7 @@ const { downloadUse, handleDownload } = useDownload(
   queryParams.id,
   queryParams.name || ""
 ) as any;
+
 let mediaConfig = reactive<any>({
   width: "",
   height: "",
@@ -110,10 +113,6 @@ let mediaConfig = reactive<any>({
 const isShowRight = ref<boolean>(false);
 const onRightChange = () => {
   isShowRight.value = !isShowRight.value;
-  setTimeout(() => {
-    mediaConfig.height = refVideoCon.value?.clientHeight;
-    mediaConfig.width = refVideoCon.value?.clientWidth;
-  }, 200);
 };
 
 watch(
@@ -121,19 +120,21 @@ watch(
   (val) => {
     console.log("upload: " + val);
     if (val) handleDownload();
-    // if (val) handleDownload();
   }
 );
-
 const refVideoCon = ref<HTMLElement>();
+// useVideo(refVideoCon);
 const onPlayEnd = () => {};
 onMounted(async () => {
   await nextTick();
+  console.log(refVideoCon.value, "refVideoCon123");
   mediaConfig.height = refVideoCon.value?.clientHeight;
-  mediaConfig.width = refVideoCon.value?.clientWidth;
+  mediaConfig.width = (refVideoCon.value?.clientWidth as number) - 400;
   window.onresize = () => {
     mediaConfig.height = refVideoCon.value?.clientHeight;
-    mediaConfig.width = refVideoCon.value?.clientWidth;
+    mediaConfig.width = isShowRight.value
+      ? refVideoCon.value?.clientWidth
+      : (refVideoCon.value?.clientWidth as number) - 400;
   };
 });
 </script>

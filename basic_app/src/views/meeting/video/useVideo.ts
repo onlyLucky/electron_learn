@@ -2,56 +2,25 @@
  * @Author: fg
  * @Date: 2023-02-28 15:40:04
  * @LastEditors: fg
- * @LastEditTime: 2023-02-28 17:40:37
- * @Description: content
+ * @LastEditTime: 2023-03-02 16:34:07
+ * @Description: 视频播放处理
  */
-import { ref, isRef, unref, watchEffect } from 'vue'
+import hdObj from "_v/setting/handleData"
+import { join } from 'path'
+import _ from "lodash"
+import { Message } from "view-ui-plus"
+const fs = require('fs')
 
-export function useFetch(url: any) {
-  const data = ref(null)
-  const error = ref(null)
+// 文件存在
+const downloadPath = hdObj.getConfigItem('download').downloadPath
 
-  async function doFetch() {
-    // reset state before fetching..
-    data.value = null
-    error.value = null
+/* 
+ TODO步骤处理：
+ - 1. 检测会议文件夹，处理视频文件
+ - 2. 数据处理，选集数据处理，文件地址，状态，当前播放下标，当前播放数据
+ - 3. 播放控制，视频切换，音频声音，上一，下一，...
 
-    // resolve the url value synchronously so it's tracked as a
-    // dependency by watchEffect()
-    const urlValue = unref(url)
-
-    try {
-      // artificial delay / random error
-      await timeout()
-      // unref() will return the ref value if it's a ref
-      // otherwise the value will be returned as-is
-      const res = await fetch(urlValue)
-      data.value = await res.json()
-    } catch (e: any) {
-      error.value = e
-    }
-  }
-
-  if (isRef(url)) {
-    // setup reactive re-fetch if input URL is a ref
-    watchEffect(doFetch)
-  } else {
-    // otherwise, just fetch once
-    doFetch()
-  }
-
-  return { data, error, retry: doFetch }
-}
-
-// artificial delay
-function timeout() {
-  return new Promise((resolve: Function, reject: Function) => {
-    setTimeout(() => {
-      if (Math.random() > 0.3) {
-        resolve()
-      } else {
-        reject(new Error('Random Error'))
-      }
-    }, 300)
-  })
+*/
+export const useVideo = () => {
+  // console.log(obj.value.clientHeight, 'obj')
 }
