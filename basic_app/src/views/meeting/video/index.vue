@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-02-27 17:54:09
+ * @LastEditTime: 2023-03-02 14:34:18
  * @Description: 视频播放
 -->
 <template>
@@ -19,34 +19,123 @@
       </div>
       <SystemOpt color="var(--bg)"></SystemOpt>
     </div>
-    <div class="content">
-      <video
-        id="player"
-        @ended="onPlayEnd"
-        ref="player"
-        width="100%"
-        height="100%"
-        :poster="mediaConfig.videoBg"
-        controls
+    <div class="content f-row-c-c">
+      <div class="leftCon" ref="refVideoCon">
+        <video
+          id="player"
+          @ended="onPlayEnd"
+          ref="refPlayer"
+          :style="{
+            width: mediaConfig.width + 'px',
+            height: mediaConfig.height + 'px',
+          }"
+          :poster="mediaConfig.videoBg"
+        >
+          <source :src="mediaConfig.src" type="video/mp4" />
+        </video>
+
+        <!-- 底部进度条 -->
+        <div class="ControlBox">
+          <BControl></BControl>
+        </div>
+      </div>
+      <div
+        class="switchIcon f-row-c-c"
+        v-debounce="onRightChange"
+        :style="{ right: isShowRight ? '400px' : '0px' }"
       >
-        <source id="videoPlay" :src="mediaConfig.src" type="video/mp4" />
-      </video>
+        <svg-icon
+          v-show="!isShowRight"
+          iconName="icon-left-arrow"
+          className="optItem"
+          size="18"
+          color="var(--bg)"
+        ></svg-icon>
+        <svg-icon
+          v-show="isShowRight"
+          iconName="icon-right-arrow"
+          className="optItem"
+          size="18"
+          color="var(--bg)"
+        ></svg-icon>
+      </div>
+      <!-- 侧边展示内容 -->
+      <div class="rightCon" :style="{ width: isShowRight ? '400px' : '0px' }">
+        <RightTab></RightTab>
+      </div>
+    </div>
+    <div class="downLoading f-col-c-c" v-show="downloadUse.isNeedDownload">
+      <div class="dTop f-row-c-c">
+        <svg-icon
+          iconName="icon-yunxiazai-"
+          className="optItem"
+          size="30"
+          color="var(--bg)"
+        ></svg-icon>
+        <span>下载中...</span>
+      </div>
+      <div class="progress">
+        <Progress
+          :percent="downloadUse.progress"
+          :stroke-width="6"
+          status="active"
+        >
+          <span class="proTxt"> {{ downloadUse.progress || 0 }}% </span>
+        </Progress>
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
+import BControl from "../comps/video/BControl.vue";
+import RightTab from "../comps/video/rightTab.vue";
 import { useRoute } from "vue-router";
+import { useDownload, DownloadType } from "../comps/mListDetail/useDownload";
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 
+const { downloadUse, handleDownload } = useDownload(
+  queryParams.id,
+  queryParams.name || ""
+) as any;
 let mediaConfig = reactive<any>({
+  width: "",
+  height: "",
   videoBg:
     "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AAOEiEk.img",
   src: "https://prod-streaming-video-msn-com.akamaized.net/9752d732-2354-483f-a678-a6d0cd2c22b7/1a5ed13a-43f5-4e85-95c8-6579065c4d7c.mp4",
 });
 
+const isShowRight = ref<boolean>(false);
+const onRightChange = () => {
+  isShowRight.value = !isShowRight.value;
+  setTimeout(() => {
+    mediaConfig.height = refVideoCon.value?.clientHeight;
+    mediaConfig.width = refVideoCon.value?.clientWidth;
+  }, 200);
+};
+
+watch(
+  () => downloadUse.isNeedDownload,
+  (val) => {
+    console.log("upload: " + val);
+    if (val) handleDownload();
+    // if (val) handleDownload();
+  }
+);
+
+const refVideoCon = ref<HTMLElement>();
 const onPlayEnd = () => {};
+onMounted(async () => {
+  await nextTick();
+  mediaConfig.height = refVideoCon.value?.clientHeight;
+  mediaConfig.width = refVideoCon.value?.clientWidth;
+  window.onresize = () => {
+    mediaConfig.height = refVideoCon.value?.clientHeight;
+    mediaConfig.width = refVideoCon.value?.clientWidth;
+  };
+});
 </script>
 <style scoped lang="less">
 :deep(.hTitle) {
@@ -58,6 +147,7 @@ const onPlayEnd = () => {};
 }
 .Video {
   .size(100vw,100vh);
+  background-color: @video_header;
   .header {
     .size(100%,48px);
     padding: 0 8px 0 16px;
@@ -72,15 +162,71 @@ const onPlayEnd = () => {};
   .content {
     .size(100%, calc(100% - 48px));
     background-color: @video_header;
-    position: relative;
-    video {
-      /* height: 300px; */
-      .size(100%,auto);
+    overflow: hidden;
+    .leftCon {
+      .size(100%,100%);
+      position: relative;
+      video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 1;
+        transform: translate(-50%, -50%);
+      }
+      .ControlBox {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        z-index: 10;
+        .size(100%,100px);
+      }
+    }
+    .switchIcon {
+      .size(36px,80px);
+      border-radius: 6px 0px 0px 6px;
+      background-color: rgba(255, 255, 255, 0.06);
       position: absolute;
+      right: 400px;
       top: 50%;
-      left: 50%;
-      z-index: 1;
-      transform: translate(-50%, -50%);
+      transform: translateY(-50%);
+      cursor: pointer;
+      z-index: 9;
+      transition: right 0.2s;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+    .rightCon {
+      .size(400px,100%);
+      flex-shrink: 0;
+      background-color: #18191b;
+      z-index: 10;
+      transition: width 0.2s;
+    }
+  }
+  .downLoading {
+    .size(100%, calc(100% - 48px));
+    position: absolute;
+    top: 48px;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 12;
+    .dTop {
+      margin-bottom: 10px;
+      .optItem {
+        margin-right: 14px;
+      }
+      span {
+        font-size: 14px;
+        color: @bg;
+      }
+    }
+    .progress {
+      .size(260px,30px);
+      .proTxt {
+        font-size: 14px;
+        color: @bg;
+      }
     }
   }
 }

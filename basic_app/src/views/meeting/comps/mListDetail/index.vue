@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-02-25 14:36:37
+ * @LastEditTime: 2023-03-02 13:23:58
  * @Description: 会议详情
 -->
 <template>
@@ -244,7 +244,7 @@
                     <div
                       class="f-row-c-c"
                       v-show="downloadUse.status != 1"
-                      @click="downloadUse.handleDownload"
+                      @click="handleDownload"
                     >
                       <svg-icon
                         size="18"
@@ -389,6 +389,7 @@ let props = withDefaults(
     modelValue: boolean;
     mask?: boolean;
     mId: any;
+    mName: any;
     deviceName?: any;
     isEdit: boolean;
   }>(),
@@ -398,13 +399,13 @@ let props = withDefaults(
     mId: null,
     deviceName: null,
     isEdit: false,
+    mName: null,
   }
 );
 let isShowBottomOpt = ref<boolean>(false);
 // 下载模块导出变量函数操作
-let downloadUse = reactive<DownloadType>(
-  {} as DownloadType
-) as unknown as DownloadType;
+let downloadUse = reactive<DownloadType>({} as DownloadType);
+let handleDownload = () => {};
 watch(
   () => props.modelValue,
   async (val: boolean) => {
@@ -415,7 +416,9 @@ watch(
       await getData(props.mId);
       await getUserList(props.mId);
       await nextTick();
-      downloadUse = await useDownload(props.mId, detail.name);
+      let temp = useDownload(props.mId, props.mName) as any;
+      downloadUse = temp.downloadUse;
+      handleDownload = temp.handleDownload;
       loading.value = false;
       handleBHeight();
       if (props.isEdit) {

@@ -121,6 +121,7 @@
       v-model="isShowDetail"
       :mId="refMeetProps.id"
       :deviceName="refMeetProps.deviceName"
+      :mName="refMeetProps.mName"
       :mask="false"
       :isEdit="isEditFlag"
       @uploadTable="onUploadTable"
@@ -222,9 +223,11 @@ let isShowDetail = ref<boolean>(false);
 let refMeetProps = reactive<{
   id: String | null;
   deviceName: String | null;
+  mName: String | null;
 }>({
   id: null,
   deviceName: null,
+  mName: null,
 });
 let isEditFlag = ref<boolean>(false);
 const handleDetail = (row: any, isEdit: boolean) => {
@@ -232,6 +235,7 @@ const handleDetail = (row: any, isEdit: boolean) => {
   isEditFlag.value = isEdit;
   refMeetProps.id = row.id;
   refMeetProps.deviceName = row.deviceName;
+  refMeetProps.mName = row.name;
   if (!isShowDetail.value) {
     isShowDetail.value = true;
   }

@@ -511,6 +511,58 @@ function createModelWin(
     console.log(modelWins.length, 'len modelWins-closed id', modelWin.id)
     modelWin = null;
   });
+  modelWin.webContents.session.on('will-download', (event, item, webContents) => {
+    downloadTotal += item.getTotalBytes()
+    // new URL(item.getURL()).searchParams.get('id') 获取id
+    let temp = DownloadDataMap.get(`${item.getFilename()}_${new URL(item.getURL()).searchParams.get('id')}`)
+    // TODO: 静态资源服务器不支持文件断点续传 暂时储存downloadItem 方便后面的操作
+    DownloadDataMap.set(`${item.getFilename()}_${new URL(item.getURL()).searchParams.get('id')}`, {
+      ...temp,
+      downloadItem: item
+    })
+    item.setSavePath(join(Config.download.downloadPath, `/${temp.directory}/${temp.fileName}`))
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed')
+        item.resume()
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused')
+        } else {
+          downloadState[temp.id] = item.getReceivedBytes()
+          const progress = _.sum(downloadState) / downloadTotal
+          // 想渲染端传递更新数据
+          webContents.send('downloadUpload', {
+            total: _.sum(downloadState),//多个会议文件的下载size
+            needTotal: downloadTotal,//需要下载的总量。
+            progress: item.getReceivedBytes(),// 当前文件的下载size
+            fileName: temp.fileName//当前正在下载的文件名称，用于后续文件列表下载识别
+          })
+          win.setProgressBar(progress)
+          // console.log(`Received bytes: ${item.getReceivedBytes()}`,)
+        }
+      }
+    })
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        // console.log('Download successfully', temp.fileName)
+        //如果窗口还在的话，去掉进度条
+        if (!win.isDestroyed()) {
+          win.setProgressBar(-1);
+        }
+        DownloadDataMap.delete(`${item.getFilename()}_${new URL(item.getURL()).searchParams.get('id')}`)
+        if (DownloadDataMap.size <= 0) {
+          // 初始化
+          downloadState = []
+          downloadTotal = 0
+          webContents.send('downloadEnd')
+        }
+      } else {
+        dialog.showErrorBox('下载失败', `文件因为某些原因被中断下载`);
+        console.log(`Download failed: ${state}`)
+      }
+    })
+  })
 
   modelWins.push({
     type,
