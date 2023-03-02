@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-02 17:00:05
+ * @LastEditTime: 2023-03-02 17:21:33
  * @Description: 视频播放
 -->
 <template>
@@ -125,9 +125,16 @@ watch(
 const refVideoCon = ref<HTMLElement>();
 // useVideo(refVideoCon);
 const onPlayEnd = () => {};
-onMounted(async () => {
-  await nextTick();
-  console.log(refVideoCon.value, "refVideoCon123");
+const refPlayer = ref<HTMLVideoElement>();
+
+nextTick(() => {
+  let temp = useVideo({
+    playObj: refPlayer.value as HTMLVideoElement,
+    mId: queryParams.id,
+    mName: queryParams.name,
+  });
+});
+onMounted(() => {
   mediaConfig.height = refVideoCon.value?.clientHeight;
   mediaConfig.width = (refVideoCon.value?.clientWidth as number) - 400;
   window.onresize = () => {

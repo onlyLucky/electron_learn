@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:40:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-02 16:34:07
+ * @LastEditTime: 2023-03-02 18:45:54
  * @Description: 视频播放处理
  */
 import hdObj from "_v/setting/handleData"
@@ -21,6 +21,52 @@ const downloadPath = hdObj.getConfigItem('download').downloadPath
  - 3. 播放控制，视频切换，音频声音，上一，下一，...
 
 */
-export const useVideo = () => {
-  // console.log(obj.value.clientHeight, 'obj')
+
+type ConfigType = {
+  playObj: HTMLVideoElement,
+  mId: any,
+  mName: any
 }
+type TypeVideoConfig = {
+  progress: number,// 播放进度
+  fileList: any[],// 分段视频文件列表
+  current: number,// 当前播放视频index
+}
+export const useVideo = (config: ConfigType) => {
+  let videoConfig = reactive<TypeVideoConfig>({
+    progress: 0,
+    fileList: [],
+    current: 0,
+  })
+  const doVideo = () => {
+    handleFolder()
+  }
+
+
+  // 检测文件夹
+  const handleFolder = () => {
+    let tempLen = 0;
+    let files = fs.readdirSync(join(downloadPath, `${config.mName}.${config.mId}`))
+    files.map((item: any) => {
+      if (item.split('.')[1] == 'mp4') {
+        tempLen++
+      }
+    })
+    let tempFiles = []
+    for (let i = 0; i < tempLen; i++) {
+      tempFiles.push({
+        name: `${config.mName}-${i + 1}`,
+        stt: join(downloadPath, `/${config.mName}.${config.mId}/${config.mName}-${i + 1}.stt`),
+        videoSrc: join(downloadPath, `/${config.mName}.${config.mId}/${config.mName}-${i + 1}.mp4`),
+        audioSrc: join(downloadPath, `/${config.mName}.${config.mId}/${config.mName}-${i + 1}.amr`),
+        videoBg: join(downloadPath, `/${config.mName}.${config.mId}/${config.mName}-${i + 1}.jpg`)
+      })
+    }
+    videoConfig.fileList = tempFiles
+  }
+  if (config.mId) {
+    watchEffect(doVideo)
+  } else {
+    doVideo()
+  }
+} 
