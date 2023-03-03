@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-02 17:21:33
+ * @LastEditTime: 2023-03-03 17:51:58
  * @Description: 视频播放
 -->
 <template>
@@ -21,22 +21,17 @@
     </div>
     <div class="content f-row-c-c">
       <div class="leftCon" ref="refVideoCon">
-        <video
-          id="player"
-          @ended="onPlayEnd"
-          ref="refPlayer"
-          :style="{
-            width: mediaConfig.width + 'px',
-            height: mediaConfig.height + 'px',
-          }"
-          :poster="mediaConfig.videoBg"
-        >
-          <source :src="mediaConfig.src" type="video/mp4" />
-        </video>
-
+        <VideoComp
+          ref="refVideoComp"
+          :width="mediaConfig.width"
+          :height="mediaConfig.height"
+        ></VideoComp>
         <!-- 底部进度条 -->
         <div class="ControlBox">
-          <BControl></BControl>
+          <BControl
+            :mediaData="refVideoComp?.videoConfig"
+            @onMediaChange="onMediaChange"
+          ></BControl>
         </div>
       </div>
       <div
@@ -90,10 +85,9 @@
 import SystemOpt from "@/commons/system_opt/index";
 import BControl from "../comps/video/BControl.vue";
 import RightTab from "../comps/video/rightTab.vue";
+import VideoComp from "../comps/video/videoComp.vue";
 import { useRoute } from "vue-router";
 import { useDownload, DownloadType } from "../comps/mListDetail/useDownload";
-import { useVideo } from "./useVideo";
-import console from "console";
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 
@@ -105,9 +99,6 @@ const { downloadUse, handleDownload } = useDownload(
 let mediaConfig = reactive<any>({
   width: "",
   height: "",
-  videoBg:
-    "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AAOEiEk.img",
-  src: "https://prod-streaming-video-msn-com.akamaized.net/9752d732-2354-483f-a678-a6d0cd2c22b7/1a5ed13a-43f5-4e85-95c8-6579065c4d7c.mp4",
 });
 
 const isShowRight = ref<boolean>(false);
@@ -123,17 +114,13 @@ watch(
   }
 );
 const refVideoCon = ref<HTMLElement>();
-// useVideo(refVideoCon);
-const onPlayEnd = () => {};
-const refPlayer = ref<HTMLVideoElement>();
 
-nextTick(() => {
-  let temp = useVideo({
-    playObj: refPlayer.value as HTMLVideoElement,
-    mId: queryParams.id,
-    mName: queryParams.name,
-  });
-});
+const refVideoComp = ref<InstanceType<typeof VideoComp>>();
+
+const onMediaChange = () => {
+  // console.log();
+};
+
 onMounted(() => {
   mediaConfig.height = refVideoCon.value?.clientHeight;
   mediaConfig.width = (refVideoCon.value?.clientWidth as number) - 400;
@@ -174,13 +161,6 @@ onMounted(() => {
     .leftCon {
       .size(100%,100%);
       position: relative;
-      video {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        z-index: 1;
-        transform: translate(-50%, -50%);
-      }
       .ControlBox {
         position: absolute;
         left: 0;

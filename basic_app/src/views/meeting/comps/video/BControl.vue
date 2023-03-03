@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-02-28 14:09:49
+ * @LastEditTime: 2023-03-03 18:00:13
  * @Description: content
 -->
 <template>
@@ -23,7 +23,7 @@
     </div>
     <div class="controlBottom f-row-b-c">
       <div class="ctrlBLeft f-row-c-c">
-        <div class="ctrlIcon f-row-c-c">
+        <div class="ctrlIcon f-row-c-c" v-debounce="onMediaCtrlTap">
           <svg-icon
             iconName="icon-zanting"
             className="optItem"
@@ -97,8 +97,35 @@
   </div>
 </template>
 <script setup lang="ts">
+import { TypeVideoConfig } from "./hooks/useVideo";
 const progress = ref<number>(40);
 const onSliderChange = () => {};
+let props = withDefaults(
+  defineProps<{
+    mediaData: TypeVideoConfig;
+  }>(),
+  {
+    mediaData: () => {
+      return {
+        progress: 0,
+        current: 0,
+        playing: false,
+        voiceNum: 0.5,
+        SpeedNum: 1,
+        ProgressTime: 0,
+        isVideoCanPlay: false,
+        isAudioCanPlay: false,
+        duration: 0,
+      };
+    },
+  }
+);
+let emit = defineEmits<{
+  (e: "onMediaChange"): void;
+}>();
+const onMediaCtrlTap = () => {
+  emit("onMediaChange");
+};
 </script>
 <style scoped lang="less">
 .Control {
