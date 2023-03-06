@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:40:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-03 17:40:19
+ * @LastEditTime: 2023-03-06 09:13:50
  * @Description: 视频播放处理
  */
 import hdObj from "_v/setting/handleData"
@@ -123,5 +123,5 @@ export const useVideo = (mName: string, mId: any,) => {
   } else {
     doVideo()
   }
-  return { videoConfig, onVideoCanPlay, onAudioCanPlay, getDate, uploadDomObj }
+  return { videoConfig, onVideoCanPlay, onAudioCanPlay, getDate, uploadDomObj, onMediaCtrl }
 }

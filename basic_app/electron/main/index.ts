@@ -317,6 +317,7 @@ ipcMain.on('window_max', function () {
   } else {
     BrowserWindow.getFocusedWindow().maximize();
   }
+  BrowserWindow.getFocusedWindow().webContents.send('window_max_status', BrowserWindow.getFocusedWindow().isMaximized())
 })
 
 ipcMain.on('on_login', (event, arg) => {

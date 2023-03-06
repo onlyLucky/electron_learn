@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-03-03 18:00:13
+ * @LastEditTime: 2023-03-06 10:16:13
  * @Description: content
 -->
 <template>
@@ -10,7 +10,7 @@
     <div class="controlTop f-row-c-c">
       <span class="ctrlTime ctrlStart">12:20:30</span>
       <slider
-        :model-value="progress"
+        :model-value="mediaData.progress"
         class="cenSlider"
         show-tip="never"
         backgroundColor="#e9e9e9"
@@ -23,22 +23,43 @@
     </div>
     <div class="controlBottom f-row-b-c">
       <div class="ctrlBLeft f-row-c-c">
-        <div class="ctrlIcon f-row-c-c" v-debounce="onMediaCtrlTap">
+        <div
+          class="f-row-c-c"
+          v-show="!(!mediaData.isAudioCanPlay || !mediaData.isVideoCanPlay)"
+        >
+          <div
+            class="ctrlIcon f-row-c-c"
+            v-debounce="onMediaCtrlTap"
+            v-show="!mediaData.playing"
+          >
+            <svg-icon
+              iconName="icon-zanting"
+              className="optItem"
+              size="28"
+              color="var(--bg)"
+            ></svg-icon>
+          </div>
+          <div class="ctrlIcon f-row-c-c" v-show="mediaData.playing">
+            <svg-icon
+              iconName="icon-zanting1"
+              className="optItem"
+              size="28"
+              color="var(--bg)"
+            ></svg-icon>
+          </div>
+        </div>
+        <div
+          class="ctrlIcon f-row-c-c"
+          v-show="!mediaData.isAudioCanPlay || !mediaData.isVideoCanPlay"
+        >
           <svg-icon
-            iconName="icon-zanting"
-            className="optItem"
+            iconName="icon-jiazaizhong"
+            className="ctrlItem iconLoading"
             size="28"
             color="var(--bg)"
           ></svg-icon>
         </div>
-        <div class="ctrlIcon f-row-c-c">
-          <svg-icon
-            iconName="icon-zanting1"
-            className="optItem"
-            size="28"
-            color="var(--bg)"
-          ></svg-icon>
-        </div>
+
         <div class="ctrlIcon f-row-c-c">
           <Tooltip content="刷新">
             <svg-icon
@@ -57,6 +78,18 @@
             color="var(--bg)"
           ></svg-icon>
         </div>
+        <div class="voiceBox">
+          <slider
+            :model-value="40"
+            class="voiceSlider"
+            show-tip="never"
+            backgroundColor="#e9e9e9"
+            block-size="40"
+            block-color="#ffffff"
+            @on-change="onVoiceChange"
+          >
+          </slider>
+        </div>
       </div>
       <div class="ctrlBRight f-row-c-c">
         <div class="ctrlIcon f-row-c-c">
@@ -72,7 +105,11 @@
             ></svg-icon>
           </Tooltip>
         </div>
-        <div class="ctrlIcon f-row-c-c">
+        <div
+          class="ctrlIcon f-row-c-c"
+          v-show="!smallSizeFlag"
+          v-debounce="onScreenChange"
+        >
           <Tooltip content="全屏">
             <svg-icon
               iconName="icon-quanping"
@@ -82,7 +119,11 @@
             ></svg-icon>
           </Tooltip>
         </div>
-        <div class="ctrlIcon f-row-c-c">
+        <div
+          class="ctrlIcon f-row-c-c"
+          v-show="smallSizeFlag"
+          v-debounce="onScreenChange"
+        >
           <Tooltip content="退出全屏">
             <svg-icon
               iconName="icon-suoxiaotuichuquanpingshouhui"
@@ -97,6 +138,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { ipcRenderer } from "electron";
 import { TypeVideoConfig } from "./hooks/useVideo";
 const progress = ref<number>(40);
 const onSliderChange = () => {};
@@ -126,6 +168,17 @@ let emit = defineEmits<{
 const onMediaCtrlTap = () => {
   emit("onMediaChange");
 };
+
+// 更改全屏
+let smallSizeFlag = ref<boolean>(false);
+const onScreenChange = () => {
+  ipcRenderer.send("window_max");
+};
+ipcRenderer.on("window_max_status", (event, status) => {
+  smallSizeFlag.value = status;
+});
+// 音量更改
+const onVoiceChange: any = () => {};
 </script>
 <style scoped lang="less">
 .Control {
@@ -158,6 +211,7 @@ const onMediaCtrlTap = () => {
     .ctrlIcon {
       .size(40px,40px);
       border-radius: 4px;
+      cursor: pointer;
       &:hover {
         background-color: rgba(50, 50, 50, 0.3);
       }

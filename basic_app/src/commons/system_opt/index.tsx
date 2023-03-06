@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-14 17:24:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-03 11:47:59
+ * @LastEditTime: 2023-03-06 10:23:30
  * @Description: content
  */
 import { ref } from "vue";
@@ -29,13 +29,17 @@ const onMinTap = () => {
   ipcRenderer.send("window_min");
 };
 
-const onMaxTap = (flag: boolean) => {
-  smallSizeFlag.value = flag;
+const onMaxTap = () => {
   ipcRenderer.send("window_max");
 };
 const onCloseTap = () => {
   ipcRenderer.send("window_close");
 };
+
+ipcRenderer.on("window_max_status", (event, status) => {
+  smallSizeFlag.value = !status;
+  console.log("window_max_status", status);
+});
 
 const SystemOpt = (props: Props = { isShowChangeSize: true }) => {
   // 上面给默认值的方式不接受，不知道为什么tsx
@@ -65,7 +69,7 @@ const SystemOpt = (props: Props = { isShowChangeSize: true }) => {
 
       {props.isShowChangeSize ? (
         smallSizeFlag.value ? (
-          <div class={style.sIconBox} onClick={onMaxTap.bind(this, false)}>
+          <div class={style.sIconBox} onClick={onMaxTap}>
             <SvgIcon
               iconName="icon-zuidahua1"
               style={{ width: "20px", height: "20px" }}
@@ -75,7 +79,8 @@ const SystemOpt = (props: Props = { isShowChangeSize: true }) => {
           </div>
         ) : (
           <Tooltip content="还原">
-            <div class={style.sIconBox} onClick={onMaxTap.bind(this, true)}>
+            {/* onMaxTap.bind(this, true) */}
+            <div class={style.sIconBox} onClick={onMaxTap}>
               <SvgIcon
                 iconName="icon-chuangkouhuanyuan"
                 style={{ width: "20px", height: "20px" }}
