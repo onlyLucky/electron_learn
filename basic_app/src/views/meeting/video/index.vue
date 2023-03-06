@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-03 17:51:58
+ * @LastEditTime: 2023-03-06 15:54:03
  * @Description: 视频播放
 -->
 <template>
@@ -30,6 +30,7 @@
         <div class="ControlBox">
           <BControl
             :mediaData="refVideoComp?.videoConfig"
+            @onSeek="onSeek"
             @onMediaChange="onMediaChange"
           ></BControl>
         </div>
@@ -119,6 +120,11 @@ const refVideoComp = ref<InstanceType<typeof VideoComp>>();
 
 const onMediaChange = () => {
   // console.log();
+  refVideoComp.value?.onMediaCtrl();
+};
+
+const onSeek = (progress: number) => {
+  refVideoComp.value?.seekTo(progress);
 };
 
 onMounted(() => {

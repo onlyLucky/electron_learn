@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-03 17:44:07
+ * @LastEditTime: 2023-03-06 15:07:03
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -14,11 +14,12 @@
         width: props.width + 'px',
         height: props.height + 'px',
       }"
-      :poster="mediaConfig.videoBg"
+      :poster="fileList[current].videoBg"
+      @timeupdate="onVideoChange"
       @canplay="onVideoCanPlay"
       @ended="onPlayEnd"
     >
-      <source :src="mediaConfig.src" type="video/mp4" />
+      <source :src="fileList[current].videoSrc" type="video/mp4" />
     </video>
     <!-- :src="audioInfo.src"
       @timeupdate="onPlayChange"
@@ -27,7 +28,7 @@
     <audio
       controls
       ref="refAudio"
-      :src="mediaConfig.audioSrc"
+      :src="fileList[current].audioSrc"
       @canplay="onAudioCanPlay"
     ></audio>
     {{}}
@@ -51,15 +52,27 @@ let mediaConfig = reactive<any>({
   audioSrc:
     "https://m801.music.126.net/20230210095355/6a44ab660525af0af6f395ac8a8532f8/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/14096426578/ff65/7348/d83f/36ab528a5935b3ee552768bd939af6cf.mp3",
 });
-const onPlayEnd = () => {};
 
+// 当前播放第几个
+let current = ref<number>(0);
 const { fileList } = useFile(queryParams.name || "", queryParams.id);
+console.log(fileList, "fileList");
 
 const refPlayer = ref<HTMLVideoElement>();
 const refAudio = ref<HTMLAudioElement>();
 // 媒体设置
-const { videoConfig, getDate, uploadDomObj, onAudioCanPlay, onVideoCanPlay } =
-  useVideo(queryParams.name || "", queryParams.id);
+const {
+  videoConfig,
+  getDate,
+  uploadDomObj,
+  onAudioCanPlay,
+  onVideoCanPlay,
+  onMediaCtrl,
+  uploadCurrentTime,
+  onEnd,
+  uploadCurrent,
+  seekTo,
+} = useVideo(queryParams.name || "", queryParams.id);
 watch(refPlayer, (val) => {
   if (val) {
     uploadDomObj(true, val);
@@ -70,10 +83,22 @@ watch(refAudio, (val) => {
     uploadDomObj(false, val);
   }
 });
+watch(current, (val) => {});
+
+const onVideoChange = (e: Event) => {
+  let cTime = (e.target as HTMLVideoElement).currentTime;
+  uploadCurrentTime(cTime);
+};
+// 结束
+const onPlayEnd = () => {
+  onEnd();
+};
 
 defineExpose({
   videoConfig,
   getDate,
+  onMediaCtrl,
+  seekTo,
 });
 </script>
 <style scoped lang="less">
