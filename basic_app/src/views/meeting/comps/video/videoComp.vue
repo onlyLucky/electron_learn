@@ -96,6 +96,8 @@ const onPlayEnd = () => {
 
 defineExpose({
   videoConfig,
+  fileList,
+  current,
   getDate,
   onMediaCtrl,
   seekTo,

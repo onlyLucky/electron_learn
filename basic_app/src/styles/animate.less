@@ -27,3 +27,19 @@
     opacity: 1;
   }
 }
+
+.iconFloat {
+  animation: float 1s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  50% {
+    transform: translate(0px, -3px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}

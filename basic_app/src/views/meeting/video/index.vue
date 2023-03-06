@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-06 15:54:03
+ * @LastEditTime: 2023-03-06 19:25:04
  * @Description: 视频播放
 -->
 <template>
@@ -57,7 +57,11 @@
       </div>
       <!-- 侧边展示内容 -->
       <div class="rightCon" :style="{ width: isShowRight ? '400px' : '0px' }">
-        <RightTab></RightTab>
+        <RightTab
+          :show="isShowRight"
+          :files="refVideoComp?.fileList"
+          :vConfig="refVideoComp?.videoConfig"
+        ></RightTab>
       </div>
     </div>
     <div class="downLoading f-col-c-c" v-show="downloadUse.isNeedDownload">

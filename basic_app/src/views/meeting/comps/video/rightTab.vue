@@ -2,18 +2,182 @@
  * @Author: fg
  * @Date: 2023-02-28 15:18:11
  * @LastEditors: fg
- * @LastEditTime: 2023-02-28 16:44:45
+ * @LastEditTime: 2023-03-06 20:09:11
  * @Description: 右侧展示tab
 -->
 <template>
-  <div class="rightTab">
-    <h1>right Tab</h1>
+  <div class="rightTab" v-show="show">
+    <div class="tabHeader f-row-c-c">
+      <div
+        :class="['tHItem', index == tabIndex ? 'active' : '']"
+        v-for="(item, index) in tabData"
+        :key="index"
+        @click="onTabHeaderTap(index)"
+      >
+        {{ item.name }}
+      </div>
+      <div class="line" :style="{ left: tabData[tabIndex].left + 'px' }"></div>
+    </div>
+    <transition name="fade">
+      <div class="tabCon f-row">
+        <div class="tConItem analecta f-w" v-show="tabIndex == 0">
+          <div
+            :class="['anaItem', 'f-row-c-c', index == current ? 'active' : '']"
+            v-for="(item, index) in files"
+            :key="index"
+          >
+            {{ index + 1 }}
+            <svg-icon
+              v-show="index == current && vConfig?.playing"
+              iconName="icon-shengyin"
+              className="playIcon iconFloat"
+              size="20"
+              color="var(--f_color_active)"
+            ></svg-icon>
+          </div>
+        </div>
+        <div class="tConItem useDraw f-w" v-show="tabIndex == 1">
+          <div class="optBox f-row-e-c">
+            <div class="optItem">
+              <Checkbox :model-value="selectAll" @on-change="onAllChange">{{
+                selectAll ? "全部选择" : "取消全部"
+              }}</Checkbox>
+            </div>
+          </div>
+          <div class="userBox"></div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+let props = withDefaults(
+  defineProps<{
+    show: boolean;
+    files: any[];
+    current: number;
+    vConfig: any;
+  }>(),
+  {
+    show: false,
+    files: () => [],
+    current: 0,
+    vConfig: {},
+  }
+);
+let tabData = [
+  {
+    name: "选集列表",
+    left: 100,
+  },
+  {
+    name: "用户批注",
+    left: 256,
+  },
+];
+let tabIndex = ref<number>(0);
+const onTabHeaderTap = (index: number) => {
+  tabIndex.value = index;
+};
+// 用户批注
+let selectAll = ref<boolean>(false);
+const onAllChange = (val: boolean) => {
+  selectAll.value = val;
+};
+</script>
 <style scoped lang="less">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
 .rightTab {
   .size(100%,100%);
+  .tabHeader {
+    .size(100%, 60px);
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+    margin-bottom: 10px;
+    .tHItem {
+      padding: 10px 40px;
+      margin-right: 20px;
+      font-size: 14px;
+      border-radius: 6px;
+      color: @fontColor;
+      font-weight: bold;
+      cursor: pointer;
+      &:last-child {
+        margin-right: 0;
+      }
+      &:hover {
+        background: rgba(0, 0, 0, 0.6);
+      }
+    }
+    .tHItem.active {
+      color: @bg;
+      opacity: 0.9;
+    }
+    .line {
+      .size(30px,4px);
+      border-radius: 4px;
+      background-color: @bg;
+      opacity: 0.8;
+      position: absolute;
+      bottom: 4px;
+      left: 100px;
+      transition: left 0.25s ease-in-out;
+    }
+  }
+  .tabCon {
+    .size(100%, calc(100% - 80px));
+    overflow: auto;
+    padding: 0px 10px;
+    box-sizing: border-box;
+    .tConItem {
+      .size(100%,100%);
+      padding-left: 2px;
+      box-sizing: border-box;
+      .anaItem {
+        .size(45px,45px);
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        font-size: 18px;
+        color: @fontColor;
+        background: rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        &:nth-child(7n) {
+          margin-right: 0px;
+        }
+      }
+      .anaItem.active {
+        background: rgba(0, 0, 0, 0.8);
+        color: @f_color_active;
+        position: relative;
+        .playIcon {
+          position: absolute;
+          bottom: -6px;
+          right: -6px;
+        }
+      }
+    }
+    .useDraw {
+      .optBox {
+        .size(100%,40px);
+        .optItem {
+          color: @fontColor;
+        }
+      }
+    }
+    .tConItem.analecta,
+    .tConItem.useDraw {
+      align-content: baseline;
+    }
+  }
   h1 {
     font-size: 30px;
   }
