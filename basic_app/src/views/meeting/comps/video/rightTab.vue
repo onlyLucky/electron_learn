@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:18:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-06 20:09:11
+ * @LastEditTime: 2023-03-07 11:05:31
  * @Description: 右侧展示tab
 -->
 <template>
@@ -37,14 +37,129 @@
           </div>
         </div>
         <div class="tConItem useDraw f-w" v-show="tabIndex == 1">
-          <div class="optBox f-row-e-c">
-            <div class="optItem">
-              <Checkbox :model-value="selectAll" @on-change="onAllChange">{{
-                selectAll ? "全部选择" : "取消全部"
-              }}</Checkbox>
+          <div class="useDrawBox">
+            <div class="optBox f-row-e-c">
+              <div class="optItem">
+                <Checkbox :model-value="selectAll" @on-change="onAllChange">{{
+                  selectAll ? "全部选择" : "取消全部"
+                }}</Checkbox>
+              </div>
+            </div>
+            <div class="userBox f-w">
+              <div class="userItem f-col-c-c">
+                <div class="avatar f-row-c-c">
+                  <span>三</span>
+                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                </div>
+                <div class="userName">
+                  <Text
+                    :ellipsis-config="{ tooltip: true }"
+                    ellipsis
+                    placement="bottom-start"
+                    >张三张三张三张三张三张三</Text
+                  >
+                </div>
+              </div>
+              <div class="userItem f-col-c-c">
+                <div class="avatar f-row-c-c">
+                  <span>三</span>
+                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                </div>
+                <div class="userName">
+                  <Text
+                    :ellipsis-config="{ tooltip: true }"
+                    ellipsis
+                    placement="bottom-start"
+                    >张三</Text
+                  >
+                </div>
+              </div>
+              <div class="userItem f-col-c-c">
+                <div class="avatar f-row-c-c">
+                  <span>三</span>
+                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                </div>
+                <div class="userName">
+                  <Text
+                    :ellipsis-config="{ tooltip: true }"
+                    ellipsis
+                    placement="bottom-start"
+                    >张三</Text
+                  >
+                </div>
+              </div>
+              <div class="userItem f-col-c-c">
+                <div class="avatar f-row-c-c">
+                  <span>三</span>
+                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                </div>
+                <div class="userName">
+                  <Text
+                    :ellipsis-config="{ tooltip: true }"
+                    ellipsis
+                    placement="bottom-start"
+                    >张三</Text
+                  >
+                </div>
+              </div>
+              <div class="userItem f-col-c-c">
+                <div class="avatar f-row-c-c">
+                  <span>三</span>
+                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                </div>
+                <div class="userName">
+                  <Text
+                    :ellipsis-config="{ tooltip: true }"
+                    ellipsis
+                    placement="bottom-start"
+                    >张三</Text
+                  >
+                </div>
+              </div>
+              <div class="userItem f-col-c-c">
+                <div class="avatar f-row-c-c">
+                  <span>三</span>
+                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                </div>
+                <div class="userName">
+                  <Text
+                    :ellipsis-config="{ tooltip: true }"
+                    ellipsis
+                    placement="bottom-start"
+                    >张三</Text
+                  >
+                </div>
+              </div>
+              <div class="userItem f-col-c-c">
+                <div class="avatar f-row-c-c">
+                  <span>三</span>
+                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                </div>
+                <div class="userName">
+                  <Text
+                    :ellipsis-config="{ tooltip: true }"
+                    ellipsis
+                    placement="bottom-start"
+                    >张三</Text
+                  >
+                </div>
+              </div>
+              <div class="userItem f-col-c-c">
+                <div class="avatar f-row-c-c">
+                  <span>三</span>
+                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                </div>
+                <div class="userName">
+                  <Text
+                    :ellipsis-config="{ tooltip: true }"
+                    ellipsis
+                    placement="bottom-start"
+                    >张三</Text
+                  >
+                </div>
+              </div>
             </div>
           </div>
-          <div class="userBox"></div>
         </div>
       </div>
     </transition>
@@ -86,6 +201,47 @@ const onAllChange = (val: boolean) => {
 };
 </script>
 <style scoped lang="less">
+:deep(.useDraw .optBox .optItem) {
+  .ivu-checkbox-inner {
+    // .size(20px,20px);
+    border-radius: 20px;
+    margin-right: 4px;
+    background-color: transparent;
+  }
+  .ivu-checkbox-checked .ivu-checkbox-inner {
+    border-color: @f_color_active;
+    background-color: @f_color_active;
+  }
+  .ivu-checkbox-wrapper {
+    margin-right: 0;
+  }
+  .ivu-checkbox-checked .ivu-checkbox-inner:after {
+    .size(5px,9px);
+  }
+}
+:deep(.userItem) {
+  .ivu-typography {
+    color: @fontColor;
+  }
+}
+:deep(.userBox .userSelect) {
+  .ivu-checkbox-inner {
+    // .size(20px,20px);
+    border-radius: 20px;
+    margin-right: 4px;
+  }
+  .ivu-checkbox-checked .ivu-checkbox-inner {
+    border-color: @f_color_active;
+    background-color: @bg;
+  }
+  .ivu-checkbox-checked .ivu-checkbox-inner:after {
+    .size(5px,9px);
+    border-color: @f_color_active;
+  }
+  .ivu-checkbox-wrapper {
+    margin-right: 0px;
+  }
+}
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.25s;
@@ -166,10 +322,46 @@ const onAllChange = (val: boolean) => {
       }
     }
     .useDraw {
-      .optBox {
-        .size(100%,40px);
-        .optItem {
-          color: @fontColor;
+      .useDrawBox {
+        .size(100%,100%);
+        .optBox {
+          .size(100%,40px);
+          .optItem {
+            color: @fontColor;
+          }
+        }
+        .userBox {
+          .size(100%, calc(100% - 40px));
+          align-content: baseline;
+          .userItem {
+            .size(84px,84px);
+            margin-right: 10px;
+            margin-bottom: 10px;
+            // background-color: pink;
+            .avatar {
+              position: relative;
+              .size(46px,46px);
+              border-radius: 4px;
+              background-color: @f_color_active;
+              margin-bottom: 8px;
+              span {
+                font-size: 16px;
+                color: @bg;
+              }
+              .userSelect {
+                position: absolute;
+                bottom: -8px;
+                right: -8px;
+                margin-right: 0px;
+              }
+            }
+            .userName {
+              width: 100%;
+              text-align: center;
+              color: @fontColor;
+              font-size: 16px;
+            }
+          }
         }
       }
     }
