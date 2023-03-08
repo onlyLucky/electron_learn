@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-08 19:55:47
+ * @LastEditTime: 2023-03-08 20:12:09
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -395,12 +395,107 @@ export const useCanvas = () => {
   }
   // 处理矩形
   const handleRect = (current: number) => {
+    let path = pathList.value[current].mSerPath;
+    ctx.beginPath();
+    //画笔样式预设
+    ctx.lineWidth = pathList.value[current].size * canvasConfig.ratio;
+    ctx.strokeStyle = pathList.value[current].color;
+    if (Object.prototype.toString.call(path.mTimes.long) != '[object Array]') {
+      path.mTimes.long = [path.mTimes.long]
+    }
+    // 判断current 是否与当前笔数相等
+    if (current == canvasConfig.currentPath) {
+      let index = Number(getTimeIndex(path.mTimes.long, canvasConfig.currentTime)) - 1
+      if (index != -1) {
+        let x = Number(path.mPoints.SerPoint[0].x) * canvasConfig.ratio
+        let y = Number(path.mPoints.SerPoint[0].y) * canvasConfig.ratio
+        let width = Number(path.mPoints.SerPoint[index].x) * canvasConfig.ratio - x
+        let height = Number(path.mPoints.SerPoint[index].y) * canvasConfig.ratio - y
+        ctx.strokeRect(x, y, width, height)
+        ctx.closePath();
+      }
 
+    } else {
+      let x = Number(path.mPoints.SerPoint[0].x) * canvasConfig.ratio
+      let y = Number(path.mPoints.SerPoint[0].y) * canvasConfig.ratio
+      let width = Number(path.mPoints.SerPoint[path.mPoints.SerPoint.length - 1].x) * canvasConfig.ratio - x
+      let height = Number(path.mPoints.SerPoint[path.mPoints.SerPoint.length - 1].y) * canvasConfig.ratio - y
+      ctx.strokeRect(x, y, width, height)
+      ctx.closePath();
+    }
   }
   // 处理直线
-  const handleLine = (current: number) => { }
+  const handleLine = (current: number) => {
+    let path = pathList.value[current].mSerPath;
+    // 画笔样式预设
+    ctx.lineWidth = pathList.value[current].size * canvasConfig.ratio;
+    ctx.strokeStyle = pathList.value[current].color;
+    // 判断current 是否与当前笔数相等
+    let x, y, x1, y1;
+    if (current == canvasConfig.currentPath) {
+      let index = Number(getTimeIndex(path.mTimes, canvasConfig.currentTime)) - 1
+      if (index != -1) {
+        x = Number(path.mPoints.SerPoint[0].x) * canvasConfig.ratio
+        y = Number(path.mPoints.SerPoint[0].y) * canvasConfig.ratio
+        x1 = Number(path.mPoints.SerPoint[index].x) * canvasConfig.ratio
+        y1 = Number(path.mPoints.SerPoint[index].y) * canvasConfig.ratio
+        ctx.beginPath();
+        ctx.moveTo(x, y)
+        ctx.lineTo(x1, y1)
+        ctx.stroke();
+        ctx.closePath();
+      }
+
+    } else {
+      x = Number(path.mPoints.SerPoint[0].x) * canvasConfig.ratio
+      y = Number(path.mPoints.SerPoint[0].y) * canvasConfig.ratio
+      x1 = Number(path.mPoints.SerPoint[path.mPoints.SerPoint.length - 1].x) * canvasConfig.ratio
+      y1 = Number(path.mPoints.SerPoint[path.mPoints.SerPoint.length - 1].y) * canvasConfig.ratio
+      ctx.beginPath();
+      ctx.moveTo(x, y)
+      ctx.lineTo(x1, y1)
+      ctx.stroke();
+      ctx.closePath();
+    }
+  }
   // 椭圆绘制
-  const handleOval = (current: number) => { }
+  const handleOval = (current: number) => {
+    let path = pathList.value[current].mSerPath;
+    // 画笔样式预设
+    ctx.lineWidth = pathList.value[current].size * canvasConfig.ratio;
+    ctx.strokeStyle = pathList.value[current].color;
+    // 判断current 是否与当前笔数相等;
+    let rx, ry, r1, r2;
+    let x0 = Number(path.mPoints.SerPoint[0].x) * canvasConfig.ratio;
+    let y0 = Number(path.mPoints.SerPoint[0].y) * canvasConfig.ratio;
+    if (current == canvasConfig.currentPath) {
+      let index = Number(getTimeIndex(path.mTimes, canvasConfig.currentTime)) - 1
+      if (index !== -1) {
+        let x1 = Number(path.mPoints.SerPoint[index].x) * canvasConfig.ratio
+        let y1 = Number(path.mPoints.SerPoint[index].y) * canvasConfig.ratio
+        rx = x0 < x1 ? x0 + (x1 - x0) / 2 : x1 + (x0 - x1) / 2
+        ry = y0 < x1 ? y0 + (y1 - y0) / 2 : y1 + (y0 - y1) / 2
+        r1 = Math.abs((x1 - x0) / 2)
+        r2 = Math.abs((y1 - y0) / 2)
+        ctx.beginPath();
+        ctx.ellipse(rx, ry, r1, r2, 0, 0, Math.PI * 2)
+        ctx.stroke();
+        ctx.closePath();
+      }
+
+    } else {
+      let x1 = Number(path.mPoints.SerPoint[path.mPoints.SerPoint.length - 1].x) * canvasConfig.ratio
+      let y1 = Number(path.mPoints.SerPoint[path.mPoints.SerPoint.length - 1].y) * canvasConfig.ratio
+      rx = x0 < x1 ? x0 + (x1 - x0) / 2 : x1 + (x0 - x1) / 2
+      ry = y0 < x1 ? y0 + (y1 - y0) / 2 : y1 + (y0 - y1) / 2
+      r1 = Math.abs((x1 - x0) / 2)
+      r2 = Math.abs((y1 - y0) / 2)
+      ctx.beginPath();
+      ctx.ellipse(rx, ry, r1, r2, 0, 0, Math.PI * 2)
+      ctx.stroke();
+      ctx.closePath();
+    }
+  }
 
   // 处理用户选择
   const handleUserPath = () => {
