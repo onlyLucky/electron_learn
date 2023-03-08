@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-08 09:37:21
+ * @LastEditTime: 2023-03-08 10:06:06
  * @Description: 视频播放
 -->
 <template>
@@ -213,7 +213,8 @@ const onMouseout = () => {
     .switchIcon {
       .size(36px,80px);
       border-radius: 6px 0px 0px 6px;
-      background-color: rgba(255, 255, 255, 0.06);
+      // background-color: rgba(255, 255, 255, 0.06);
+      background-color: rgba(0, 0, 0, 0.3);
       position: absolute;
       right: 0px;
       top: 50%;
@@ -222,7 +223,7 @@ const onMouseout = () => {
       z-index: 9;
       transition: right 0.36s ease-in-out;
       &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.5);
       }
     }
     .rightCon {

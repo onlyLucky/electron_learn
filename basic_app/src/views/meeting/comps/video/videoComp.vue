@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-07 19:59:07
+ * @LastEditTime: 2023-03-08 10:04:03
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -84,15 +84,13 @@ watch(refPlayer, (val) => {
 watch(
   () => props.width,
   (val) => {
-    refCanvas.value!.width = props.width;
-    console.log(refPlayer.value!.videoWidth, refPlayer.value!.videoHeight);
+    computedCanvasSize();
   }
 );
 watch(
   () => props.height,
   (val) => {
-    refCanvas.value!.height = props.height;
-    console.log(refPlayer.value!.videoWidth, refPlayer.value!.videoHeight);
+    computedCanvasSize();
   }
 );
 const { parseXmlFile, userList } = useCanvas();
@@ -108,10 +106,25 @@ const onVideoChange = (e: Event) => {
   let cTime = (e.target as HTMLVideoElement).currentTime;
   uploadCurrentTime(cTime);
 };
+let ratio = ref<number>(1); //视频比例
 const onCanPlay = (e: Event) => {
   onVideoCanPlay(e);
-  /* refCanvas.value!.height = refPlayer.value!.videoHeight;
-  refCanvas.value!.width = refPlayer.value!.videoWidth; */
+  ratio.value = Number(
+    (refPlayer.value!.videoWidth / refPlayer.value!.videoHeight).toFixed(3)
+  );
+  computedCanvasSize();
+};
+// 处理canvas比例计算
+const computedCanvasSize = () => {
+  // video ref 的宽高比例
+  let videoDomRatio = props.width / props.height;
+  if (videoDomRatio >= ratio.value) {
+    refCanvas.value!.height = props.height;
+    refCanvas.value!.width = props.height * ratio.value;
+  } else {
+    refCanvas.value!.width = props.width;
+    refCanvas.value!.height = props.width / ratio.value;
+  }
 };
 // 结束
 const onPlayEnd = () => {

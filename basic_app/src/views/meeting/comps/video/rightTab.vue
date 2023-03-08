@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:18:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-07 17:04:15
+ * @LastEditTime: 2023-03-08 09:42:21
  * @Description: 右侧展示tab
 -->
 <template>

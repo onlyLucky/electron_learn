@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-07 18:57:53
+ * @LastEditTime: 2023-03-08 09:45:23
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -45,7 +45,7 @@ export const useCanvas = () => {
     currentClear: 0
   })
   // 用户列表
-  let userList = reactive<any[]>([])
+  let userList = ref<any[]>([])
   // path列表
   let pathList = ref<any[]>([])
   //  clear 数据 分段数据
@@ -142,7 +142,7 @@ export const useCanvas = () => {
         id: item.number
       })
     })
-    userList = tempUserList
+    userList.value = tempUserList
     console.log(userList, 'jsonData')
     console.log(tempPathClearList, tempPathList, 'data')
   }
@@ -192,7 +192,7 @@ export const useCanvas = () => {
 
   // 处理用户选择
   const handleUserPath = () => {
-    let tempIds = userList.filter((item: any) => {
+    let tempIds = userList.value.filter((item: any) => {
       if (item.active) {
         return item.id
       }
