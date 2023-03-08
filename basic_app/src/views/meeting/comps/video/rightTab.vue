@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:18:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-07 11:05:31
+ * @LastEditTime: 2023-03-07 17:04:15
  * @Description: 右侧展示tab
 -->
 <template>
@@ -46,115 +46,24 @@
               </div>
             </div>
             <div class="userBox f-w">
-              <div class="userItem f-col-c-c">
+              <div
+                class="userItem f-col-c-c"
+                v-for="(item, index) in user"
+                :key="index"
+              >
                 <div class="avatar f-row-c-c">
-                  <span>三</span>
-                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
+                  <span>{{ item.username.slice(-2) }}</span>
+                  <Checkbox
+                    class="userSelect"
+                    :model-value="item.active"
+                  ></Checkbox>
                 </div>
                 <div class="userName">
                   <Text
                     :ellipsis-config="{ tooltip: true }"
                     ellipsis
                     placement="bottom-start"
-                    >张三张三张三张三张三张三</Text
-                  >
-                </div>
-              </div>
-              <div class="userItem f-col-c-c">
-                <div class="avatar f-row-c-c">
-                  <span>三</span>
-                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
-                </div>
-                <div class="userName">
-                  <Text
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                    >张三</Text
-                  >
-                </div>
-              </div>
-              <div class="userItem f-col-c-c">
-                <div class="avatar f-row-c-c">
-                  <span>三</span>
-                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
-                </div>
-                <div class="userName">
-                  <Text
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                    >张三</Text
-                  >
-                </div>
-              </div>
-              <div class="userItem f-col-c-c">
-                <div class="avatar f-row-c-c">
-                  <span>三</span>
-                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
-                </div>
-                <div class="userName">
-                  <Text
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                    >张三</Text
-                  >
-                </div>
-              </div>
-              <div class="userItem f-col-c-c">
-                <div class="avatar f-row-c-c">
-                  <span>三</span>
-                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
-                </div>
-                <div class="userName">
-                  <Text
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                    >张三</Text
-                  >
-                </div>
-              </div>
-              <div class="userItem f-col-c-c">
-                <div class="avatar f-row-c-c">
-                  <span>三</span>
-                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
-                </div>
-                <div class="userName">
-                  <Text
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                    >张三</Text
-                  >
-                </div>
-              </div>
-              <div class="userItem f-col-c-c">
-                <div class="avatar f-row-c-c">
-                  <span>三</span>
-                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
-                </div>
-                <div class="userName">
-                  <Text
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                    >张三</Text
-                  >
-                </div>
-              </div>
-              <div class="userItem f-col-c-c">
-                <div class="avatar f-row-c-c">
-                  <span>三</span>
-                  <Checkbox class="userSelect" :model-value="true"></Checkbox>
-                </div>
-                <div class="userName">
-                  <Text
-                    :ellipsis-config="{ tooltip: true }"
-                    ellipsis
-                    placement="bottom-start"
-                    >张三</Text
+                    >{{ item.username }}</Text
                   >
                 </div>
               </div>
@@ -170,12 +79,14 @@ let props = withDefaults(
   defineProps<{
     show: boolean;
     files: any[];
+    user: any[];
     current: number;
     vConfig: any;
   }>(),
   {
     show: false,
     files: () => [],
+    user: () => [],
     current: 0,
     vConfig: {},
   }

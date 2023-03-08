@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-06 19:25:04
+ * @LastEditTime: 2023-03-08 09:37:21
  * @Description: 视频播放
 -->
 <template>
@@ -20,7 +20,13 @@
       <SystemOpt color="var(--bg)"></SystemOpt>
     </div>
     <div class="content f-row-c-c">
-      <div class="leftCon" ref="refVideoCon">
+      <div
+        :class="[
+          'leftCon',
+          refVideoComp?.videoConfig.playing ? 'playLeftCon' : '',
+        ]"
+        ref="refVideoCon"
+      >
         <VideoComp
           ref="refVideoComp"
           :width="mediaConfig.width"
@@ -34,32 +40,30 @@
             @onMediaChange="onMediaChange"
           ></BControl>
         </div>
+        <div class="switchIcon f-row-c-c" v-debounce="onRightChange">
+          <svg-icon
+            v-show="!isShowRight"
+            iconName="icon-left-arrow"
+            className="optItem"
+            size="18"
+            color="var(--bg)"
+          ></svg-icon>
+          <svg-icon
+            v-show="isShowRight"
+            iconName="icon-right-arrow"
+            className="optItem"
+            size="18"
+            color="var(--bg)"
+          ></svg-icon>
+        </div>
       </div>
-      <div
-        class="switchIcon f-row-c-c"
-        v-debounce="onRightChange"
-        :style="{ right: isShowRight ? '400px' : '0px' }"
-      >
-        <svg-icon
-          v-show="!isShowRight"
-          iconName="icon-left-arrow"
-          className="optItem"
-          size="18"
-          color="var(--bg)"
-        ></svg-icon>
-        <svg-icon
-          v-show="isShowRight"
-          iconName="icon-right-arrow"
-          className="optItem"
-          size="18"
-          color="var(--bg)"
-        ></svg-icon>
-      </div>
+
       <!-- 侧边展示内容 -->
       <div class="rightCon" :style="{ width: isShowRight ? '400px' : '0px' }">
         <RightTab
           :show="isShowRight"
           :files="refVideoComp?.fileList"
+          :user="refVideoComp?.userList"
           :vConfig="refVideoComp?.videoConfig"
         ></RightTab>
       </div>
@@ -141,6 +145,19 @@ onMounted(() => {
       : (refVideoCon.value?.clientWidth as number) - 400;
   };
 });
+
+// left
+/* let mouseFlag = ref<boolean>(true);
+const onMouseenter = () => {
+  mouseFlag.value = true;
+  console.log("onMouseenter");
+};
+const onMouseout = () => {
+  if (refVideoComp.value?.videoConfig.playing) {
+    
+  }
+  console.log("onMouseout");
+}; */
 </script>
 <style scoped lang="less">
 :deep(.hTitle) {
@@ -164,10 +181,22 @@ onMounted(() => {
       color: @bg;
     }
   }
+
+  /* .content.playContent:hover {
+    .leftCon .ControlBox {
+      bottom: 0px;
+    }
+  }
+  .content.playContent {
+    .leftCon .ControlBox {
+      bottom: -100px;
+    }
+  } */
   .content {
     .size(100%, calc(100% - 48px));
     background-color: @video_header;
     overflow: hidden;
+
     .leftCon {
       .size(100%,100%);
       position: relative;
@@ -176,20 +205,22 @@ onMounted(() => {
         left: 0;
         bottom: 0;
         z-index: 10;
-        .size(100%,100px);
+        .size(100%, 100px);
+        transition: bottom 0.36s ease-in-out;
       }
     }
+
     .switchIcon {
       .size(36px,80px);
       border-radius: 6px 0px 0px 6px;
       background-color: rgba(255, 255, 255, 0.06);
       position: absolute;
-      right: 400px;
+      right: 0px;
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
       z-index: 9;
-      transition: right 0.2s;
+      transition: right 0.36s ease-in-out;
       &:hover {
         background-color: rgba(255, 255, 255, 0.2);
       }
@@ -201,7 +232,24 @@ onMounted(() => {
       z-index: 10;
       transition: width 0.2s;
     }
+    .leftCon.playLeftCon {
+      .ControlBox {
+        bottom: -100px;
+      }
+      .switchIcon {
+        right: -36px;
+      }
+    }
+    .leftCon.playLeftCon:hover {
+      .ControlBox {
+        bottom: 0px;
+      }
+      .switchIcon {
+        right: 0px;
+      }
+    }
   }
+
   .downLoading {
     .size(100%, calc(100% - 48px));
     position: absolute;

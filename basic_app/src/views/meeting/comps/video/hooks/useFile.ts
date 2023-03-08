@@ -15,6 +15,7 @@ const downloadPath = hdObj.getConfigItem('download').downloadPath
 
 type FileType = {
   name: string,
+  xml: string,
   stt: string,
   videoSrc: string,
   audioSrc: string,
@@ -36,6 +37,7 @@ export const useFile = (mName: string, mId: any) => {
     for (let i = 0; i < tempLen; i++) {
       tempFiles.push({
         name: `${mName}-${i + 1}`,
+        xml: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.xml`),
         stt: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.stt`),
         videoSrc: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.mp4`),
         audioSrc: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.amr`),

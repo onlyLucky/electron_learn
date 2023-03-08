@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-06 15:07:03
+ * @LastEditTime: 2023-03-07 19:59:07
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -16,7 +16,7 @@
       }"
       :poster="fileList[current].videoBg"
       @timeupdate="onVideoChange"
-      @canplay="onVideoCanPlay"
+      @canplay="onCanPlay"
       @ended="onPlayEnd"
     >
       <source :src="fileList[current].videoSrc" type="video/mp4" />
@@ -31,13 +31,14 @@
       :src="fileList[current].audioSrc"
       @canplay="onAudioCanPlay"
     ></audio>
-    {{}}
+    <canvas id="canvas" width="200" height="200" ref="refCanvas"></canvas>
   </div>
 </template>
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { useFile } from "./hooks/useFile";
 import { useVideo, TypeVideoConfig } from "./hooks/useVideo";
+import { useCanvas } from "./hooks/useCanvas";
 
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
@@ -52,6 +53,8 @@ let mediaConfig = reactive<any>({
   audioSrc:
     "https://m801.music.126.net/20230210095355/6a44ab660525af0af6f395ac8a8532f8/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/14096426578/ff65/7348/d83f/36ab528a5935b3ee552768bd939af6cf.mp3",
 });
+
+let refCanvas = ref<HTMLCanvasElement>();
 
 // 当前播放第几个
 let current = ref<number>(0);
@@ -78,6 +81,22 @@ watch(refPlayer, (val) => {
     uploadDomObj(true, val);
   }
 });
+watch(
+  () => props.width,
+  (val) => {
+    refCanvas.value!.width = props.width;
+    console.log(refPlayer.value!.videoWidth, refPlayer.value!.videoHeight);
+  }
+);
+watch(
+  () => props.height,
+  (val) => {
+    refCanvas.value!.height = props.height;
+    console.log(refPlayer.value!.videoWidth, refPlayer.value!.videoHeight);
+  }
+);
+const { parseXmlFile, userList } = useCanvas();
+parseXmlFile(fileList.value[current.value].xml);
 watch(refAudio, (val) => {
   if (val) {
     uploadDomObj(false, val);
@@ -89,15 +108,24 @@ const onVideoChange = (e: Event) => {
   let cTime = (e.target as HTMLVideoElement).currentTime;
   uploadCurrentTime(cTime);
 };
+const onCanPlay = (e: Event) => {
+  onVideoCanPlay(e);
+  /* refCanvas.value!.height = refPlayer.value!.videoHeight;
+  refCanvas.value!.width = refPlayer.value!.videoWidth; */
+};
 // 结束
 const onPlayEnd = () => {
   onEnd();
 };
 
+// 跳转到指定选集
+const jumpVideoList = (index: number) => {};
+
 defineExpose({
   videoConfig,
   fileList,
   current,
+  userList,
   getDate,
   onMediaCtrl,
   seekTo,
@@ -115,6 +143,12 @@ defineExpose({
     top: 0;
     left: 0;
     opacity: 0;
+  }
+  #canvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 </style>
