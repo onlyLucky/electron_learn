@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-08 10:06:06
+ * @LastEditTime: 2023-03-08 19:03:34
  * @Description: 视频播放
 -->
 <template>
@@ -129,10 +129,16 @@ const refVideoComp = ref<InstanceType<typeof VideoComp>>();
 const onMediaChange = () => {
   // console.log();
   refVideoComp.value?.onMediaCtrl();
+  if (refVideoComp.value?.videoConfig.playing) {
+    refVideoComp.value?.startPath();
+  } else {
+    refVideoComp.value?.pausePath();
+  }
 };
 
 const onSeek = (progress: number) => {
   refVideoComp.value?.seekTo(progress);
+  refVideoComp.value?.seekToCanvas(refVideoComp.value?.videoConfig);
 };
 
 onMounted(() => {
@@ -145,19 +151,6 @@ onMounted(() => {
       : (refVideoCon.value?.clientWidth as number) - 400;
   };
 });
-
-// left
-/* let mouseFlag = ref<boolean>(true);
-const onMouseenter = () => {
-  mouseFlag.value = true;
-  console.log("onMouseenter");
-};
-const onMouseout = () => {
-  if (refVideoComp.value?.videoConfig.playing) {
-    
-  }
-  console.log("onMouseout");
-}; */
 </script>
 <style scoped lang="less">
 :deep(.hTitle) {
@@ -181,17 +174,6 @@ const onMouseout = () => {
       color: @bg;
     }
   }
-
-  /* .content.playContent:hover {
-    .leftCon .ControlBox {
-      bottom: 0px;
-    }
-  }
-  .content.playContent {
-    .leftCon .ControlBox {
-      bottom: -100px;
-    }
-  } */
   .content {
     .size(100%, calc(100% - 48px));
     background-color: @video_header;

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-08 10:04:03
+ * @LastEditTime: 2023-03-08 19:51:40
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -54,8 +54,6 @@ let mediaConfig = reactive<any>({
     "https://m801.music.126.net/20230210095355/6a44ab660525af0af6f395ac8a8532f8/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/14096426578/ff65/7348/d83f/36ab528a5935b3ee552768bd939af6cf.mp3",
 });
 
-let refCanvas = ref<HTMLCanvasElement>();
-
 // 当前播放第几个
 let current = ref<number>(0);
 const { fileList } = useFile(queryParams.name || "", queryParams.id);
@@ -81,6 +79,11 @@ watch(refPlayer, (val) => {
     uploadDomObj(true, val);
   }
 });
+watch(refAudio, (val) => {
+  if (val) {
+    uploadDomObj(false, val);
+  }
+});
 watch(
   () => props.width,
   (val) => {
@@ -93,11 +96,20 @@ watch(
     computedCanvasSize();
   }
 );
-const { parseXmlFile, userList } = useCanvas();
+const {
+  parseXmlFile,
+  userList,
+  uploadCtx,
+  canvasConfig,
+  startPath,
+  pausePath,
+  seekToCanvas,
+} = useCanvas();
 parseXmlFile(fileList.value[current.value].xml);
-watch(refAudio, (val) => {
+let refCanvas = ref<HTMLCanvasElement>();
+watch(refCanvas, (val) => {
   if (val) {
-    uploadDomObj(false, val);
+    uploadCtx(refCanvas.value as HTMLCanvasElement);
   }
 });
 watch(current, (val) => {});
@@ -125,6 +137,9 @@ const computedCanvasSize = () => {
     refCanvas.value!.width = props.width;
     refCanvas.value!.height = props.width / ratio.value;
   }
+  canvasConfig.width = refCanvas.value!.width;
+  canvasConfig.height = refCanvas.value!.height;
+  canvasConfig.ratio = refCanvas.value!.width / refPlayer.value!.videoWidth;
 };
 // 结束
 const onPlayEnd = () => {
@@ -142,6 +157,9 @@ defineExpose({
   getDate,
   onMediaCtrl,
   seekTo,
+  startPath,
+  pausePath,
+  seekToCanvas,
 });
 </script>
 <style scoped lang="less">
