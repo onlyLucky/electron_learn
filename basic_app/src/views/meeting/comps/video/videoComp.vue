@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-08 19:51:40
+ * @LastEditTime: 2023-03-09 10:48:49
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -144,6 +144,7 @@ const computedCanvasSize = () => {
 // 结束
 const onPlayEnd = () => {
   onEnd();
+  pausePath();
 };
 
 // 跳转到指定选集
