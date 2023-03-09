@@ -25,5 +25,6 @@ onMounted(() => {
 <style lang="less">
 #app {
   touch-action: none;
+  .size(100vw,100vh);
 }
 </style>

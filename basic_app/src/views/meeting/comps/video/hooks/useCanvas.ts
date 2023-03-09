@@ -2,13 +2,13 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 09:28:02
+ * @LastEditTime: 2023-03-09 15:01:55
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
 import { TypeVideoConfig } from "./useVideo"
 const fs = require('fs');
-
+import { Message } from "view-ui-plus"
 export type TypeCanvasConfig = {
   duration: number,// 时长 s
   currentTime: number,// 当前播放进度时间
@@ -76,7 +76,12 @@ export const useCanvas = () => {
     jsonData = (XmlToJson.parse(xmlData, {
       textKey: 'value'
     }) as any).dcf;
+    if (!jsonData) {
+      Message.error('视频批注文件内容解析失败');
+      return false;
+    }
     // 数据初始化
+    console.log(xmlData, 'jsonData')
     canvasConfig.duration = Number(jsonData.length)
     let tempPathList: any[] = []
     let tempPathClearList: any[] = []
@@ -134,12 +139,12 @@ export const useCanvas = () => {
     // 最后一笔clear 数据处理
     if (tempPathClearList.length > 0) {
       tempPathClearList.push({
-        path: tempPathList,
+        paths: tempPathList,
         start: tempPathList.length > 0 ? tempPathList[0].time : tempPathClearList[tempPathClearList.length - 1].start
       })
     } else {
       tempPathClearList.push({
-        path: tempPathList,
+        paths: tempPathList,
         start: tempPathList.length > 0 ? tempPathList[0].time : 0
       })
     }
@@ -157,6 +162,10 @@ export const useCanvas = () => {
       })
     })
     userList.value = tempUserList
+    let tempType: any[] = []
+    tempPathList.map(item => {
+      tempType.push(item.type)
+    })
     console.log(userList, 'jsonData')
     console.log(tempPathClearList, tempPathList, 'data')
   }
@@ -209,7 +218,7 @@ export const useCanvas = () => {
     let fps = 1000 / FPS;
     timer = setInterval(() => {
       canvasConfig.currentTime = canvasConfig.currentTime + fps
-      console.log(`${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`, 'canvasConfig.currentPath')
+      // console.log(`${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`, 'canvasConfig.currentPath')
       // 判断当前处于第几段的clear
       if (pathClearList.value.length > 1) {
         if (canvasConfig.currentClear <= pathClearList.value.length - 1) {
@@ -283,9 +292,9 @@ export const useCanvas = () => {
               }
             }
             undoIndexs.value = tempUndoIndexs
-            // 最后一笔的绘制
-            handlePathOpt()
           }
+          // 最后一笔的绘制
+          handlePathOpt()
         }
       }
     }, fps)
@@ -533,9 +542,12 @@ export const useCanvas = () => {
     temp = pathList.value.slice(0, canvasConfig.currentPath + 1)
     temp.map((item: any, index: number) => {
       if (index > 0 && temp[index - 1].type == optionType.UNDO) {
-        res.push(res[res.length - 1] - 1)
-      } else {
-        res.push(index - 1)
+        // 判断上一步是否为undo
+        if (res.length > 0 && temp[index - 1].type == optionType.UNDO) {
+          res.push(res[res.length - 1] - 1)
+        } else {
+          res.push(index - 1)
+        }
       }
     })
     undoIndexs.value = res
@@ -549,9 +561,10 @@ export const useCanvas = () => {
       pausePath()
     }
     getCurrentPathClear()
-    handleUserPath()
     getCurrentPath()
-    getUndoIndex()
+    handleUserPath()
+    // getUndoIndex()
+    console.log(undoIndexs.value, 'undoIndexs.value', `${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`)
     handlePathOpt()
     if (videoConfig.playing) {
       startPath()
@@ -560,6 +573,19 @@ export const useCanvas = () => {
       // startPath()
     }, 200) */
   }
+  const onPathEnd = () => {
+    clearInterval(timer)
+    let temp = {
+      duration: 0,
+      currentTime: 0,
+      currentPath: -1,
+      currentClear: 0,
+      width: 0,
+      height: 0,
+      ratio: 1
+    }
+    Object.assign(canvasConfig, temp)
+  }
 
   /* setTimeout(() => {
     userList[0].active = false;
@@ -567,5 +593,5 @@ export const useCanvas = () => {
   }, 3000) */
 
   watchEffect(doCanvas)
-  return { canvasConfig, userList, parseXmlFile, uploadCtx, startPath, pausePath, seekToCanvas }
+  return { canvasConfig, userList, parseXmlFile, uploadCtx, startPath, pausePath, seekToCanvas, onPathEnd }
 }

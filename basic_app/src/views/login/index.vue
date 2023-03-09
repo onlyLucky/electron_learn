@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-02-14 15:23:11
+ * @LastEditTime: 2023-03-09 16:01:36
  * @Description: content
 -->
 <template>
@@ -156,9 +156,9 @@ const loginTo = async () => {
   align-items: center;
 }
 .login {
-  width: 100vw;
-  height: 100vh;
-  box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.302);
+  .size(100%,100%);
+  border-radius: 4px;
+  // box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.302);
   -webkit-app-region: drag;
   user-select: none;
   background-color: @bg;

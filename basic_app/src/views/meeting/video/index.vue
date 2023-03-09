@@ -2,12 +2,12 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 10:08:02
+ * @LastEditTime: 2023-03-09 15:40:23
  * @Description: 视频播放
 -->
 <template>
   <div class="Video">
-    <div class="header f-row-b-c">
+    <div v-show="!refBControl?.smallSizeFlag" class="header f-row-b-c">
       <div class="hTitle">
         <Text
           :ellipsis-config="{ tooltip: true }"
@@ -15,11 +15,17 @@
           placement="bottom-start"
         >
           {{ queryParams.name || "视频播放" }}
+          {{ refBControl?.smallSizeFlag }}
         </Text>
       </div>
       <SystemOpt color="var(--bg)"></SystemOpt>
     </div>
-    <div class="content f-row-c-c">
+    <div
+      class="content f-row-c-c"
+      :style="{
+        height: refBControl?.smallSizeFlag ? '100%' : 'calc(100% - 48px)',
+      }"
+    >
       <div
         :class="[
           'leftCon',
@@ -36,6 +42,7 @@
         <!-- 底部进度条 -->
         <div class="ControlBox">
           <BControl
+            ref="refBControl"
             :mediaData="refVideoComp?.videoConfig"
             @onSeek="onSeek"
             @onMediaChange="onMediaChange"
@@ -120,6 +127,10 @@ let mediaConfig = reactive<any>({
 const isShowRight = ref<boolean>(false);
 const onRightChange = () => {
   isShowRight.value = !isShowRight.value;
+  setTimeout(() => {
+    mediaConfig.height = refVideoCon.value?.clientHeight;
+    mediaConfig.width = refVideoCon.value?.clientWidth;
+  }, 200);
 };
 
 watch(
@@ -132,6 +143,8 @@ watch(
 const refVideoCon = ref<HTMLElement>();
 
 const refVideoComp = ref<InstanceType<typeof VideoComp>>();
+
+const refBControl = ref<InstanceType<typeof BControl>>();
 
 const onMediaChange = () => {
   // console.log();
@@ -150,12 +163,10 @@ const onSeek = (progress: number) => {
 
 onMounted(() => {
   mediaConfig.height = refVideoCon.value?.clientHeight;
-  mediaConfig.width = (refVideoCon.value?.clientWidth as number) - 400;
+  mediaConfig.width = refVideoCon.value?.clientWidth;
   window.onresize = () => {
     mediaConfig.height = refVideoCon.value?.clientHeight;
-    mediaConfig.width = isShowRight.value
-      ? refVideoCon.value?.clientWidth
-      : (refVideoCon.value?.clientWidth as number) - 400;
+    mediaConfig.width = refVideoCon.value?.clientWidth;
   };
 });
 </script>

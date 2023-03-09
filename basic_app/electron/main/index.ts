@@ -190,8 +190,12 @@ function createLoginWin() {
     width: 710,
     height: 426,
     resizable: false,
+    transparent: true,
+    backgroundColor: '#00000000',
     // @ts-ignore i18n.global.t('login.name')
     title: lang.login,
+    // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
+    frame: false,
     icon: join(process.env.PUBLIC, 'logo.ico'),
     webPreferences: {
       preload,
@@ -199,8 +203,7 @@ function createLoginWin() {
       contextIsolation: false,
       webSecurity: false
     },
-    // 去掉最顶部的导航，以及最大化、最小化、关闭按钮
-    frame: false
+
   })
   loginWin.setMenu(null)
   // 设置聚焦窗口
@@ -219,6 +222,9 @@ function createLoginWin() {
     focusWin = loginWin
     loginWin.hide();
   })
+  loginWin.once('ready-to-show', () => {
+    loginWin.show();
+  });
 }
 // 托盘对象
 let tray;
@@ -318,6 +324,10 @@ ipcMain.on('window_max', function () {
     BrowserWindow.getFocusedWindow().maximize();
   }
   BrowserWindow.getFocusedWindow().webContents.send('window_max_status', BrowserWindow.getFocusedWindow().isMaximized())
+})
+
+ipcMain.on('win_full', (event, flag) => {
+  BrowserWindow.getFocusedWindow().setFullScreen(flag);
 })
 
 ipcMain.on('on_login', (event, arg) => {

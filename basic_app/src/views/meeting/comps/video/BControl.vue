@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-03-06 15:58:12
+ * @LastEditTime: 2023-03-09 17:02:01
  * @Description: content
 -->
 <template>
@@ -117,7 +117,7 @@
         <div
           class="ctrlIcon f-row-c-c"
           v-show="!smallSizeFlag"
-          v-debounce="onScreenChange"
+          @click="onScreenChange(true)"
         >
           <Tooltip content="全屏">
             <svg-icon
@@ -131,7 +131,7 @@
         <div
           class="ctrlIcon f-row-c-c"
           v-show="smallSizeFlag"
-          v-debounce="onScreenChange"
+          @click="onScreenChange(false)"
         >
           <Tooltip content="退出全屏">
             <svg-icon
@@ -183,14 +183,21 @@ const onSliderChange = (val: number) => {
 };
 // 更改全屏
 let smallSizeFlag = ref<boolean>(false);
-const onScreenChange = () => {
-  ipcRenderer.send("window_max");
+const onScreenChange = (flag: boolean) => {
+  smallSizeFlag.value = flag;
+  ipcRenderer.send("win_full", flag);
+  // ipcRenderer.send("window_max");
 };
-ipcRenderer.on("window_max_status", (event, status) => {
+/* ipcRenderer.on("window_max_status", (event, status) => {
   smallSizeFlag.value = status;
-});
+}); */
 // 音量更改
 const onVoiceChange: any = () => {};
+
+// 导出数据
+defineExpose({
+  smallSizeFlag,
+});
 </script>
 <style scoped lang="less">
 :deep(.voiceBox) {

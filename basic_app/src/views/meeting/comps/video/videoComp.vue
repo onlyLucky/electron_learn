@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 10:48:49
+ * @LastEditTime: 2023-03-09 14:03:32
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -104,6 +104,7 @@ const {
   startPath,
   pausePath,
   seekToCanvas,
+  onPathEnd,
 } = useCanvas();
 parseXmlFile(fileList.value[current.value].xml);
 let refCanvas = ref<HTMLCanvasElement>();
@@ -144,7 +145,7 @@ const computedCanvasSize = () => {
 // 结束
 const onPlayEnd = () => {
   onEnd();
-  pausePath();
+  onPathEnd();
 };
 
 // 跳转到指定选集
