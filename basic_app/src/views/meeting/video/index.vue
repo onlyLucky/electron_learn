@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 15:40:23
+ * @LastEditTime: 2023-03-09 17:31:59
  * @Description: 视频播放
 -->
 <template>
@@ -64,6 +64,9 @@
             color="var(--bg)"
           ></svg-icon>
         </div>
+
+        <!-- 字幕 -->
+        <Caption></Caption>
       </div>
 
       <!-- 侧边展示内容 -->
@@ -109,6 +112,7 @@ import SystemOpt from "@/commons/system_opt/index";
 import BControl from "../comps/video/BControl.vue";
 import RightTab from "../comps/video/rightTab.vue";
 import VideoComp from "../comps/video/videoComp.vue";
+import Caption from "../comps/video/Caption.vue";
 import { useRoute } from "vue-router";
 import { useDownload, DownloadType } from "../comps/mListDetail/useDownload";
 const route = useRoute();

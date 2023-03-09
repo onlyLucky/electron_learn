@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 15:01:55
+ * @LastEditTime: 2023-03-09 17:57:53
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -81,7 +81,6 @@ export const useCanvas = () => {
       return false;
     }
     // 数据初始化
-    console.log(xmlData, 'jsonData')
     canvasConfig.duration = Number(jsonData.length)
     let tempPathList: any[] = []
     let tempPathClearList: any[] = []
@@ -166,7 +165,7 @@ export const useCanvas = () => {
     tempPathList.map(item => {
       tempType.push(item.type)
     })
-    console.log(userList, 'jsonData')
+    // console.log(userList, 'jsonData')
     console.log(tempPathClearList, tempPathList, 'data')
   }
 

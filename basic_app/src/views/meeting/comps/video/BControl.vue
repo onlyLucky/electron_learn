@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 17:02:01
+ * @LastEditTime: 2023-03-09 17:17:33
  * @Description: content
 -->
 <template>
@@ -101,9 +101,9 @@
         </div>
       </div>
       <div class="ctrlBRight f-row-c-c">
-        <div class="ctrlIcon f-row-c-c">
+        <!-- <div class="ctrlIcon f-row-c-c">
           <span>倍速</span>
-        </div>
+        </div> -->
         <div class="ctrlIcon f-row-c-c">
           <Tooltip content="字幕">
             <svg-icon
@@ -249,6 +249,9 @@ defineExpose({
         color: @bg;
         font-size: 14px;
       }
+    }
+    .ctrlIcon.active {
+      background-color: rgba(50, 50, 50, 0.3);
     }
     .voiceBox {
       .size(130px, 30px);
