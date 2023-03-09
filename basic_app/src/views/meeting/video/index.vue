@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-08 19:03:34
+ * @LastEditTime: 2023-03-09 10:08:02
  * @Description: 视频播放
 -->
 <template>
@@ -25,6 +25,7 @@
           'leftCon',
           refVideoComp?.videoConfig.playing ? 'playLeftCon' : '',
         ]"
+        :style="{ width: isShowRight ? 'calc(100% - 400px)' : '100%' }"
         ref="refVideoCon"
       >
         <VideoComp
@@ -59,7 +60,13 @@
       </div>
 
       <!-- 侧边展示内容 -->
-      <div class="rightCon" :style="{ width: isShowRight ? '400px' : '0px' }">
+      <div
+        class="rightCon"
+        :style="{
+          width: isShowRight ? '400px' : '0px',
+          opacity: isShowRight ? 1 : 0,
+        }"
+      >
         <RightTab
           :show="isShowRight"
           :files="refVideoComp?.fileList"
@@ -213,7 +220,8 @@ onMounted(() => {
       flex-shrink: 0;
       background-color: #18191b;
       z-index: 10;
-      transition: width 0.2s;
+      opacity: 1;
+      transition: width 0.2s ease-in-out, opacity 0.76s ease-in-out;
     }
     .leftCon.playLeftCon {
       .ControlBox {

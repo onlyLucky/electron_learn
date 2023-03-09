@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-08 20:12:09
+ * @LastEditTime: 2023-03-09 09:28:02
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -170,10 +170,8 @@ export const useCanvas = () => {
     if (canvasConfig.currentTime < temp[0]) {
       canvasConfig.currentPath = -1
     } else {
-      console.log(Number(getTimeIndex(temp, canvasConfig.currentTime)) - 1, 'Number(getTimeIndex(temp, canvasConfig.currentTime)) - 1')
       canvasConfig.currentPath = Number(getTimeIndex(temp, canvasConfig.currentTime)) - 1
     }
-    console.log(canvasConfig.currentTime < temp[0], temp[0], canvasConfig.currentTime);
   }
 
   // 获取当前处于第几个清除点
@@ -211,7 +209,7 @@ export const useCanvas = () => {
     let fps = 1000 / FPS;
     timer = setInterval(() => {
       canvasConfig.currentTime = canvasConfig.currentTime + fps
-      // console.log(canvasConfig.currentClear, canvasConfig.currentPath, 'canvasConfig.currentPath', canvasConfig.ratio)
+      console.log(`${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`, 'canvasConfig.currentPath')
       // 判断当前处于第几段的clear
       if (pathClearList.value.length > 1) {
         if (canvasConfig.currentClear <= pathClearList.value.length - 1) {
