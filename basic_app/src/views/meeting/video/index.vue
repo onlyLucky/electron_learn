@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-10 15:22:20
+ * @LastEditTime: 2023-03-10 18:59:45
  * @Description: 视频播放
 -->
 <template>
@@ -47,6 +47,7 @@
             :mediaData="refVideoComp?.videoConfig"
             @onSeek="onSeek"
             @onMediaChange="onMediaChange"
+            @onVoice="onVoice"
           ></BControl>
         </div>
         <div class="switchIcon f-row-c-c" v-debounce="onRightChange">
@@ -177,6 +178,11 @@ const onSeek = (progress: number) => {
 const computedStt = computed(() => {
   return refVideoComp.value?.fileList[refVideoComp.value.current].stt;
 });
+
+// 音量更改
+const onVoice = (val: number) => {
+  refVideoComp.value?.onVoiceChange(val / 100);
+};
 
 onMounted(() => {
   mediaConfig.height = refVideoCon.value?.clientHeight;

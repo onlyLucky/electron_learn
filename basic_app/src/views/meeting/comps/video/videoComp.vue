@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-10 15:45:50
+ * @LastEditTime: 2023-03-10 18:58:35
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -164,6 +164,11 @@ const onPlayEnd = () => {
   onPathEnd();
 };
 
+const onVoiceChange = (val: number) => {
+  videoConfig.voiceNum = val;
+  refAudio.value!.volume = val;
+};
+
 // 跳转到指定选集
 const jumpVideoList = (index: number) => {};
 
@@ -179,6 +184,7 @@ defineExpose({
   startPath,
   pausePath,
   seekToCanvas,
+  onVoiceChange,
 });
 </script>
 <style scoped lang="less">

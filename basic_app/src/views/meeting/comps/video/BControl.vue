@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-03-10 13:51:11
+ * @LastEditTime: 2023-03-10 18:55:54
  * @Description: content
 -->
 <template>
@@ -81,7 +81,9 @@
         <div class="voiceCon f-row-c-c">
           <div class="ctrlIcon f-row-c-c">
             <svg-icon
-              iconName="icon-shengyin"
+              :iconName="
+                voiceNum <= 0 ? 'icon-shengyinguanbi' : 'icon-shengyin'
+              "
               className="optItem"
               size="28"
               color="var(--bg)"
@@ -89,7 +91,7 @@
           </div>
           <div class="voiceBox f-row-c-c">
             <Slider
-              :model-value="40"
+              :model-value="voiceNum"
               class="voiceSlider"
               backgroundColor="#fff"
               block-size="40"
@@ -162,7 +164,7 @@ let props = withDefaults(
         progress: 0,
         current: 0,
         playing: false,
-        voiceNum: 0.5,
+        voiceNum: 0,
         SpeedNum: 1,
         isVideoCanPlay: false,
         isAudioCanPlay: false,
@@ -177,6 +179,7 @@ let props = withDefaults(
 let emit = defineEmits<{
   (e: "onMediaChange"): void;
   (e: "onSeek", progress: number): void;
+  (e: "onVoice", num: number): void;
 }>();
 const onMediaCtrlTap = () => {
   emit("onMediaChange");
@@ -194,8 +197,18 @@ const onScreenChange = (flag: boolean) => {
 /* ipcRenderer.on("window_max_status", (event, status) => {
   smallSizeFlag.value = status;
 }); */
+let voiceNum = ref<number>(0);
+watch(
+  () => props.mediaData.voiceNum,
+  (val) => {
+    voiceNum.value = val * 100;
+  }
+);
 // 音量更改
-const onVoiceChange: any = () => {};
+const onVoiceChange = (val: number) => {
+  voiceNum.value = val;
+  emit("onVoice", val);
+};
 
 // 字幕更改
 const isShowCaption = ref<boolean>(false);
