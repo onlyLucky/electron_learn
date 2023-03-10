@@ -2,23 +2,21 @@
  * @Author: fg
  * @Date: 2023-03-09 17:20:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-10 15:58:57
+ * @LastEditTime: 2023-03-10 18:16:57
  * @Description: 字幕文件
 -->
 <template>
   <!-- noMove -->
   <div
-    class="Caption canMove"
+    :class="['Caption', moveFlag ? 'canMove' : 'noMove']"
     ref="refCaption"
     v-move="moveFlag"
-    :style="moveFlag ? styleObj : {}"
-    v-show="show"
+    v-show="show && captionConfig.subtitleTxt != ''"
   >
-    <p>meet List{{ stt }}</p>
+    <p>{{ captionConfig.subtitleTxt }}</p>
   </div>
 </template>
 <script setup lang="ts">
-import { join } from "path";
 import { Message } from "view-ui-plus";
 const fs = require("fs");
 
@@ -52,29 +50,20 @@ let captionConfig = reactive<CaptionType>({
 });
 let moveFlag = ref<boolean>(true);
 let refCaption = ref<HTMLDivElement>();
-type styleType = {
-  top: string;
-  left: string;
-};
-let styleObj = reactive<styleType>({
-  top: "0px",
-  left: "0px",
-});
 const handlePosition = () => {
   if (moveFlag.value) {
-    setTimeout(() => {
-      let left =
-        (refCaption.value!.parentElement!.clientWidth -
-          refCaption.value!.clientWidth) /
-          2 +
-        "px";
-      let top =
-        refCaption.value!.parentElement!.clientHeight -
-        refCaption.value!.clientHeight -
-        120 +
-        "px";
-      Object.assign(styleObj, { left, top });
-    }, 200);
+    let left =
+      (refCaption.value!.parentElement!.clientWidth -
+        refCaption.value!.clientWidth) /
+        2 +
+      "px";
+    let top =
+      refCaption.value!.parentElement!.clientHeight -
+      refCaption.value!.clientHeight -
+      160 +
+      "px";
+    refCaption.value!.style.left = left;
+    refCaption.value!.style.top = top;
   }
 };
 
@@ -92,24 +81,87 @@ const initData = () => {
 
 const readStt = () => {
   if (props.stt != "") {
-    fs.readFileSync(props.stt, "utf-8");
+    let temp = "";
+    try {
+      temp = fs.readFileSync(props.stt, "utf-8");
+    } catch (error) {
+      Message.error("字幕文件解析失败");
+    }
+    captionConfig.list = JSON.parse(temp);
+    let tempTimeArr: number[] = [];
+    captionConfig.list.map((item) => {
+      tempTimeArr.push(item.bgTime);
+    });
+    captionConfig.curTimeArr = tempTimeArr;
+    console.log(captionConfig.list, "captionConfig");
+    handleCurrentStt();
   }
 };
 
-watch(
-  () => props.show,
-  (val) => {
-    console.log(val, "props.show--");
-    if (captionConfig.list.length <= 0) {
-      // 读取数据
+const getTimeIndex = (timeArr: number[], time: number) => {
+  let timeIndex: number = -1;
+  if (timeArr.length > 0) {
+    if (time >= timeArr[timeArr.length - 1]) {
+      return timeArr.length - 1;
     }
+    // console.log(timeArr,time)
+    for (let index in timeArr) {
+      if (Number(timeArr[index]) >= time) {
+        timeIndex = Number(index);
+        break;
+      }
+    }
+  }
+
+  return timeIndex;
+};
+
+const handleCurrentStt = () => {
+  let index = getTimeIndex(captionConfig.curTimeArr, props.time);
+  captionConfig.curIndex = index;
+  /* if (captionConfig.list.length <= 0) {
+    initData();
+    return false;
+  } */
+  // console.log("props.time:", props.time, captionConfig, index);
+  if (index >= 1) {
+    captionConfig.subtitleIndex =
+      captionConfig.list[index - 1].bgTime <= props.time &&
+      captionConfig.list[index - 1].edTime >= props.time
+        ? index - 1
+        : -1;
+    captionConfig.subtitleTxt =
+      captionConfig.subtitleIndex != -1
+        ? captionConfig.list[index - 1].text
+        : "";
+  }
+
+  /* console.log(
+    props.time,
+    index,
+    captionConfig.subtitleIndex,
+    "captionConfig.subtitleIndex",
+    captionConfig.subtitleTxt
+  ); */
+};
+
+watch(
+  () => captionConfig.subtitleTxt,
+  (val) => {
+    let left =
+      (refCaption.value!.parentElement!.clientWidth -
+        refCaption.value!.clientWidth) /
+        2 +
+      "px";
+
+    // refCaption.value!.style.left = left;
   }
 );
 
 watch(
   () => props.time,
   (val) => {
-    console.log(val);
+    handleCurrentStt();
   }
 );
 
@@ -117,13 +169,22 @@ watch(
   () => props.download,
   (val) => {
     if (!val) {
+      readStt();
     }
+  }
+);
+
+watch(
+  () => props.stt,
+  (val) => {
+    readStt();
   }
 );
 
 onMounted(() => {
   console.log(refCaption.value?.parentElement);
   handlePosition();
+  readStt();
   window.onresize = () => {
     handlePosition();
   };
@@ -133,7 +194,6 @@ onMounted(() => {
 .Caption {
   position: absolute;
   left: 0;
-  background-color: pink;
   p {
     display: inline-block;
     text-align: center;
