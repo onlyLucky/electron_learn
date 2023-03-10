@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 14:03:32
+ * @LastEditTime: 2023-03-10 15:45:50
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -42,10 +42,14 @@ import { useCanvas } from "./hooks/useCanvas";
 
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
-const props = withDefaults(defineProps<{ width: number; height: number }>(), {
-  width: 1100,
-  height: 652,
-});
+const props = withDefaults(
+  defineProps<{ width: number; height: number; download: boolean }>(),
+  {
+    width: 1100,
+    height: 652,
+    download: false,
+  }
+);
 let mediaConfig = reactive<any>({
   videoBg:
     "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AAOEiEk.img",
@@ -56,7 +60,10 @@ let mediaConfig = reactive<any>({
 
 // 当前播放第几个
 let current = ref<number>(0);
-const { fileList } = useFile(queryParams.name || "", queryParams.id);
+const { fileList, handleFolder } = useFile(
+  queryParams.name || "",
+  queryParams.id
+);
 console.log(fileList, "fileList");
 
 const refPlayer = ref<HTMLVideoElement>();
@@ -88,6 +95,15 @@ watch(
   () => props.width,
   (val) => {
     computedCanvasSize();
+  }
+);
+watch(
+  () => props.download,
+  (val) => {
+    if (!val) {
+      handleFolder();
+      parseXmlFile(fileList.value[current.value].xml);
+    }
   }
 );
 watch(
@@ -153,6 +169,7 @@ const jumpVideoList = (index: number) => {};
 
 defineExpose({
   videoConfig,
+  canvasConfig,
   fileList,
   current,
   userList,

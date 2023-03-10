@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 17:31:59
+ * @LastEditTime: 2023-03-10 15:22:20
  * @Description: 视频播放
 -->
 <template>
@@ -38,6 +38,7 @@
           ref="refVideoComp"
           :width="mediaConfig.width"
           :height="mediaConfig.height"
+          :download="downloadUse.isNeedDownload"
         ></VideoComp>
         <!-- 底部进度条 -->
         <div class="ControlBox">
@@ -66,7 +67,14 @@
         </div>
 
         <!-- 字幕 -->
-        <Caption></Caption>
+        <!-- :files="refVideoComp?.fileList"
+          :current="refVideoComp?.current" -->
+        <Caption
+          :show="refBControl?.isShowCaption"
+          :time="refVideoComp?.canvasConfig.currentTime"
+          :download="downloadUse.isNeedDownload"
+          :stt="computedStt"
+        ></Caption>
       </div>
 
       <!-- 侧边展示内容 -->
@@ -164,6 +172,11 @@ const onSeek = (progress: number) => {
   refVideoComp.value?.seekTo(progress);
   refVideoComp.value?.seekToCanvas(refVideoComp.value?.videoConfig);
 };
+
+// 计算字幕文件路径
+const computedStt = computed(() => {
+  return refVideoComp.value?.fileList[refVideoComp.value.current].stt;
+});
 
 onMounted(() => {
   mediaConfig.height = refVideoCon.value?.clientHeight;

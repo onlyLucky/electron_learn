@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 17:57:53
+ * @LastEditTime: 2023-03-10 15:46:40
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -166,7 +166,7 @@ export const useCanvas = () => {
       tempType.push(item.type)
     })
     // console.log(userList, 'jsonData')
-    console.log(tempPathClearList, tempPathList, 'data')
+    // console.log(tempPathClearList, tempPathList, 'data')
   }
 
   // 获取当前时间处于第几段

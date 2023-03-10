@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 17:17:33
+ * @LastEditTime: 2023-03-10 13:51:11
  * @Description: content
 -->
 <template>
@@ -104,13 +104,16 @@
         <!-- <div class="ctrlIcon f-row-c-c">
           <span>倍速</span>
         </div> -->
-        <div class="ctrlIcon f-row-c-c">
+        <div
+          :class="['ctrlIcon', 'f-row-c-c', isShowCaption ? 'active' : '']"
+          v-debounce="onCaptionTap"
+        >
           <Tooltip content="字幕">
             <svg-icon
               iconName="icon-zimu"
               className="optItem"
               size="28"
-              color="var(--bg)"
+              :color="isShowCaption ? 'var(--f_color_active)' : 'var(--bg)'"
             ></svg-icon>
           </Tooltip>
         </div>
@@ -194,9 +197,16 @@ const onScreenChange = (flag: boolean) => {
 // 音量更改
 const onVoiceChange: any = () => {};
 
+// 字幕更改
+const isShowCaption = ref<boolean>(false);
+const onCaptionTap = () => {
+  isShowCaption.value = !isShowCaption.value;
+};
+
 // 导出数据
 defineExpose({
   smallSizeFlag,
+  isShowCaption,
 });
 </script>
 <style scoped lang="less">

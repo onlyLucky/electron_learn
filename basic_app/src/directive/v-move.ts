@@ -2,23 +2,21 @@
  * @Author: fg
  * @Date: 2022-12-28 09:51:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 18:01:02
+ * @LastEditTime: 2023-03-10 16:03:16
  * @Description: v-move 拖拽自定义指令
  */
 import { App, Directive, DirectiveBinding } from "vue"
 
 const vMove: Directive = {
-  mounted(el: HTMLElement) {
+  mounted(el: HTMLElement, binding: DirectiveBinding) {
     const mouseDown = (e: MouseEvent) => {
       let width = el.clientWidth;
       let height = el.clientHeight;
       let pWidth = el.parentElement!.clientWidth;
       let pHeight = el.parentElement!.clientHeight;
-      console.log(width, height, pWidth, pHeight)
       // console.log(e.clientX, e.clientY, "-----起始", el.offsetLeft);
       let X = e.clientX - el.offsetLeft;
       let Y = e.clientY - el.offsetTop;
-      console.log('test---')
       const move = (e: MouseEvent) => {
         if (e.clientX - X >= 0 && (e.clientX - X) <= pWidth - width) {
           el.style.left = e.clientX - X + "px";
@@ -50,7 +48,9 @@ const vMove: Directive = {
         document.removeEventListener("mousemove", move);
       });
     };
-    el.addEventListener("mousedown", mouseDown);
+    if (binding.value) {
+      el.addEventListener("mousedown", mouseDown);
+    }
   },
 }
 

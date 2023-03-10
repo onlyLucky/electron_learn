@@ -51,5 +51,5 @@ export const useFile = (mName: string, mId: any) => {
   } else {
     handleFolder()
   }
-  return { fileList }
+  return { fileList, handleFolder }
 }
