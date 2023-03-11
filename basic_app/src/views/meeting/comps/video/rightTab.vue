@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:18:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 13:57:02
+ * @LastEditTime: 2023-03-11 16:12:44
  * @Description: 右侧展示tab
 -->
 <template>
@@ -105,6 +105,18 @@ let tabData = [
     left: 256,
   },
 ];
+watch(
+  () => props.user,
+  (val) => {
+    let temp = val.every((item, index, array) => {
+      return item.active;
+    });
+    selectAll.value = temp;
+  },
+  {
+    deep: true,
+  }
+);
 let tabIndex = ref<number>(0);
 const onTabHeaderTap = (index: number) => {
   tabIndex.value = index;
@@ -113,6 +125,11 @@ const onTabHeaderTap = (index: number) => {
 let selectAll = ref<boolean>(false);
 const onAllChange = (val: boolean) => {
   selectAll.value = val;
+  let temp: any[] = [];
+  props.user.map((item: any) => {
+    item.active = val;
+  });
+  emit("onUseChange", temp);
 };
 // 选择用户批注修改
 const onCheckItemChange = (flag: boolean, index: number) => {

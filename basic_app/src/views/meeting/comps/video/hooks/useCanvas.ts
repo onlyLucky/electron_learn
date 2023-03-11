@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 15:24:26
+ * @LastEditTime: 2023-03-11 16:13:35
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -517,7 +517,6 @@ export const useCanvas = () => {
       }
     })
     pathList.value = temp;
-    console.log(pathList.value, 'pathList.value')
   }
 
   // 清空
@@ -570,6 +569,9 @@ export const useCanvas = () => {
 
   // 处理canvas播放处理
   const handleCtxPlay = (videoConfig: TypeVideoConfig) => {
+    if (!ctx) {
+      return false;
+    }
     cleanAll()
     if (videoConfig.playing) {
       pausePath()

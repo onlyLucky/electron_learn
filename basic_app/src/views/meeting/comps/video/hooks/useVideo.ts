@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:40:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-07 19:17:54
+ * @LastEditTime: 2023-03-11 15:59:01
  * @Description: 视频播放处理
  */
 import hdObj from "_v/setting/handleData"
@@ -118,7 +118,6 @@ export const useVideo = (mName: string, mId: any,) => {
 
   // 监听是否可以播放
   const onVideoCanPlay = (e: any) => {
-    console.log('onVideoCanPlay', playObj.videoWidth, playObj.videoHeight)
     videoConfig.duration = playObj.duration
     showTimeStringType.value = playObj.duration >= 60 * 60 ? 'h' : 'm'
     if (videoConfig.currentTime == 0) {
