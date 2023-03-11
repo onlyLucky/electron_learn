@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-10 18:58:35
+ * @LastEditTime: 2023-03-11 14:12:26
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -121,6 +121,8 @@ const {
   pausePath,
   seekToCanvas,
   onPathEnd,
+  userDataChange,
+  handleCtxPlay,
 } = useCanvas();
 parseXmlFile(fileList.value[current.value].xml);
 let refCanvas = ref<HTMLCanvasElement>();
@@ -157,6 +159,7 @@ const computedCanvasSize = () => {
   canvasConfig.width = refCanvas.value!.width;
   canvasConfig.height = refCanvas.value!.height;
   canvasConfig.ratio = refCanvas.value!.width / refPlayer.value!.videoWidth;
+  handleCtxPlay(videoConfig);
 };
 // 结束
 const onPlayEnd = () => {
@@ -185,6 +188,7 @@ defineExpose({
   pausePath,
   seekToCanvas,
   onVoiceChange,
+  userDataChange,
 });
 </script>
 <style scoped lang="less">

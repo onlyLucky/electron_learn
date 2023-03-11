@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-10 18:59:45
+ * @LastEditTime: 2023-03-11 14:13:32
  * @Description: 视频播放
 -->
 <template>
@@ -15,7 +15,6 @@
           placement="bottom-start"
         >
           {{ queryParams.name || "视频播放" }}
-          {{ refBControl?.smallSizeFlag }}
         </Text>
       </div>
       <SystemOpt color="var(--bg)"></SystemOpt>
@@ -91,6 +90,7 @@
           :files="refVideoComp?.fileList"
           :user="refVideoComp?.userList"
           :vConfig="refVideoComp?.videoConfig"
+          @onUseChange="onUseChange"
         ></RightTab>
       </div>
     </div>
@@ -160,7 +160,6 @@ const refVideoComp = ref<InstanceType<typeof VideoComp>>();
 const refBControl = ref<InstanceType<typeof BControl>>();
 
 const onMediaChange = () => {
-  // console.log();
   refVideoComp.value?.onMediaCtrl();
   if (refVideoComp.value?.videoConfig.playing) {
     refVideoComp.value?.startPath();
@@ -182,6 +181,11 @@ const computedStt = computed(() => {
 // 音量更改
 const onVoice = (val: number) => {
   refVideoComp.value?.onVoiceChange(val / 100);
+};
+
+// 用户数据更改
+const onUseChange = (list: any[]) => {
+  refVideoComp.value?.userDataChange(list, refVideoComp.value?.videoConfig);
 };
 
 onMounted(() => {

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-10 15:46:40
+ * @LastEditTime: 2023-03-11 14:11:34
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -554,23 +554,36 @@ export const useCanvas = () => {
 
   // 跳转
   const seekToCanvas = (videoConfig: TypeVideoConfig) => {
-    cleanAll()
     canvasConfig.currentTime = Math.floor(videoConfig.currentTime * 1000)
+    handleCtxPlay(videoConfig)
+    /* setTimeout(() => {
+      // startPath()
+    }, 200) */
+  }
+
+  // 处理人员选择
+  const userDataChange = (users: any[], videoConfig: TypeVideoConfig) => {
+    userList.value = users
+    handleCtxPlay(videoConfig)
+  }
+
+  // 处理canvas播放处理
+  const handleCtxPlay = (videoConfig: TypeVideoConfig) => {
+    cleanAll()
     if (videoConfig.playing) {
       pausePath()
     }
     getCurrentPathClear()
     getCurrentPath()
     handleUserPath()
-    // getUndoIndex()
+    getUndoIndex()
     console.log(undoIndexs.value, 'undoIndexs.value', `${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`)
-    handlePathOpt()
+    if (pathList.value.length > 0) {
+      handlePathOpt()
+    }
     if (videoConfig.playing) {
       startPath()
     }
-    /* setTimeout(() => {
-      // startPath()
-    }, 200) */
   }
   const onPathEnd = () => {
     clearInterval(timer)
@@ -592,5 +605,5 @@ export const useCanvas = () => {
   }, 3000) */
 
   watchEffect(doCanvas)
-  return { canvasConfig, userList, parseXmlFile, uploadCtx, startPath, pausePath, seekToCanvas, onPathEnd }
+  return { canvasConfig, userList, parseXmlFile, uploadCtx, startPath, pausePath, seekToCanvas, onPathEnd, userDataChange, handleCtxPlay }
 }

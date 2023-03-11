@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:18:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-08 09:42:21
+ * @LastEditTime: 2023-03-11 13:57:02
  * @Description: 右侧展示tab
 -->
 <template>
@@ -56,6 +56,7 @@
                   <Checkbox
                     class="userSelect"
                     :model-value="item.active"
+                    @on-change="onCheckItemChange($event, index)"
                   ></Checkbox>
                 </div>
                 <div class="userName">
@@ -91,6 +92,9 @@ let props = withDefaults(
     vConfig: {},
   }
 );
+let emit = defineEmits<{
+  (e: "onUseChange", userList: any[]): void;
+}>();
 let tabData = [
   {
     name: "选集列表",
@@ -109,6 +113,12 @@ const onTabHeaderTap = (index: number) => {
 let selectAll = ref<boolean>(false);
 const onAllChange = (val: boolean) => {
   selectAll.value = val;
+};
+// 选择用户批注修改
+const onCheckItemChange = (flag: boolean, index: number) => {
+  let temp: any[] = props.user;
+  temp[index].active = flag;
+  emit("onUseChange", temp);
 };
 </script>
 <style scoped lang="less">
