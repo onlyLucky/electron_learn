@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 14:11:34
+ * @LastEditTime: 2023-03-11 15:24:26
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -517,6 +517,7 @@ export const useCanvas = () => {
       }
     })
     pathList.value = temp;
+    console.log(pathList.value, 'pathList.value')
   }
 
   // 清空
@@ -574,10 +575,10 @@ export const useCanvas = () => {
       pausePath()
     }
     getCurrentPathClear()
-    getCurrentPath()
     handleUserPath()
+    getCurrentPath()
     getUndoIndex()
-    console.log(undoIndexs.value, 'undoIndexs.value', `${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`)
+    // console.log(undoIndexs.value, 'undoIndexs.value', `${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`)
     if (pathList.value.length > 0) {
       handlePathOpt()
     }
