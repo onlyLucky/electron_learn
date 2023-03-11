@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 16:13:35
+ * @LastEditTime: 2023-03-11 16:37:07
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -71,8 +71,14 @@ export const useCanvas = () => {
   }
   // 解析数据
   const parseXmlFile = (path: string) => {
+    let xmlData = ''
+    try {
+      xmlData = fs.readFileSync(path, 'utf-8');
 
-    let xmlData = fs.readFileSync(path, 'utf-8');
+    } catch (error) {
+      Message.error('视频批注文件内容解析失败');
+      return false;
+    }
     jsonData = (XmlToJson.parse(xmlData, {
       textKey: 'value'
     }) as any).dcf;
@@ -80,6 +86,7 @@ export const useCanvas = () => {
       Message.error('视频批注文件内容解析失败');
       return false;
     }
+
     // 数据初始化
     canvasConfig.duration = Number(jsonData.length)
     let tempPathList: any[] = []
@@ -215,6 +222,9 @@ export const useCanvas = () => {
   // 开始绘制
   const startPath = () => {
     let fps = 1000 / FPS;
+    if (pathClearList.value.length <= 0 || pathList.value.length <= 0) {
+      return false;
+    }
     timer = setInterval(() => {
       canvasConfig.currentTime = canvasConfig.currentTime + fps
       // console.log(`${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`, 'canvasConfig.currentPath')
@@ -505,6 +515,11 @@ export const useCanvas = () => {
 
   // 处理用户选择
   const handleUserPath = () => {
+    console.log(userList.value, 'userList.value')
+    if (userList.value.length <= 0) {
+      return false;
+    }
+
     let tempIds = userList.value.filter((item: any) => {
       if (item.active) {
         return item.id

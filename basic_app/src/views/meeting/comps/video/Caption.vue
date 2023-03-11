@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-09 17:20:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 09:57:28
+ * @LastEditTime: 2023-03-11 16:26:54
  * @Description: 字幕文件
 -->
 <template>
@@ -86,6 +86,7 @@ const readStt = () => {
       temp = fs.readFileSync(props.stt, "utf-8");
     } catch (error) {
       Message.error("字幕文件解析失败");
+      return false;
     }
     captionConfig.list = JSON.parse(temp);
     let tempTimeArr: number[] = [];

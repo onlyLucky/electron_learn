@@ -44,6 +44,7 @@
           <BControl
             ref="refBControl"
             :mediaData="refVideoComp?.videoConfig"
+            :files="refVideoComp?.fileList"
             @onSeek="onSeek"
             @onMediaChange="onMediaChange"
             @onVoice="onVoice"

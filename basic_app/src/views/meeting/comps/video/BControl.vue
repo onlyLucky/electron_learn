@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 10:59:52
+ * @LastEditTime: 2023-03-11 18:04:16
  * @Description: content
 -->
 <template>
@@ -27,10 +27,8 @@
     </div>
     <div class="controlBottom f-row-b-c">
       <div class="ctrlBLeft f-row-c-c">
-        <div
-          class="f-row-c-c"
-          v-show="!(!mediaData.isAudioCanPlay || !mediaData.isVideoCanPlay)"
-        >
+        <!-- v-show="!(!mediaData.isAudioCanPlay || !mediaData.isVideoCanPlay)" -->
+        <div class="f-row-c-c" v-show="computedMediaCtl">
           <div
             class="ctrlIcon f-row-c-c"
             v-debounce="onMediaCtrlTap"
@@ -56,10 +54,8 @@
             ></svg-icon>
           </div>
         </div>
-        <div
-          class="ctrlIcon f-row-c-c"
-          v-show="!mediaData.isAudioCanPlay || !mediaData.isVideoCanPlay"
-        >
+        <!-- v-show="!mediaData.isAudioCanPlay || !mediaData.isVideoCanPlay" -->
+        <div class="ctrlIcon f-row-c-c" v-show="!computedMediaCtl">
           <svg-icon
             iconName="icon-jiazaizhong"
             className="ctrlItem iconLoading"
@@ -78,6 +74,7 @@
             ></svg-icon>
           </Tooltip>
         </div>
+        {{ !mediaData.isVideoCanPlay }}
         <div class="voiceCon f-row-c-c">
           <div class="ctrlIcon f-row-c-c">
             <svg-icon
@@ -157,6 +154,7 @@ import { TypeVideoConfig } from "./hooks/useVideo";
 let props = withDefaults(
   defineProps<{
     mediaData: TypeVideoConfig;
+    files: any[];
   }>(),
   {
     mediaData: () => {
@@ -174,6 +172,7 @@ let props = withDefaults(
         currentTimeTxt: "",
       };
     },
+    files: () => [],
   }
 );
 let emit = defineEmits<{
@@ -204,6 +203,35 @@ watch(
     voiceNum.value = val * 100;
   }
 );
+// 计算媒体控制
+const computedMediaCtl = computed(() => {
+  // true ctrl  false loading
+  if (props.files.length <= 0) {
+    return false;
+  }
+  if (
+    props.files[props.mediaData.current].videoSrc &&
+    props.files[props.mediaData.current].audioSrc
+  ) {
+    return !(
+      !props.mediaData.isAudioCanPlay || !props.mediaData.isVideoCanPlay
+    );
+  } else {
+    if (
+      !props.files[props.mediaData.current].videoSrc &&
+      !props.files[props.mediaData.current].audioSrc
+    ) {
+      return false;
+    } else {
+      if (!props.files[props.mediaData.current].videoSrc) {
+        return false;
+      } else {
+        return props.mediaData.isVideoCanPlay;
+      }
+    }
+  }
+  // return true;
+});
 // 音量更改
 const onVoiceChange = (val: number) => {
   voiceNum.value = val;

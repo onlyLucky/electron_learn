@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 14:02:00
  * @LastEditors: fg
- * @LastEditTime: 2023-03-03 14:07:00
+ * @LastEditTime: 2023-03-11 17:26:25
  * @Description: 文件数据处理
  */
 import hdObj from "_v/setting/handleData"
@@ -35,14 +35,21 @@ export const useFile = (mName: string, mId: any) => {
     })
     let tempFiles = []
     for (let i = 0; i < tempLen; i++) {
-      tempFiles.push({
+      let temp = {
         name: `${mName}-${i + 1}`,
         xml: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.xml`),
         stt: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.stt`),
         videoSrc: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.mp4`),
         audioSrc: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.amr`),
         videoBg: join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.jpg`)
-      })
+      }
+      // 新增文件检测
+      temp.xml = fs.existsSync(join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.xml`)) ? join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.xml`) : '';
+      temp.stt = fs.existsSync(join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.stt`)) ? join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.stt`) : '';
+      temp.videoSrc = fs.existsSync(join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.mp4`)) ? join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.mp4`) : '';
+      temp.audioSrc = fs.existsSync(join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.amr`)) ? join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.amr`) : '';
+      temp.videoBg = fs.existsSync(join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.jpg`)) ? join(downloadPath, `/${mName}.${mId}/${mName}-${i + 1}.jpg`) : '';
+      tempFiles.push(temp)
     }
     fileList.value = tempFiles
   }
