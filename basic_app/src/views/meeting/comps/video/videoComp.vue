@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 15:17:42
+ * @LastEditTime: 2023-03-13 16:24:03
  * @Description: video audio canvas comp 
 -->
 <template>

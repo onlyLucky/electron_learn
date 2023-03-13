@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 14:01:08
+ * @LastEditTime: 2023-03-13 20:08:00
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -173,7 +173,7 @@ export const useCanvas = () => {
       tempType.push(item.type)
     })
     // console.log(userList, 'jsonData')
-    // console.log(tempPathClearList, tempPathList, 'data')
+    console.log(tempPathClearList, tempPathList, 'data')
   }
 
   // 获取当前时间处于第几段
@@ -182,10 +182,11 @@ export const useCanvas = () => {
     pathList.value.map(item => {
       temp.push(item.time)
     })
+    console.log('canvasConfig.currentTime:', canvasConfig.currentTime, temp[0], temp)
     if (canvasConfig.currentTime < temp[0]) {
       canvasConfig.currentPath = -1
     } else {
-      canvasConfig.currentPath = Number(getTimeIndex(temp, canvasConfig.currentTime)) - 1
+      canvasConfig.currentPath = Number(getTimeIndex(temp, canvasConfig.currentTime))
     }
   }
 
@@ -227,18 +228,27 @@ export const useCanvas = () => {
     }
     timer = setInterval(() => {
       canvasConfig.currentTime = canvasConfig.currentTime + fps
-      // console.log(`${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`, 'canvasConfig.currentPath')
+      console.log(`${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`, 'canvasConfig.currentPath')
       // 判断当前处于第几段的clear
       if (pathClearList.value.length > 1) {
         if (canvasConfig.currentClear <= pathClearList.value.length - 1) {
-          handleUserPath();
-        } else {
-          if (canvasConfig.currentTime >= pathClearList.value[canvasConfig.currentClear].start) {
-            cleanAll()
-            canvasConfig.currentClear = canvasConfig.currentClear + 1
-            canvasConfig.currentPath = 0
-            handleUserPath()
+          if (canvasConfig.currentClear == pathClearList.value.length - 1) {
+            handleUserPath();
+          } else {
+            if (canvasConfig.currentTime >= pathClearList.value[canvasConfig.currentClear].start) {
+              cleanAll()
+              // pausePath()
+              canvasConfig.currentClear = canvasConfig.currentClear + 1
+              console.log('canvasConfig.currentClear:', canvasConfig.currentClear)
+              canvasConfig.currentPath = 0
+              handleUserPath()
+              /* setTimeout(() => {
+                startPath()
+              }) */
+
+            }
           }
+
         }
       }
       // 空数组判断
@@ -583,6 +593,7 @@ export const useCanvas = () => {
 
   // 处理canvas播放处理
   const handleCtxPlay = (videoConfig: TypeVideoConfig) => {
+
     if (!ctx) {
       return false;
     }
@@ -594,7 +605,8 @@ export const useCanvas = () => {
     handleUserPath()
     getCurrentPath()
     getUndoIndex()
-    // console.log(undoIndexs.value, 'undoIndexs.value', `${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`)
+    // console.log(pathList.value, pathClearList.value);
+    console.log('undoIndexs.value', `${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`)
     if (pathList.value.length > 0) {
       handlePathOpt()
     }
@@ -604,6 +616,10 @@ export const useCanvas = () => {
   }
   const onPathEnd = () => {
     clearInterval(timer)
+    initData();
+  }
+
+  const initData = () => {
     let temp = {
       duration: 0,
       currentTime: 0,
