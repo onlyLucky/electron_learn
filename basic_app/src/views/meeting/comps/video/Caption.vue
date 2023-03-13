@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-09 17:20:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 16:26:54
+ * @LastEditTime: 2023-03-13 15:20:44
  * @Description: 字幕文件
 -->
 <template>
@@ -48,7 +48,7 @@ let captionConfig = reactive<CaptionType>({
   subtitleIndex: -1,
   curTimeArr: [],
 });
-let moveFlag = ref<boolean>(true);
+let moveFlag = ref<boolean>(false);
 let refCaption = ref<HTMLDivElement>();
 const handlePosition = () => {
   if (moveFlag.value) {
@@ -94,7 +94,6 @@ const readStt = () => {
       tempTimeArr.push(item.bgTime);
     });
     captionConfig.curTimeArr = tempTimeArr;
-    console.log(captionConfig.list, "captionConfig");
     handleCurrentStt();
   }
 };
@@ -155,7 +154,7 @@ watch(
         2 +
       "px";
 
-    // refCaption.value!.style.left = left;
+    refCaption.value!.style.left = left;
   }
 );
 

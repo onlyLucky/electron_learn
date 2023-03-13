@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 16:37:07
+ * @LastEditTime: 2023-03-13 14:01:08
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -515,7 +515,6 @@ export const useCanvas = () => {
 
   // 处理用户选择
   const handleUserPath = () => {
-    console.log(userList.value, 'userList.value')
     if (userList.value.length <= 0) {
       return false;
     }

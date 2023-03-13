@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 14:13:32
+ * @LastEditTime: 2023-03-13 14:20:27
  * @Description: 视频播放
 -->
 <template>
@@ -92,6 +92,7 @@
           :user="refVideoComp?.userList"
           :vConfig="refVideoComp?.videoConfig"
           @onUseChange="onUseChange"
+          @onAnalectaChange="onAnalectaChange"
         ></RightTab>
       </div>
     </div>
@@ -176,7 +177,8 @@ const onSeek = (progress: number) => {
 
 // 计算字幕文件路径
 const computedStt = computed(() => {
-  return refVideoComp.value?.fileList[refVideoComp.value.current].stt;
+  return refVideoComp.value?.fileList[refVideoComp.value.videoConfig.current]
+    .stt;
 });
 
 // 音量更改
@@ -187,6 +189,11 @@ const onVoice = (val: number) => {
 // 用户数据更改
 const onUseChange = (list: any[]) => {
   refVideoComp.value?.userDataChange(list, refVideoComp.value?.videoConfig);
+};
+
+// 选集数据修改
+const onAnalectaChange = (index: number) => {
+  refVideoComp.value?.uploadCurrent(index);
 };
 
 onMounted(() => {

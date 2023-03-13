@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-11 17:34:03
+ * @LastEditTime: 2023-03-13 15:17:42
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -14,12 +14,13 @@
         width: props.width + 'px',
         height: props.height + 'px',
       }"
-      :poster="fileList[current].videoBg"
+      :src="fileList[videoConfig.current].videoSrc"
+      :poster="fileList[videoConfig.current].videoBg"
       @timeupdate="onVideoChange"
       @canplay="onCanPlay"
       @ended="onPlayEnd"
     >
-      <source :src="fileList[current].videoSrc" type="video/mp4" />
+      <!-- <source :src="fileList[current].videoSrc" type="video/mp4" /> -->
     </video>
     <!-- :src="audioInfo.src"
       @timeupdate="onPlayChange"
@@ -28,7 +29,7 @@
     <audio
       controls
       ref="refAudio"
-      :src="fileList[current].audioSrc"
+      :src="fileList[videoConfig.current].audioSrc"
       @canplay="onAudioCanPlay"
     ></audio>
     <canvas id="canvas" width="200" height="200" ref="refCanvas"></canvas>
@@ -58,8 +59,6 @@ let mediaConfig = reactive<any>({
     "https://m801.music.126.net/20230210095355/6a44ab660525af0af6f395ac8a8532f8/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/14096426578/ff65/7348/d83f/36ab528a5935b3ee552768bd939af6cf.mp3",
 });
 
-// 当前播放第几个
-let current = ref<number>(0);
 const { fileList, handleFolder } = useFile(
   queryParams.name || "",
   queryParams.id
@@ -102,7 +101,7 @@ watch(
   (val) => {
     if (!val) {
       handleFolder();
-      parseXmlFile(fileList.value[current.value].xml);
+      parseXmlFile(fileList.value[videoConfig.current].xml);
     }
   }
 );
@@ -124,14 +123,13 @@ const {
   userDataChange,
   handleCtxPlay,
 } = useCanvas();
-parseXmlFile(fileList.value[current.value].xml);
+parseXmlFile(fileList.value[videoConfig.current].xml);
 let refCanvas = ref<HTMLCanvasElement>();
 watch(refCanvas, (val) => {
   if (val) {
     uploadCtx(refCanvas.value as HTMLCanvasElement);
   }
 });
-watch(current, (val) => {});
 
 const onVideoChange = (e: Event) => {
   let cTime = (e.target as HTMLVideoElement).currentTime;
@@ -139,10 +137,12 @@ const onVideoChange = (e: Event) => {
 };
 let ratio = ref<number>(1); //视频比例
 const onCanPlay = (e: Event) => {
+  console.log("canplay");
   onVideoCanPlay(e);
   ratio.value = Number(
     (refPlayer.value!.videoWidth / refPlayer.value!.videoHeight).toFixed(3)
   );
+
   computedCanvasSize();
 };
 // 处理canvas比例计算
@@ -172,14 +172,29 @@ const onVoiceChange = (val: number) => {
   refAudio.value!.volume = val;
 };
 
-// 跳转到指定选集
-const jumpVideoList = (index: number) => {};
+watch(
+  () => videoConfig.current,
+  (val) => {
+    // 暂停批注
+    onPathEnd();
+    // 更新批注文件
+    parseXmlFile(fileList.value[videoConfig.current].xml);
+    // 修改为异步调用，音频视频监听过canplay之后才能调用播放
+    setTimeout(() => {
+      // 播放设置
+      refPlayer.value?.play();
+      refAudio.value?.play();
+      videoConfig.playing = true;
+      // 播放数据
+      handleCtxPlay(videoConfig);
+    });
+  }
+);
 
 defineExpose({
   videoConfig,
   canvasConfig,
   fileList,
-  current,
   userList,
   getDate,
   onMediaCtrl,
@@ -189,6 +204,7 @@ defineExpose({
   seekToCanvas,
   onVoiceChange,
   userDataChange,
+  uploadCurrent,
 });
 </script>
 <style scoped lang="less">
