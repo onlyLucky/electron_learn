@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-09 17:20:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 15:20:44
+ * @LastEditTime: 2023-03-13 15:57:54
  * @Description: 字幕文件
 -->
 <template>
@@ -48,7 +48,7 @@ let captionConfig = reactive<CaptionType>({
   subtitleIndex: -1,
   curTimeArr: [],
 });
-let moveFlag = ref<boolean>(false);
+let moveFlag = ref<boolean>(true);
 let refCaption = ref<HTMLDivElement>();
 const handlePosition = () => {
   if (moveFlag.value) {
@@ -70,11 +70,9 @@ const handlePosition = () => {
 // 初始化（下一首）
 const initData = () => {
   let temp = {
-    list: [],
     curIndex: 0,
     subtitleTxt: "",
     subtitleIndex: -1,
-    curTimeArr: [],
   };
   Object.assign(captionConfig, temp);
 };
@@ -147,20 +145,23 @@ const handleCurrentStt = () => {
 
 watch(
   () => captionConfig.subtitleTxt,
-  (val) => {
-    let left =
-      (refCaption.value!.parentElement!.clientWidth -
-        refCaption.value!.clientWidth) /
-        2 +
-      "px";
-
-    refCaption.value!.style.left = left;
+  async (val) => {
+    if (moveFlag.value) {
+      await nextTick();
+      let left =
+        (refCaption.value!.parentElement!.clientWidth -
+          refCaption.value!.clientWidth) /
+          2 +
+        "px";
+      refCaption.value!.style.left = left;
+    }
   }
 );
 
 watch(
   () => props.time,
   (val) => {
+    initData();
     handleCurrentStt();
   }
 );
@@ -188,6 +189,9 @@ onMounted(() => {
   window.onresize = () => {
     handlePosition();
   };
+});
+defineExpose({
+  handlePosition,
 });
 </script>
 <style scoped lang="less">

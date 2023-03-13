@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 14:20:27
+ * @LastEditTime: 2023-03-13 16:05:27
  * @Description: 视频播放
 -->
 <template>
@@ -71,6 +71,7 @@
         <!-- :files="refVideoComp?.fileList"
           :current="refVideoComp?.current" -->
         <Caption
+          ref="refCaption"
           :show="refBControl?.isShowCaption"
           :time="refVideoComp?.canvasConfig.currentTime"
           :download="downloadUse.isNeedDownload"
@@ -145,6 +146,7 @@ const onRightChange = () => {
   setTimeout(() => {
     mediaConfig.height = refVideoCon.value?.clientHeight;
     mediaConfig.width = refVideoCon.value?.clientWidth;
+    refCaption.value?.handlePosition();
   }, 200);
 };
 
@@ -160,6 +162,8 @@ const refVideoCon = ref<HTMLElement>();
 const refVideoComp = ref<InstanceType<typeof VideoComp>>();
 
 const refBControl = ref<InstanceType<typeof BControl>>();
+
+const refCaption = ref<InstanceType<typeof Caption>>();
 
 const onMediaChange = () => {
   refVideoComp.value?.onMediaCtrl();
