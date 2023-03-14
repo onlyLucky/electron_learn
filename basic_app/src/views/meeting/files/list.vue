@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-03 14:55:51
  * @LastEditors: fg
- * @LastEditTime: 2023-02-13 13:54:02
+ * @LastEditTime: 2023-03-14 18:01:58
  * @Description: content
 -->
 <template>
@@ -72,15 +72,23 @@
         </div>
       </div>
       <div class="filterOpt f-row-e-c">
-        <Checkbox :model-value="false">全选下载</Checkbox>
-        <div class="optBox" v-show="false">
-          <Button type="primary">下载</Button>
-        </div>
+        <Tooltip placement="bottom-end" content="下载文件">
+          <Badge :count="refFTable?.selection.length">
+            <div class="optItem f-row-c-c" v-debounce="onDownloadFile">
+              <svg-icon
+                iconName="icon-yunxiazai-"
+                className="optIcon"
+                size="22"
+                color="var(--fontColor)"
+              ></svg-icon>
+            </div>
+          </Badge>
+        </Tooltip>
       </div>
     </div>
     <!-- 展示内容 -->
     <div class="content">
-      <fTable></fTable>
+      <fTable ref="refFTable"></fTable>
     </div>
   </div>
 </template>
@@ -117,6 +125,8 @@ const filterData = [
     value: 5,
   },
 ];
+
+const refFTable = ref<InstanceType<typeof fTable>>();
 // 类型名称
 let filter = reactive<FileFilterType>({
   type: 0,
@@ -126,6 +136,8 @@ const onMenuTap = (val: number) => {
   filter.type = val;
   filter.typeName = filterData[val].name;
 };
+// 文件下载
+const onDownloadFile = () => {};
 </script>
 <style scoped lang="less">
 .fileListCon {
@@ -188,6 +200,24 @@ const onMenuTap = (val: number) => {
           &:hover {
             background-color: @menu_item_hover;
           }
+        }
+      }
+    }
+    .filterOpt {
+      .size(auto,100%);
+      .optItem {
+        padding: 6px;
+        border-radius: 4px;
+        background-color: @bg;
+        cursor: pointer;
+        margin-left: 10px;
+        &:hover {
+          background-color: @search_bottom_border;
+        }
+        span {
+          margin-left: 4px;
+          font-size: 14px;
+          color: @f_color_h3;
         }
       }
     }
