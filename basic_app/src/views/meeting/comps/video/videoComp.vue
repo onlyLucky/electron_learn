@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 16:24:03
+ * @LastEditTime: 2023-03-14 13:51:26
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -165,6 +165,10 @@ const computedCanvasSize = () => {
 const onPlayEnd = () => {
   onEnd();
   onPathEnd();
+  // 播放下一首
+  if (videoConfig.current < fileList.value.length - 1) {
+    videoConfig.current = videoConfig.current + 1;
+  }
 };
 
 const onVoiceChange = (val: number) => {

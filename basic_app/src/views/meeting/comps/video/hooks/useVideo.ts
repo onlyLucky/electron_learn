@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:40:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 13:57:19
+ * @LastEditTime: 2023-03-14 14:04:42
  * @Description: 视频播放处理
  */
 import hdObj from "_v/setting/handleData"
@@ -82,7 +82,7 @@ export const useVideo = (mName: string, mId: any,) => {
 
   // 播放暂停控制
   const onMediaCtrl = () => {
-    console.log("onMediaChange", playObj.src, audioObj.src);
+    console.log("onMediaChange", playObj.paused);
     if (playObj.paused) {
       // 播放
       if (videoConfig.isVideoCanPlay && videoConfig.isAudioCanPlay) {

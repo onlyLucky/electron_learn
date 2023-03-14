@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 11:45:10
+ * @LastEditTime: 2023-03-14 14:10:38
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -182,7 +182,6 @@ export const useCanvas = () => {
     pathList.value.map(item => {
       temp.push(item.time)
     })
-    console.log('canvasConfig.currentTime:', canvasConfig.currentTime, temp[0], temp)
     if (canvasConfig.currentTime < temp[0]) {
       canvasConfig.currentPath = -1
     } else {
@@ -228,7 +227,7 @@ export const useCanvas = () => {
     }
     timer = setInterval(() => {
       canvasConfig.currentTime = canvasConfig.currentTime + fps
-      console.log(`${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`, 'canvasConfig.currentPath')
+      // console.log(`${canvasConfig.currentTime}: ${canvasConfig.currentClear}-${canvasConfig.currentPath}`, 'canvasConfig.currentPath')
       // 判断当前处于第几段的clear
       if (pathClearList.value.length > 1) {
         if (canvasConfig.currentClear <= pathClearList.value.length - 1) {
@@ -239,7 +238,7 @@ export const useCanvas = () => {
               cleanAll()
               // pausePath()
               canvasConfig.currentClear = canvasConfig.currentClear + 1
-              console.log('canvasConfig.currentClear:', canvasConfig.currentClear)
+              // console.log('canvasConfig.currentClear:', canvasConfig.currentClear)
               canvasConfig.currentPath = 0
               handleUserPath()
               /* setTimeout(() => {
