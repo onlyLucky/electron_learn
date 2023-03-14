@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-07 11:27:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 20:08:00
+ * @LastEditTime: 2023-03-14 11:45:10
  * @Description: canvas 绘制
  */
 import { XmlToJson } from '@/libs/xml2json.js'
@@ -620,7 +620,7 @@ export const useCanvas = () => {
   }
 
   const initData = () => {
-    let temp = {
+    /* let temp = {
       duration: 0,
       currentTime: 0,
       currentPath: -1,
@@ -629,7 +629,8 @@ export const useCanvas = () => {
       height: 0,
       ratio: 1
     }
-    Object.assign(canvasConfig, temp)
+    Object.assign(canvasConfig, temp) */
+    canvasConfig.currentTime = 0
   }
 
   /* setTimeout(() => {

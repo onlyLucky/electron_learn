@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:18:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 14:29:24
+ * @LastEditTime: 2023-03-14 11:20:49
  * @Description: 右侧展示tab
 -->
 <template>
@@ -14,7 +14,7 @@
         :key="index"
         @click="onTabHeaderTap(index)"
       >
-        {{ item.name }}{{ vConfig.current }}
+        {{ item.name }}
       </div>
       <div class="line" :style="{ left: tabData[tabIndex].left + 'px' }"></div>
     </div>

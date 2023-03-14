@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 13:39:48
+ * @LastEditTime: 2023-03-14 09:09:19
  * @Description: content
 -->
 <template>
@@ -74,7 +74,7 @@
             ></svg-icon>
           </Tooltip>
         </div>
-        {{ !mediaData.isVideoCanPlay }}
+        <!-- {{ !mediaData.isVideoCanPlay }} -->
         <div class="voiceCon f-row-c-c">
           <div class="ctrlIcon f-row-c-c">
             <svg-icon

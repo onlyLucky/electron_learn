@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-09 17:20:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 15:57:54
+ * @LastEditTime: 2023-03-14 11:41:43
  * @Description: 字幕文件
 -->
 <template>
@@ -161,7 +161,8 @@ watch(
 watch(
   () => props.time,
   (val) => {
-    initData();
+    // initData();
+    captionConfig.subtitleTxt = "";
     handleCurrentStt();
   }
 );
