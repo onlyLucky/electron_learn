@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:18:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 11:20:49
+ * @LastEditTime: 2023-03-14 15:40:32
  * @Description: 右侧展示tab
 -->
 <template>
@@ -42,7 +42,7 @@
           </div>
         </div>
         <div class="tConItem useDraw f-w" v-show="tabIndex == 1">
-          <div class="useDrawBox">
+          <div class="useDrawBox" v-show="user.length > 0">
             <div class="optBox f-row-e-c">
               <div class="optItem">
                 <Checkbox :model-value="selectAll" @on-change="onAllChange">{{
@@ -74,6 +74,9 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="noDataCon f-col-s-c" v-show="user.length <= 0">
+            <span>当前暂无批注人员数据</span>
           </div>
         </div>
       </div>
@@ -313,6 +316,19 @@ const onAnalectaChange = (index: number) => {
               font-size: 16px;
             }
           }
+        }
+      }
+      .noDataCon {
+        .size(100%,100%);
+        img {
+          .size(200px,200px);
+          margin-top: 50px;
+          margin-bottom: 10px;
+        }
+        span {
+          font-size: 14px;
+          color: @fontColor;
+          margin-top: 200px;
         }
       }
     }
