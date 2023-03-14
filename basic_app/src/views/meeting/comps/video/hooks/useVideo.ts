@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 15:40:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 14:04:42
+ * @LastEditTime: 2023-03-14 15:28:05
  * @Description: 视频播放处理
  */
 import hdObj from "_v/setting/handleData"
@@ -40,6 +40,7 @@ export const useVideo = (mName: string, mId: any,) => {
   let playObj: HTMLVideoElement;
   let audioObj: HTMLAudioElement;
 
+  let files = ref<any[]>([]);
   let videoConfig = reactive<TypeVideoConfig>({
     progress: 0,
     current: 0,
@@ -85,17 +86,33 @@ export const useVideo = (mName: string, mId: any,) => {
     console.log("onMediaChange", playObj.paused);
     if (playObj.paused) {
       // 播放
+      let tempTime = (videoConfig.progress / 100) * videoConfig.duration
       if (videoConfig.isVideoCanPlay && videoConfig.isAudioCanPlay) {
-        let tempTime = (videoConfig.progress / 100) * videoConfig.duration
-        playObj.currentTime = tempTime;
-        audioObj.currentTime = tempTime;
-        playObj.play();
-        audioObj.play();
+        if (files.value[videoConfig.current].videoSrc) {
+          playObj.currentTime = tempTime;
+          playObj.play();
+        }
+        if (files.value[videoConfig.current].audioSrc) {
+          audioObj.currentTime = tempTime;
+          audioObj.play();
+        }
         videoConfig.playing = true;
+      } else {
+        if (videoConfig.isVideoCanPlay) {
+          if (files.value[videoConfig.current].videoSrc) {
+            playObj.currentTime = tempTime;
+            playObj.play();
+          }
+          videoConfig.playing = true;
+        }
       }
     } else {
-      playObj.pause();
-      audioObj.pause();
+      if (files.value[videoConfig.current].videoSrc) {
+        playObj.pause();
+      }
+      if (files.value[videoConfig.current].audioSrc) {
+        audioObj.pause();
+      }
       videoConfig.playing = false;
     }
   }
@@ -104,8 +121,12 @@ export const useVideo = (mName: string, mId: any,) => {
   const seekTo = (progress: number) => {
     console.log(progress, 'progress')
     if (videoConfig.playing) {
-      playObj.pause();
-      audioObj.pause();
+      if (files.value[videoConfig.current].videoSrc) {
+        playObj.pause();
+      }
+      if (files.value[videoConfig.current].audioSrc) {
+        audioObj.pause();
+      }
     }
     let cTime = videoConfig.duration * (progress / 100)
     videoConfig.progress = progress;
@@ -170,8 +191,12 @@ export const useVideo = (mName: string, mId: any,) => {
 
   const onEnd = () => {
     // TODO: 下一首判断， 设置=> 自动连播 循环单首 播放完结束(默认)
-    playObj.pause();
-    audioObj.pause();
+    if (files.value[videoConfig.current].videoSrc) {
+      playObj.pause();
+    }
+    if (files.value[videoConfig.current].audioSrc) {
+      audioObj.pause();
+    }
     videoConfig.playing = false;
   }
 
@@ -181,10 +206,14 @@ export const useVideo = (mName: string, mId: any,) => {
     videoConfig.current = index;
   }
 
+  const uploadFile = (list: any[]) => {
+    files.value = list
+  }
+
   if (mId) {
     watchEffect(doVideo)
   } else {
     doVideo()
   }
-  return { videoConfig, onVideoCanPlay, onAudioCanPlay, getDate, uploadDomObj, onMediaCtrl, uploadCurrentTime, onEnd, uploadCurrent, seekTo }
+  return { videoConfig, onVideoCanPlay, onAudioCanPlay, getDate, uploadDomObj, onMediaCtrl, uploadCurrentTime, onEnd, uploadCurrent, seekTo, uploadFile }
 }

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 13:51:26
+ * @LastEditTime: 2023-03-14 15:16:59
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -63,6 +63,7 @@ const { fileList, handleFolder } = useFile(
   queryParams.name || "",
   queryParams.id
 );
+
 console.log(fileList, "fileList");
 
 const refPlayer = ref<HTMLVideoElement>();
@@ -70,6 +71,7 @@ const refAudio = ref<HTMLAudioElement>();
 // 媒体设置
 const {
   videoConfig,
+  uploadFile,
   getDate,
   uploadDomObj,
   onAudioCanPlay,
@@ -80,6 +82,9 @@ const {
   uploadCurrent,
   seekTo,
 } = useVideo(queryParams.name || "", queryParams.id);
+
+uploadFile(fileList.value);
+
 watch(refPlayer, (val) => {
   if (val) {
     uploadDomObj(true, val);
