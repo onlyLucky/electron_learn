@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-03 14:55:51
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 17:47:50
+ * @LastEditTime: 2023-03-15 19:21:14
  * @Description: content
 -->
 <template>
@@ -100,7 +100,11 @@
     </div>
     <!-- 展示内容 -->
     <div class="content">
-      <fTable ref="refFTable" @onDownload="onDownloadFile"></fTable>
+      <fTable
+        ref="refFTable"
+        @onDownload="onDownloadFile"
+        @onDel="onDelFile"
+      ></fTable>
     </div>
   </div>
 </template>
@@ -109,7 +113,8 @@ import { useRoute } from "vue-router";
 import fTable from "../comps/filesList/fTable.vue";
 import { useDownload } from "../comps/mListDetail/useDownload";
 import { ComponentInternalInstance } from "vue";
-import { Message } from "view-ui-plus";
+import { Message, Modal } from "view-ui-plus";
+const fs = require("fs");
 
 const cxt: ComponentInternalInstance = getCurrentInstance()!;
 const bus = cxt.appContext.config.globalProperties.$bus;
@@ -179,7 +184,32 @@ const onDownloadFile = () => {
   }
 };
 // 文件删除
-const onDelFile = () => {};
+const onDelFile = () => {
+  if (refFTable.value!.delNum > 0) {
+    Modal.confirm({
+      title: "是否确认删除文件",
+      loading: true,
+      onOk: () => {
+        let temp: number = 0;
+        refFTable.value!.selection.map((item: any) => {
+          handleDelFile(item.localPath);
+          temp++;
+          if (temp == refFTable.value!.selection.length) {
+            refFTable.value?.getData();
+            Modal.remove();
+            Message.success("所选的文件删除完成");
+          }
+        });
+      },
+    });
+  }
+};
+
+const handleDelFile = (path: string) => {
+  if (fs.existsSync(path)) {
+    fs.unlinkSync(path);
+  }
+};
 
 watch(
   () => downloadUse.isNeedDownload,

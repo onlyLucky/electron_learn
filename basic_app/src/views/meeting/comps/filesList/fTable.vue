@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 17:50:52
+ * @LastEditTime: 2023-03-15 19:19:26
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -42,6 +42,7 @@ const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 let emit = defineEmits<{
   (e: "onDownload"): void;
+  (e: "onDel"): void;
 }>();
 // 加载
 let loading = ref<boolean>(false);
@@ -193,7 +194,11 @@ const columns = [
                                 color: "var(--error)",
                                 opacity: !params.row.dStatus ? 0.5 : 1,
                               },
-                              onClick: _.debounce(function () {}, 300),
+                              onClick: _.debounce(function () {
+                                selection.value = [params.row];
+                                delNum.value = 1;
+                                emit("onDel");
+                              }, 300),
                             },
                             { default: () => "删除文件" }
                           ),
