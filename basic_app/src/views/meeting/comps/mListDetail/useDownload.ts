@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 17:44:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 13:36:41
+ * @LastEditTime: 2023-03-15 16:40:43
  * @Description: content
  */
 import { getAllFileByMeetId } from "@/apis/meet"
@@ -128,7 +128,7 @@ export const useDownload = (meetId: number, meetName: string) => {
   // 监听下载进度
   ipcRenderer.on("downloadUpload", (event, args) => {
     downloadUse.progress = Math.trunc((args.total / downloadSize) * 100)
-    console.log(downloadUse.progress, args, downloadSize)
+    // console.log(downloadUse.progress, args, downloadSize)
   })
   ipcRenderer.on("downloadEnd", (event) => {
     console.log('downloadEnd')

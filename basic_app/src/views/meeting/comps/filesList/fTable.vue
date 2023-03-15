@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 10:18:20
+ * @LastEditTime: 2023-03-15 14:15:44
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -208,7 +208,7 @@ const columns = [
 const refTable = ref<HTMLElement>();
 let tableHeight = ref<number>();
 
-let tData = reactive<any[]>([]);
+let tData = ref<any[]>([]);
 onMounted(() => {
   tableHeight.value = refTable.value?.clientHeight;
   getData();
@@ -218,8 +218,11 @@ onMounted(() => {
 });
 const getData = () => {
   loading.value = true;
+  downloadNum.value = 0;
+  delNum.value = 0;
   getAllFileByMeetId({ meetId: queryParams.id })
     .then((res) => {
+      let temp: any[] = [];
       res.data.map((item: any, index: number) => {
         let tempPath = join(
           downloadPath,
@@ -235,10 +238,10 @@ const getData = () => {
           // item._disabled = false;
           item.localPath = "";
         }
-        tData.push(item);
+        temp.push(item);
       });
+      tData.value = temp;
       loading.value = false;
-      console.log(tData, "tData");
     })
     .catch((err) => {
       loading.value = false;
@@ -266,6 +269,7 @@ defineExpose({
   selection,
   downloadNum,
   delNum,
+  getData,
 });
 </script>
 <style scoped lang="less">

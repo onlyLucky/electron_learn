@@ -134,6 +134,7 @@ function createWindow() {
   // win 主场口downloadItem 下载任务监听
   win.webContents.session.on('will-download', (event, item, webContents) => {
     downloadTotal += item.getTotalBytes()
+    console.log('downloadTotal:', downloadTotal, item.getTotalBytes())
     // new URL(item.getURL()).searchParams.get('id') 获取id
     let temp = DownloadDataMap.get(`${item.getFilename()}_${new URL(item.getURL()).searchParams.get('id')}`)
     // TODO: 静态资源服务器不支持文件断点续传 暂时储存downloadItem 方便后面的操作

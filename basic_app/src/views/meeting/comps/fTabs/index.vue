@@ -2,13 +2,20 @@
  * @Author: fg
  * @Date: 2023-02-03 13:58:21
  * @LastEditors: fg
- * @LastEditTime: 2023-02-03 17:39:41
+ * @LastEditTime: 2023-03-15 16:44:13
  * @Description: 文件tabs切换
 -->
 <template>
   <div class="Tabs f-row-s-c">
     <!-- active -->
     <div class="tabItem active f-row-s-c" @click="goFile">
+      <div
+        class="progressBar"
+        :style="{
+          width: tabWidth + 'px',
+          opacity: tabWidth == 0 ? 0 : 1,
+        }"
+      ></div>
       <svg-icon
         iconName="icon-wenjianjia1"
         className="tabItemIcon"
@@ -28,6 +35,23 @@
 </template>
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
+
+let props = withDefaults(
+  defineProps<{
+    progress: number;
+  }>(),
+  {
+    progress: 0,
+  }
+);
+let tabWidth = ref<number>(0);
+watch(
+  () => props.progress,
+  (val) => {
+    tabWidth.value = 200 * (val / 100);
+  }
+);
+
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 const router = useRouter();
@@ -50,7 +74,20 @@ const goFile = () => {
     .size(200px, 100%);
     border-radius: 8px 8px 0px 0px;
     box-sizing: border-box;
+    overflow: hidden;
     -webkit-app-region: no-drag;
+    position: relative;
+
+    .progressBar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      .size(100px, 100%);
+      box-sizing: border-box;
+      opacity: 0;
+      transition: width 0.2s ease-in-out;
+      background-color: rgba(40, 107, 246, 0.25);
+    }
     .tabItemIcon {
       margin-right: 6px;
     }

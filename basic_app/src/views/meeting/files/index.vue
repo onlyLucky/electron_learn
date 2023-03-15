@@ -2,14 +2,14 @@
  * @Author: fg
  * @Date: 2023-01-09 14:32:12
  * @LastEditors: fg
- * @LastEditTime: 2023-02-03 16:20:24
+ * @LastEditTime: 2023-03-15 16:10:44
  * @Description: content
 -->
 <template>
   <div class="File">
     <div class="header f-row-b-c">
       <div class="tabBox">
-        <FTabs></FTabs>
+        <FTabs :progress="downloadProgress"></FTabs>
       </div>
       <SystemOpt color="var(--bg)"></SystemOpt>
     </div>
@@ -25,7 +25,17 @@
 import SystemOpt from "@/commons/system_opt/index";
 import FTabs from "../comps/fTabs/index.vue";
 import { useRoute } from "vue-router";
+import { ComponentInternalInstance } from "vue";
+
+const cxt: ComponentInternalInstance = getCurrentInstance()!;
+const bus = cxt.appContext.config.globalProperties.$bus;
+
 const route = useRoute();
+
+let downloadProgress = ref<number>(0);
+bus.on("progressChange", (progress: number) => {
+  downloadProgress.value = progress;
+});
 </script>
 <style scoped lang="less">
 .File {

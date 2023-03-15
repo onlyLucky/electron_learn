@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-03 14:55:51
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 13:22:19
+ * @LastEditTime: 2023-03-15 16:49:13
  * @Description: content
 -->
 <template>
@@ -96,6 +96,12 @@
 import { useRoute } from "vue-router";
 import fTable from "../comps/filesList/fTable.vue";
 import { useDownload } from "../comps/mListDetail/useDownload";
+import { ComponentInternalInstance } from "vue";
+import { Message } from "view-ui-plus";
+
+const cxt: ComponentInternalInstance = getCurrentInstance()!;
+const bus = cxt.appContext.config.globalProperties.$bus;
+
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 
@@ -143,7 +149,7 @@ const onMenuTap = (val: number) => {
 };
 // 文件下载
 const onDownloadFile = () => {
-  if (refFTable.value!.downloadNum > 0) {
+  if (refFTable.value!.downloadNum > 0 && downloadUse.status != 1) {
     let temp: any[] = [];
     refFTable.value!.selection.map((item: any) => {
       if (!item.dStatus) {
@@ -164,15 +170,40 @@ const onDownloadFile = () => {
 watch(
   () => downloadUse.isNeedDownload,
   (val) => {
-    console.log(val);
+    if (!val) {
+      refFTable.value?.getData();
+      setTimeout(() => {
+        Message.success("所选的文件下载完成");
+      }, 400);
+    }
+  }
+);
+
+watch(
+  () => downloadUse.progress,
+  (val) => {
+    if (val == 100) {
+      setTimeout(() => {
+        downloadUse.progress = 0;
+      }, 1000);
+    }
+    bus.emit("progressChange", val);
   }
 );
 </script>
 <style scoped lang="less">
+:deep(.progress) {
+  .size(260px,30px);
+  .proTxt {
+    font-size: 14px;
+    color: #333;
+  }
+}
 .fileListCon {
   .size(100%,100%);
   padding: 16px;
   box-sizing: border-box;
+  position: relative;
   h1 {
     font-size: 30px;
   }

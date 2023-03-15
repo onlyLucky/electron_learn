@@ -21,8 +21,15 @@ import { webFrame } from "electron"
 
 import 'default-passive-events'
 
+// vue3 event bus
+import mitt from 'mitt'
+
 // webFrame.setZoomFactor(0.5) 设置适配窗口分辨率缩放
 const app = createApp(App);
+
+// event bus
+const bus = mitt()
+app.config.globalProperties.$bus = bus //相当于Vue2中的:Vue.prototype.$bus = bus
 
 app.use(router)
 app.use(i18n)
