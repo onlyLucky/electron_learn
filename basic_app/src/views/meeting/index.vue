@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-02-25 14:29:26
+ * @LastEditTime: 2023-03-15 19:43:33
  * @Description: content
 -->
 <template>
@@ -48,6 +48,7 @@
             placeholder="请输入"
             clearable
             v-model="searchForm.name"
+            @on-change="searchNameChange"
           ></Input>
         </div>
       </div>
@@ -148,9 +149,11 @@ let searchForm = reactive<SearchType>({
 
 // 设备 TODO: 可选为多个设备
 const equipmentChange = (date?: any) => {
+  searchForm.pageNum = 1;
   searchForm.deviceId = date || "";
 };
 const timeValueChange = (date?: any) => {
+  searchForm.pageNum = 1;
   searchForm.dataValue = date || [];
 };
 
@@ -179,8 +182,13 @@ watch(
   { deep: true }
 );
 const watchSearchForm = _.debounce(function () {
+  // searchForm.pageNum = 1;
   mtable.value?.getTableData(searchForm);
 }, 500);
+
+const searchNameChange = () => {
+  searchForm.pageNum = 1;
+};
 
 // table ref object
 const mtable = ref<InstanceType<typeof mTable>>();
