@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-03 14:55:51
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 18:01:58
+ * @LastEditTime: 2023-03-15 13:22:19
  * @Description: content
 -->
 <template>
@@ -73,7 +73,7 @@
       </div>
       <div class="filterOpt f-row-e-c">
         <Tooltip placement="bottom-end" content="下载文件">
-          <Badge :count="refFTable?.selection.length">
+          <Badge :count="refFTable?.downloadNum">
             <div class="optItem f-row-c-c" v-debounce="onDownloadFile">
               <svg-icon
                 iconName="icon-yunxiazai-"
@@ -93,12 +93,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import fTable from "../comps/filesList/fTable.vue";
+import { useDownload } from "../comps/mListDetail/useDownload";
 const route = useRoute();
-const router = useRouter();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
-let showType = ref<boolean>(false); // 展示样式类型 false列表 true 缩略图
+
+const { downloadUse, handleDownload } = useDownload(
+  queryParams.id,
+  queryParams.name || ""
+) as any;
+
 const filterData = [
   {
     name: "全部文件类型",
@@ -137,7 +142,31 @@ const onMenuTap = (val: number) => {
   filter.typeName = filterData[val].name;
 };
 // 文件下载
-const onDownloadFile = () => {};
+const onDownloadFile = () => {
+  if (refFTable.value!.downloadNum > 0) {
+    let temp: any[] = [];
+    refFTable.value!.selection.map((item: any) => {
+      if (!item.dStatus) {
+        temp.push({
+          fId: item.id,
+          path: localStorage.getItem("staticPath") + item.fileUrl,
+          directory: `${queryParams.name}.${queryParams.id}`,
+          fileName: item.realName,
+          fileSize: item.fileSize,
+        });
+      }
+    });
+    downloadUse.needDownloadArr = temp;
+    handleDownload(false);
+  }
+};
+
+watch(
+  () => downloadUse.isNeedDownload,
+  (val) => {
+    console.log(val);
+  }
+);
 </script>
 <style scoped lang="less">
 .fileListCon {
@@ -205,6 +234,8 @@ const onDownloadFile = () => {};
     }
     .filterOpt {
       .size(auto,100%);
+      padding-right: 20px;
+      box-sizing: border-box;
       .optItem {
         padding: 6px;
         border-radius: 4px;

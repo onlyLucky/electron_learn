@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 17:50:44
+ * @LastEditTime: 2023-03-15 10:18:20
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -227,10 +227,12 @@ const getData = () => {
         );
         if (fs.existsSync(tempPath)) {
           item.dStatus = true;
+          // item._disabled = true;
           item.dCTime = useMsgTimeShow(fs.statSync(tempPath).ctime);
           item.localPath = tempPath;
         } else {
           item.dStatus = false;
+          // item._disabled = false;
           item.localPath = "";
         }
         tData.push(item);
@@ -244,12 +246,26 @@ const getData = () => {
 };
 let selection = ref<any[]>([]);
 // 选项更改变化
+let downloadNum = ref<number>(0);
+let delNum = ref<number>(0);
 const onSelectChange = (selects: any[]) => {
-  console.log(selection, "selection");
+  let tempDownload = 0;
+  let tempDel = 0;
+  selects.map((item: any) => {
+    if (item.dStatus) {
+      tempDel++;
+    } else {
+      tempDownload++;
+    }
+  });
+  downloadNum.value = tempDownload;
+  delNum.value = tempDel;
   selection.value = selects;
 };
 defineExpose({
   selection,
+  downloadNum,
+  delNum,
 });
 </script>
 <style scoped lang="less">

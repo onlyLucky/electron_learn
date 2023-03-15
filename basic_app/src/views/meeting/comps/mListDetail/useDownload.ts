@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 17:44:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-02 11:21:35
+ * @LastEditTime: 2023-03-15 13:36:41
  * @Description: content
  */
 import { getAllFileByMeetId } from "@/apis/meet"
@@ -33,25 +33,42 @@ export const useDownload = (meetId: number, meetName: string) => {
    * @return {*}
    */
   const isExistMeetFile = () => {
+    // 暂缓downloadUse.needDownloadArr
+    let temp: any[] = []
     // 判断当前是否存在会议文件夹
     if (fs.existsSync(join(downloadPath, `${meetName}.${meetId}`))) {
       // 判读当前会议的本地文件是否完整(every 检测文件无法检测完全)
-      let temp: any[] = []
+
       downloadUse.fileList.map((item: any, index: number) => {
         // console.log(fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)), join(downloadPath, `/${meetName}.${meetId}/${item.realName}`))
         // console.log(item.realName, fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`)));
         if (!fs.existsSync(join(downloadPath, `/${meetName}.${meetId}/${item.realName}`))) {
-          temp.push(index)
+          temp.push({
+            fId: item.id,
+            path: localStorage.getItem("staticPath") + item.fileUrl,
+            directory: `${meetName}.${meetId}`,
+            fileName: item.realName,
+            fileSize: item.fileSize
+          })
         }
       })
       downloadUse.needDownloadArr = temp
       return downloadUse.needDownloadArr.length == 0
     } else {
       // 当前没有会议文件夹
-      // console.log('当前没有会议文件夹', downloadPath)
-      downloadUse.needDownloadArr = Array.apply(null, { length: downloadUse.fileList.length } as any[]).map((item, index) => {
-        return index
+      downloadUse.fileList.map((item: any, index: number) => {
+        temp.push({
+          fId: item.id,
+          path: localStorage.getItem("staticPath") + item.fileUrl,
+          directory: `${meetName}.${meetId}`,
+          fileName: item.realName,
+          fileSize: item.fileSize
+        })
       })
+      /* downloadUse.needDownloadArr = Array.apply(null, { length: downloadUse.fileList.length } as any[]).map((item, index) => {
+        return index
+      }) */
+      downloadUse.needDownloadArr = temp
       return false
     }
   }
@@ -77,25 +94,25 @@ export const useDownload = (meetId: number, meetName: string) => {
     downloadUse.isNeedDownload = !isExistMeetFile()
   }
 
-  const handleDownload = () => {
+  /**
+   * @description: 
+   * @param {boolean} flag 是否需要检测文件  true 检测 false 不检测
+   * @return {*}
+   */
+  const handleDownload = (flag: boolean = true) => {
     // 计算需要下载总量
     initData()
-    isExistMeetFile()
-    let tempDownArr: any[] = []
+    if (flag) isExistMeetFile()
     if (downloadUse.needDownloadArr.length > 0) {
       downloadUse.status = 1
     }
-    downloadUse.needDownloadArr.map(item => {
-      downloadSize += downloadUse.fileList[item].fileSize
-      tempDownArr.push({
-        fId: downloadUse.fileList[item].id,
-        path: localStorage.getItem("staticPath") + downloadUse.fileList[item].fileUrl,
-        directory: `${meetName}.${meetId}`,
-        fileName: downloadUse.fileList[item].realName,
-        fileSize: downloadUse.fileList[item].fileSize
-      })
+    downloadUse.needDownloadArr.map((item: any) => {
+      downloadSize = downloadSize + item.fileSize
     })
-    ipcRenderer.send("download", tempDownArr);
+    // toRaw(downloadUse.needDownloadArr) reactive 转普通对象
+    setTimeout(() => {
+      ipcRenderer.send("download", toRaw(downloadUse.needDownloadArr));
+    })
     /* downloadUse.fileList.map((item, index) => {
       // 只下载缺省的文件
       if (downloadUse.needDownloadArr.indexOf(index) != -1) {
@@ -111,7 +128,7 @@ export const useDownload = (meetId: number, meetName: string) => {
   // 监听下载进度
   ipcRenderer.on("downloadUpload", (event, args) => {
     downloadUse.progress = Math.trunc((args.total / downloadSize) * 100)
-    console.log(downloadUse.progress, args.total, downloadSize)
+    console.log(downloadUse.progress, args, downloadSize)
   })
   ipcRenderer.on("downloadEnd", (event) => {
     console.log('downloadEnd')
@@ -122,7 +139,7 @@ export const useDownload = (meetId: number, meetName: string) => {
   const initData = () => {
     downloadUse.progress = 0
     downloadUse.status = 0
-    downloadUse.needDownloadArr = []
+    downloadSize = 0
   }
   if (isRef(meetId)) {
     watchEffect(doDownload)
