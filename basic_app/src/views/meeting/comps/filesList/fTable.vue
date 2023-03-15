@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 14:15:44
+ * @LastEditTime: 2023-03-15 17:50:52
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -40,6 +40,9 @@ const fs = require("fs");
 const downloadPath = hdObj.getConfigItem("download").downloadPath;
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
+let emit = defineEmits<{
+  (e: "onDownload"): void;
+}>();
 // 加载
 let loading = ref<boolean>(false);
 // props
@@ -152,21 +155,63 @@ const columns = [
             },
             [
               h(
-                resolveComponent("Tooltip"),
+                resolveComponent("Dropdown"),
+                { trigger: "click", placement: "bottom-start" },
                 {
-                  content: "更多",
-                  placement: "top",
-                  transfer: true,
-                },
-                // <Icon type="ios-more" />
-                {
-                  default: () => [
-                    h(resolveComponent("Icon"), {
-                      type: "ios-more",
-                      class: "iconOpt",
-                      size: "26",
-                    }),
-                  ],
+                  default: () =>
+                    h(
+                      resolveComponent("Tooltip"),
+                      {
+                        content: "更多",
+                        placement: "top",
+                        transfer: true,
+                        disabled: true,
+                      },
+                      // <Icon type="ios-more" />
+                      {
+                        default: () => [
+                          h(resolveComponent("SvgIcon"), {
+                            iconName: "icon-gengduo",
+                            color: "var(--f_color_h6)",
+                            class: "iconOpt",
+                            size: "22",
+                          }),
+                        ],
+                      }
+                    ),
+                  list: () =>
+                    h(
+                      resolveComponent("DropdownMenu"),
+                      {},
+                      {
+                        default: () => [
+                          h(
+                            resolveComponent("DropdownItem"),
+                            {
+                              disabled: !params.row.dStatus,
+                              style: {
+                                color: "var(--error)",
+                                opacity: !params.row.dStatus ? 0.5 : 1,
+                              },
+                              onClick: _.debounce(function () {}, 300),
+                            },
+                            { default: () => "删除文件" }
+                          ),
+                          h(
+                            resolveComponent("DropdownItem"),
+                            {
+                              disabled: params.row.dStatus,
+                              onClick: _.debounce(function () {
+                                selection.value = [params.row];
+                                downloadNum.value = 1;
+                                emit("onDownload");
+                              }, 300),
+                            },
+                            { default: () => "下载文件" }
+                          ),
+                        ],
+                      }
+                    ),
                 }
               ),
               // h(SvgIcon,{})
@@ -218,6 +263,7 @@ onMounted(() => {
 });
 const getData = () => {
   loading.value = true;
+  selection.value = [];
   downloadNum.value = 0;
   delNum.value = 0;
   getAllFileByMeetId({ meetId: queryParams.id })

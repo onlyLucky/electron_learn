@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-03 14:55:51
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 16:49:13
+ * @LastEditTime: 2023-03-15 17:47:50
  * @Description: content
 -->
 <template>
@@ -72,6 +72,18 @@
         </div>
       </div>
       <div class="filterOpt f-row-e-c">
+        <Tooltip placement="bottom-end" content="删除文件">
+          <Badge :count="refFTable?.delNum">
+            <div class="optItem f-row-c-c" v-debounce="onDelFile">
+              <svg-icon
+                iconName="icon-shanchu1"
+                className="optIcon"
+                size="22"
+                color="var(--fontColor)"
+              ></svg-icon>
+            </div>
+          </Badge>
+        </Tooltip>
         <Tooltip placement="bottom-end" content="下载文件">
           <Badge :count="refFTable?.downloadNum">
             <div class="optItem f-row-c-c" v-debounce="onDownloadFile">
@@ -88,7 +100,7 @@
     </div>
     <!-- 展示内容 -->
     <div class="content">
-      <fTable ref="refFTable"></fTable>
+      <fTable ref="refFTable" @onDownload="onDownloadFile"></fTable>
     </div>
   </div>
 </template>
@@ -166,6 +178,8 @@ const onDownloadFile = () => {
     handleDownload(false);
   }
 };
+// 文件删除
+const onDelFile = () => {};
 
 watch(
   () => downloadUse.isNeedDownload,
@@ -192,13 +206,6 @@ watch(
 );
 </script>
 <style scoped lang="less">
-:deep(.progress) {
-  .size(260px,30px);
-  .proTxt {
-    font-size: 14px;
-    color: #333;
-  }
-}
 .fileListCon {
   .size(100%,100%);
   padding: 16px;
