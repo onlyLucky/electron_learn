@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:43:56
  * @LastEditors: fg
- * @LastEditTime: 2023-03-16 15:59:34
+ * @LastEditTime: 2023-03-16 16:15:48
  * @Description: content
 -->
 <template>
@@ -22,6 +22,7 @@
         :content="item.meta?.title"
         placement="right"
         :disabled="open"
+        :delay="600"
         theme="light"
       >
         <div :class="[open ? 'f-row-s-c' : 'f-col-c-c']">

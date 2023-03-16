@@ -106,7 +106,7 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
           icon: 'icon-renyuan1'
         },
-        component: () => import('_v/equipment/index.vue')
+        component: () => import('_v/user/index.vue')
       }
     ]
   }
