@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:43:56
  * @LastEditors: fg
- * @LastEditTime: 2023-02-27 16:44:23
+ * @LastEditTime: 2023-03-16 15:59:34
  * @Description: content
 -->
 <template>
@@ -18,17 +18,24 @@
       @click="handleMenuTap(item)"
     >
       <!-- <Dropdown placement="right-start"> -->
-      <div :class="[open ? 'f-row-s-c' : 'f-col-c-c']">
-        <SvgIcon
-          :iconName="item.meta?.icon"
-          :size="open ? '26' : activeRouteName == item.name ? '22' : '28'"
-          :color="
-            activeRouteName == item.name ? 'var(--bg)' : 'var(--fontColor)'
-          "
-        ></SvgIcon>
-        <span>{{ item.meta?.title }}</span>
-      </div>
+      <Tooltip
+        :content="item.meta?.title"
+        placement="right"
+        :disabled="open"
+        theme="light"
+      >
+        <div :class="[open ? 'f-row-s-c' : 'f-col-c-c']">
+          <SvgIcon
+            :iconName="item.meta?.icon"
+            :size="open ? '26' : activeRouteName == item.name ? '30' : '26'"
+            :color="
+              activeRouteName == item.name ? 'var(--bg)' : 'var(--fontColor)'
+            "
+          ></SvgIcon>
 
+          <span v-show="open">{{ item.meta?.title }}</span>
+        </div>
+      </Tooltip>
       <!-- <template #list>
           <DropdownMenu>
             <DropdownItem>驴打滚</DropdownItem>
@@ -147,15 +154,15 @@ watch(
     }
   }
   .menuItemRow {
-    .size(100%,50px);
+    .size(calc(100% - 20px),50px);
     margin-top: 10px;
     padding: 0 20px;
     box-sizing: border;
-    border-radius: 0 30px 30px 0;
+    border-radius: 6px;
     span {
       font-size: 16px;
       color: @fontColor;
-      margin-left: 20px;
+      margin-left: 10px;
     }
   }
   .menuItemRow.active {
