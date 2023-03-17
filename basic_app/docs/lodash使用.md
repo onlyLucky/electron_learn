@@ -11,6 +11,7 @@
 - [使用场景](#使用场景)
   - [1.取对象中的部分属性](#1取对象中的部分属性)
   - [2. 取数组中的最后一个元素](#2-取数组中的最后一个元素)
+  - [3. 接口传参清空为 null、''、undefined 的参数](#3-接口传参清空为-nullundefined-的参数)
 - [参考链接](#参考链接)
 
 ## TODO
@@ -59,6 +60,18 @@ pick(obj, ["a", "c"]); // {a: 1, c: 3}
 ```javascript
 _.last([1, 2, 3]);
 // => 3
+```
+
+### 3. 接口传参清空为 null、''、undefined 的参数
+
+```js
+const yourObject = {
+  name: "",
+  phone: "123456",
+};
+const params = _.pickBy({ ...yourObject });
+console.log(params);
+// => { phone: '123456' }
 ```
 
 ## 参考链接
