@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-17 14:45:47
+ * @LastEditTime: 2023-03-17 17:31:36
  * @Description: 用户模块
 -->
 <template>
@@ -16,11 +16,12 @@
             style="width: 140px"
             :data="deptList"
             class="hLItemValue"
-            v-model="deptId"
+            :model-value="deptId"
             :render-format="handleFormat"
             clearable
             filterable
             placeholder="请选择"
+            @on-change="onDeptChange"
           >
             <!-- <Option
               v-for="(item, index) in deviceList"
@@ -55,6 +56,7 @@
             placeholder="请输入"
             clearable
             v-model="searchForm.nickname"
+            @on-change="onNickNameChange"
           ></Input>
         </div>
         <div class="hLeftItem f-row-c-c">
@@ -63,6 +65,7 @@
             placeholder="请输入"
             clearable
             v-model="searchForm.userName"
+            @on-change="onUseNameChange"
           ></Input>
         </div>
       </div>
@@ -133,6 +136,25 @@
         </Dropdown>
       </div>
     </div>
+    <div class="content">
+      <UserTable
+        ref="refUserTable"
+        @onSelectChange="onTableSChange"
+        @onDel="delUser"
+        @onDetail="onDetail"
+      ></UserTable>
+    </div>
+    <div class="footer f-row-e-c">
+      <Page
+        show-sizer
+        show-total
+        :total="refUserTable?.pageTotal"
+        :page-size="page.pageSize"
+        :page-size-opts="pageSizeArr"
+        @on-page-size-change="pSizeChange"
+        @on-change="pageChange"
+      />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -142,20 +164,45 @@ import { ipcRenderer, shell } from "electron";
 import _ from "lodash";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { getDownloadTemplate } from "@/apis/user";
+import UserTable from "./comps/useTable.vue";
 let searchForm = reactive<any>({
   nickname: "",
   status: "",
   userName: "",
 });
+
 // 分页
-let page = reactive<any>({
-  pageSize: 8,
+let pageSizeArr = [8, 16, 24];
+type PageType = {
+  pageSize: number;
+  pageNum: number;
+};
+let page = reactive<PageType>({
+  pageSize: pageSizeArr[0],
   pageNum: 1,
 });
-let total = ref<number>(0);
+const pSizeChange = (size: number) => {
+  page.pageSize = size;
+  getUserList();
+};
+const pageChange = (p: number) => {
+  page.pageNum = p;
+  getUserList();
+};
 // 部门查询
 const deptId = ref<any>("");
 
+// 用户列表
+let refUserTable = ref<InstanceType<typeof UserTable>>();
+
+// 用户选择更改
+const onTableSChange = () => {};
+// 删除用户
+const delUser = () => {};
+// 详情查看
+const onDetail = () => {};
+
+/* 用户搜索项更改 */
 // 职工状态
 let statusData = [
   {
@@ -168,16 +215,66 @@ let statusData = [
   },
 ];
 const onStatusChange = (e: any) => {
-  if (!e) {
-    searchForm.status = "";
-  }
-  console.log(searchForm, e);
+  page.pageNum = 1;
+  if (!e) searchForm.status = "";
+  getUserList();
 };
+// 用户昵称更改
+const onNickNameChange = () => {
+  page.pageNum = 1;
+  getUserList();
+};
+// 登录账号更改
+const onUseNameChange = () => {
+  page.pageNum = 1;
+  getUserList();
+};
+
+// 重置数据
+const resetSearch = () => {
+  deptId.value = "";
+  page.pageSize = pageSizeArr[0];
+  page.pageNum = 1;
+  let temp = {
+    nickname: "",
+    status: "",
+    userName: "",
+  };
+  Object.assign(searchForm, temp);
+  let params = {
+    pageSize: page.pageSize,
+    pageNum: page.pageNum,
+  };
+  refUserTable.value?.getDataByUser(params);
+};
+// 部门数据更改
+const onDeptChange = (value: any): any => {
+  deptId.value = value[value.length - 1];
+  let params = {
+    params: {
+      pageSize: page.pageSize,
+      pageNum: page.pageNum,
+    },
+    deptId: deptId.value,
+  };
+  refUserTable.value?.getDataByDept(params);
+};
+
+// 获取用户列表数据
+const getUserList = () => {
+  let params = {
+    pageSize: page.pageSize,
+    pageNum: page.pageNum,
+  };
+  params = _.pickBy({ ...params, ...searchForm });
+  refUserTable.value?.getDataByUser(params);
+};
+
 let delBadgeNum = ref<number>(0);
 const delMeeting = () => {};
-const resetSearch = () => {};
 
 let deptList = ref<any[]>([]);
+
 const getDeptData = () => {
   deptList.value = [];
   getDept().then((res) => {
@@ -185,7 +282,7 @@ const getDeptData = () => {
   });
 };
 // 处理部门数据
-const handleDeptData = (arr: any[]) => {
+const handleDeptData = (arr: any[]): any[] => {
   let tempArr: any[] = [];
   arr.map((item: any) => {
     let temp = {
@@ -206,7 +303,6 @@ const handleFormat = (labels: any[], selectedData: any[]) => {
   let index = labels.length - 1;
   return labels[index];
 };
-getDeptData();
 
 // 下载模板
 const onDownloadTemplate = () => {
@@ -264,8 +360,14 @@ const handleNotice = (data: any) => {
 };
 // 新增设备
 const showAdd = () => {};
+
 onMounted(() => {
   nextTick(() => {
+    // 获取用户
+    getUserList();
+    // 获取组织架构数据
+    getDeptData();
+
     // 监听主程序返回文件保存地址
 
     ipcRenderer.on("sendSaveFileResult", (e, data) => {
@@ -412,8 +514,12 @@ onMounted(() => {
       }
     }
   }
-  h1 {
-    font-size: 30px;
+  .content {
+    .size(100%, calc(100% - 96px));
+  }
+  .footer {
+    .size(100%,50px);
+    border-top: 1px solid @search_bottom_border;
   }
 }
 .menuTitle {
