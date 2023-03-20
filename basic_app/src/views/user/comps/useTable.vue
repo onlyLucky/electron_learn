@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-17 14:52:20
  * @LastEditors: fg
- * @LastEditTime: 2023-03-17 17:41:55
+ * @LastEditTime: 2023-03-20 17:59:33
  * @Description: 用户列表表格组件
 -->
 <template>
@@ -28,7 +28,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getUserByDeptIdPage, getUserList } from "@/apis/user";
+import { getUserByDeptIdPage, getUserList, getUserCareer } from "@/apis/user";
 import _ from "lodash";
 
 let emit = defineEmits<{
@@ -40,6 +40,8 @@ let emit = defineEmits<{
 const refTable = ref<HTMLElement>();
 let tableHeight = ref<number>();
 
+let staticPath = localStorage.getItem("staticPath");
+
 const columns = [
   {
     type: "selection",
@@ -49,7 +51,7 @@ const columns = [
   {
     title: "用户",
     key: "name",
-    minWidth: 450,
+    minWidth: 360,
     render: (h: any, params: any) => {
       return h(
         "div",
@@ -64,7 +66,57 @@ const columns = [
             },
             [
               h("div", { class: "equipValue f-col-c-s" }, [
-                h("div", { class: "avatar" }, "123"),
+                h("div", { class: "avatar f-row-c-c" }, [
+                  h("img", {
+                    class: "avatarImg",
+                    src: staticPath + params.row.avatarPath,
+                    style: {
+                      display: params.row.avatarPath ? "block" : "none",
+                    },
+                  }),
+                  h(
+                    "div",
+                    {
+                      class: "avatarBox f-row-c-c",
+                      style: {
+                        display: params.row.avatarPath ? "none" : "flex",
+                      },
+                    },
+                    [h("span", {}, params.row.nickname.slice(-2))]
+                  ),
+                  h(
+                    "div",
+                    {
+                      class: "genderBox",
+                      style: {
+                        display:
+                          params.row.userSex == 2 || params.row.userSex == 1
+                            ? "block"
+                            : "none",
+                      },
+                    },
+                    [
+                      h(resolveComponent("SvgIcon"), {
+                        iconName: "icon-nan",
+                        class: "iconGender",
+                        color: "var(--f_color_active)",
+                        style: {
+                          display: params.row.userSex == 1 ? "block" : "none",
+                        },
+                        size: "16",
+                      }),
+                      h(resolveComponent("SvgIcon"), {
+                        iconName: "icon-nv",
+                        class: "iconGender",
+                        color: "var(--error)",
+                        style: {
+                          display: params.row.userSex == 2 ? "block" : "none",
+                        },
+                        size: "16",
+                      }),
+                    ]
+                  ),
+                ]),
               ]),
               h("div", { class: "equipInfo f-col-b-s" }, [
                 h(
@@ -72,14 +124,25 @@ const columns = [
                   {
                     placement: "bottom-start",
                     ellipsis: true,
-                    class: "equipNameTxt",
+                    class: "equipNameTxt f-row-c-c",
                     style: { fontSize: "16px" },
                     "ellipsis-config": { tooltip: true },
                     onClick: _.debounce(function () {
                       emit("onDetail", params.row, false);
                     }, 300),
                   },
-                  () => params.row.name
+                  {
+                    default: () => [
+                      h("span", { class: "nickname" }, params.row.nickname),
+                      h(
+                        "span",
+                        {
+                          class: "careerName",
+                        },
+                        computedCaeerName(params.row.careerId)
+                      ),
+                    ],
+                  }
                 ),
                 h(
                   "div",
@@ -94,18 +157,13 @@ const columns = [
                         class: "equipStatus",
                         style: {
                           color:
-                            params.row.status == 10 || params.row.status == 20
+                            params.row.status != 1
                               ? "var(--success)"
                               : "var(--fontColor)",
                         },
                       },
-                      params.row.status == 10
-                        ? "已创建"
-                        : params.row.status == 20
-                        ? "使用中"
-                        : "停用中"
+                      params.row.status == 1 ? "离职" : "在职"
                     ),
-                    h("span", { class: "equipBite" }, "123"),
                   ]
                 ),
               ]),
@@ -198,6 +256,24 @@ const columns = [
       );
     },
   },
+  {
+    title: "登录账号",
+    key: "userName",
+    tooltip: true,
+    width: 150,
+  },
+  {
+    title: "联系方式",
+    key: "phone",
+    tooltip: true,
+    width: 220,
+  },
+  {
+    title: "邮箱",
+    key: "email",
+    tooltip: true,
+    width: 220,
+  },
 ];
 
 // 数据总数total
@@ -251,8 +327,31 @@ const getDataByDept = (params: any) => {
     });
 };
 
+// 获取职位列表
+let careerMap = ref<any[]>([]);
+const getUserCareerData = () => {
+  careerMap.value = [];
+  getUserCareer({}).then((res) => {
+    careerMap.value = res.data;
+  });
+};
+
+const computedCaeerName: any = (id: any) => {
+  let temp = "";
+  careerMap.value.map((item: any) => {
+    if (item.id == Number(id)) {
+      temp = item.caeerName;
+    }
+  });
+  if (temp) {
+    temp = `(${temp})`;
+  }
+  return temp;
+};
+
 onMounted(() => {
   tableHeight.value = refTable.value?.clientHeight;
+  getUserCareerData();
   window.onresize = () => {
     tableHeight.value = refTable.value?.clientHeight;
   };
@@ -262,6 +361,7 @@ defineExpose({
   selectArr,
   getDataByUser,
   getDataByDept,
+  getUserCareerData,
 });
 </script>
 <style scoped lang="less">
@@ -287,38 +387,57 @@ defineExpose({
   color: @f_color_h3;
 }
 :deep(.equipName) {
-  .size(100%, 86px);
+  .size(100%, 66px);
 
   .equipLeft {
     .size(100%,100%);
     .equipValue {
-      .size(80px,100px);
+      .size(66px,66px);
       flex-shrink: 0;
-      margin-right: 24px;
-      .equipValueTxt {
-        color: @fontColor;
-        .eValueTxt1 {
-          font-size: 10px;
-          margin-bottom: 4px;
+      margin-right: 10px;
+      .avatar {
+        .size(60px,60px);
+        position: relative;
+        .avatarImg {
+          .size(50px,50px);
         }
-        .eValueTxt2 {
-          font-size: 12px;
+        .avatarBox {
+          .size(50px,50px);
+          border-radius: 6px;
+          background-color: @f_color_active;
+          span {
+            font-size: 14px;
+            color: @bg;
+          }
+        }
+        .genderBox {
+          position: absolute;
+          bottom: 0px;
+          right: 0px;
+          background: @bg;
+          padding: 2px;
+          border-radius: 50%;
+          border: 1px solid @search_bottom_border;
         }
       }
     }
     .equipInfo {
-      height: 100px;
-      padding: 20px 0;
+      height: 66px;
+      padding: 10px 0;
       box-sizing: border-box;
+
       .equipNameTxt {
         cursor: pointer;
         color: @f_color_active;
+        .careerName {
+          font-size: 12px;
+          color: @fontColor;
+          margin-left: 10px;
+        }
       }
       .equipBottom {
         font-size: 12px;
         color: @fontColor;
-        .equipBite {
-        }
         .equipStatus {
           margin-right: 10px;
         }
@@ -345,5 +464,9 @@ defineExpose({
 }
 .useTable {
   .size(100%,100%);
+}
+.conLoadingTxt {
+  margin-top: 10px;
+  white-space: nowrap;
 }
 </style>

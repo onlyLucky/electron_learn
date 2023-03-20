@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-17 15:42:32
+ * @LastEditTime: 2023-03-20 14:32:53
  * @Description: user api
  */
 
@@ -13,6 +13,7 @@ const path = {
   downloadTemplate: '/user/downloadTemplate',//下载人员模板文件
   user: '/user',// 获取用户
   getUserByDeptIdPage: '/user/getUserByDeptIdPage',// 根据用户组织结构获取用户
+  getUserCareer: '/userCareer/getAllNoPageList',// 获取职位列表
 }
 
 export const getDept = (): Promise<ResultData<any>> => {
@@ -31,4 +32,9 @@ export const getUserList = (params: any): Promise<ResultData<any>> => {
 // 根据用户组织结构获取用户
 export const getUserByDeptIdPage = (params: any): Promise<ResultData<any>> => {
   return http.get(path.getUserByDeptIdPage, params)
+}
+
+// 获取职位列表
+export const getUserCareer = (params: any): Promise<ResultData<any>> => {
+  return http.get(path.getUserCareer, params)
 }
