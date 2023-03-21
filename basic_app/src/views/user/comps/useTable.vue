@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-17 14:52:20
  * @LastEditors: fg
- * @LastEditTime: 2023-03-20 17:59:33
+ * @LastEditTime: 2023-03-21 14:56:07
  * @Description: 用户列表表格组件
 -->
 <template>
@@ -28,11 +28,19 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getUserByDeptIdPage, getUserList, getUserCareer } from "@/apis/user";
+import {
+  getUserByDeptIdPage,
+  getUserList,
+  getUserCareer,
+  deleteUser,
+  quitJobUser,
+} from "@/apis/user";
 import _ from "lodash";
+import { Modal } from "view-ui-plus";
 
 let emit = defineEmits<{
   (e: "onDel"): void;
+  (e: "upload"): void;
   (e: "onSelectChange", len: number): void;
   (e: "onDetail", item: any, flag: boolean): void;
 }>();
@@ -207,6 +215,7 @@ const columns = [
                       {
                         content: "更多",
                         placement: "top",
+                        disabled: true,
                         transfer: true,
                       },
                       // <Icon type="ios-more" />
@@ -230,19 +239,41 @@ const columns = [
                           h(
                             resolveComponent("DropdownItem"),
                             {},
-                            { default: () => "设置管理员" }
+                            { default: () => "重置密码" }
+                          ),
+                          h(
+                            resolveComponent("DropdownItem"),
+                            {
+                              style: {
+                                display:
+                                  params.row.status == 0 ? "block" : "none",
+                              },
+                              onClick: _.debounce(function () {
+                                Modal.confirm({
+                                  title: "是否确认执行离职操作",
+                                  loading: true,
+                                  onOk: () => {
+                                    quitJobUser({ userId: params.row.id }).then(
+                                      (res) => {
+                                        Modal.remove();
+                                        emit("upload");
+                                      }
+                                    );
+                                  },
+                                });
+                              }, 300),
+                            },
+                            { default: () => "离职" }
                           ),
                           h(
                             resolveComponent("DropdownItem"),
                             {
                               onClick: _.debounce(function () {
-                                console.log(params.row);
-                                console.log("onClick");
                                 selectArr.value = [params.row.id];
                                 emit("onDel");
                               }, 300),
                             },
-                            { default: () => "删除设备" }
+                            { default: () => "删除用户" }
                           ),
                         ],
                       }
@@ -336,6 +367,16 @@ const getUserCareerData = () => {
   });
 };
 
+// 删除用户
+const onDel = (cb: Function) => {
+  deleteUser({ ids: selectArr.value.toString() }).then((res) => {
+    if (cb) {
+      cb();
+    }
+    selectArr.value = [];
+  });
+};
+
 const computedCaeerName: any = (id: any) => {
   let temp = "";
   careerMap.value.map((item: any) => {
@@ -362,6 +403,7 @@ defineExpose({
   getDataByUser,
   getDataByDept,
   getUserCareerData,
+  onDel,
 });
 </script>
 <style scoped lang="less">

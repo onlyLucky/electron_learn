@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-20 14:32:53
+ * @LastEditTime: 2023-03-21 14:43:14
  * @Description: user api
  */
 
@@ -14,6 +14,8 @@ const path = {
   user: '/user',// 获取用户
   getUserByDeptIdPage: '/user/getUserByDeptIdPage',// 根据用户组织结构获取用户
   getUserCareer: '/userCareer/getAllNoPageList',// 获取职位列表
+  deleteUser: '/user/deleteBatch',// 删除用户
+  quitJobUser: '/user/quitJobUser', // 离职
 }
 
 export const getDept = (): Promise<ResultData<any>> => {
@@ -37,4 +39,14 @@ export const getUserByDeptIdPage = (params: any): Promise<ResultData<any>> => {
 // 获取职位列表
 export const getUserCareer = (params: any): Promise<ResultData<any>> => {
   return http.get(path.getUserCareer, params)
+}
+
+// 删除用户
+export const deleteUser = (params?: { ids: string }): Promise<ResultData<any>> => {
+  return http.delete<any>(path.deleteUser, params)
+}
+
+// 离职
+export const quitJobUser = (params?: { userId: number }): Promise<ResultData<any>> => {
+  return http.get(path.quitJobUser, params)
 }

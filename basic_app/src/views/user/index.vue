@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-17 17:31:36
+ * @LastEditTime: 2023-03-21 14:21:42
  * @Description: 用户模块
 -->
 <template>
@@ -93,9 +93,9 @@
           </div>
         </Tooltip>
 
-        <Tooltip placement="bottom-end" content="删除会议">
-          <Badge :count="delBadgeNum">
-            <div class="optItem f-row-c-c" v-debounce="delMeeting">
+        <Tooltip placement="bottom-end" content="删除用户">
+          <Badge :count="refUserTable?.selectArr.length">
+            <div class="optItem f-row-c-c" v-debounce="delUser">
               <svg-icon
                 iconName="icon-shanchu1"
                 className="optIcon"
@@ -142,6 +142,7 @@
         @onSelectChange="onTableSChange"
         @onDel="delUser"
         @onDetail="onDetail"
+        @upload="getUserList"
       ></UserTable>
     </div>
     <div class="footer f-row-e-c">
@@ -159,7 +160,7 @@
 </template>
 <script setup lang="ts">
 import { getDept } from "@/apis/user";
-import { Cascader, Message, Notice } from "view-ui-plus";
+import { Cascader, Message, Notice, Modal } from "view-ui-plus";
 import { ipcRenderer, shell } from "electron";
 import _ from "lodash";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
@@ -197,8 +198,6 @@ let refUserTable = ref<InstanceType<typeof UserTable>>();
 
 // 用户选择更改
 const onTableSChange = () => {};
-// 删除用户
-const delUser = () => {};
 // 详情查看
 const onDetail = () => {};
 
@@ -269,9 +268,24 @@ const getUserList = () => {
   params = _.pickBy({ ...params, ...searchForm });
   refUserTable.value?.getDataByUser(params);
 };
-
-let delBadgeNum = ref<number>(0);
-const delMeeting = () => {};
+// 删除用户
+const delUser = () => {
+  if (refUserTable.value!.selectArr.length > 0) {
+    delOpt();
+  }
+};
+const delOpt = () => {
+  Modal.confirm({
+    title: "是否确认删除用户",
+    loading: true,
+    onOk: () => {
+      refUserTable.value?.onDel(() => {
+        Modal.remove();
+        getUserList();
+      });
+    },
+  });
+};
 
 let deptList = ref<any[]>([]);
 
