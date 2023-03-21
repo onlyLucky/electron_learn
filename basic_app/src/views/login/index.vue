@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-03-09 16:01:36
+ * @LastEditTime: 2023-03-21 18:25:13
  * @Description: content
 -->
 <template>
@@ -33,14 +33,30 @@
           ></Input>
         </div>
         <div class="loginItem">
-          <div class="labelTitle f-row-s-c">
-            <img src="@/assets/icons/login/icon_pwa.png" alt="" />
-            <span>{{ t("login.password_t") }}</span>
+          <div class="labelTitle f-row-b-c">
+            <div class="f-row-s-c">
+              <img src="@/assets/icons/login/icon_pwa.png" alt="" />
+              <span>{{ t("login.password_t") }}</span>
+            </div>
+            <div class="rightBox f-row-c-c" v-debounce="changePasFlag">
+              <Icon
+                v-show="!pasFlag"
+                size="16"
+                type="md-eye-off"
+                color="var(--fontColor)"
+              />
+              <Icon
+                v-show="pasFlag"
+                size="16"
+                type="md-eye"
+                color="var(--fontColor)"
+              />
+            </div>
           </div>
           <!-- :placeholder="请输入密码" -->
           <Input
             :placeholder="t('login.psw_placeholder')"
-            type="password"
+            :type="pasFlag ? 'password' : 'text'"
             v-model="password"
             clearable
           ></Input>
@@ -85,6 +101,7 @@ const isRememberMe = ref<boolean>(true);
 
 const userName = ref<string>("");
 const password = ref<string>("");
+let pasFlag = ref<boolean>(true);
 
 const router = useRouter();
 
@@ -103,6 +120,10 @@ onMounted(() => {
     password.value = tempRem.password || "";
   }
 });
+
+const changePasFlag = () => {
+  pasFlag.value = !pasFlag.value;
+};
 
 const loginTo = async () => {
   // localStorage.setItem("token", "test")
@@ -240,6 +261,10 @@ const loginTo = async () => {
             font-weight: 400;
             line-height: 20px;
           }
+          .rightBox {
+            .size(40px,40px);
+            cursor: pointer;
+          }
         }
         &:last-child {
           margin-bottom: 16px;
@@ -268,6 +293,7 @@ const loginTo = async () => {
         color: @bg;
         font-size: 16px;
         font-weight: 500;
+        cursor: pointer;
       }
     }
   }
