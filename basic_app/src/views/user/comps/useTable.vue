@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-17 14:52:20
  * @LastEditors: fg
- * @LastEditTime: 2023-03-21 14:56:07
+ * @LastEditTime: 2023-03-21 16:14:09
  * @Description: 用户列表表格组件
 -->
 <template>
@@ -41,7 +41,7 @@ import { Modal } from "view-ui-plus";
 let emit = defineEmits<{
   (e: "onDel"): void;
   (e: "upload"): void;
-  (e: "onSelectChange", len: number): void;
+  (e: "onResetPwa", id: number): void;
   (e: "onDetail", item: any, flag: boolean): void;
 }>();
 
@@ -238,7 +238,11 @@ const columns = [
                         default: () => [
                           h(
                             resolveComponent("DropdownItem"),
-                            {},
+                            {
+                              onClick: _.debounce(function () {
+                                emit("onResetPwa", params.row.id);
+                              }, 300),
+                            },
                             { default: () => "重置密码" }
                           ),
                           h(
@@ -320,8 +324,6 @@ const onSelect = (selection: any) => {
     temp.push(item.id);
   });
   selectArr.value = temp;
-
-  emit("onSelectChange", selection.length);
 };
 // 根据用户信息搜索
 const getDataByUser = (params: any) => {

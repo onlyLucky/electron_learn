@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-17 10:44:17
  * @LastEditors: fg
- * @LastEditTime: 2023-02-21 15:54:28
+ * @LastEditTime: 2023-03-21 17:46:33
  * @Description: 新增设备
 -->
 <template>
@@ -219,6 +219,7 @@ const formConfirm = () => {
 const formCancel = () => {
   (refForm.value?.resetFields as any)();
   isShow.value = false;
+  loading.value = false;
 };
 const modalBeforeClose = () => {
   console.log("close", loading.value, "loading.value");

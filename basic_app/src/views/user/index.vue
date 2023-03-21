@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-21 14:21:42
+ * @LastEditTime: 2023-03-21 16:24:15
  * @Description: 用户模块
 -->
 <template>
@@ -139,10 +139,10 @@
     <div class="content">
       <UserTable
         ref="refUserTable"
-        @onSelectChange="onTableSChange"
         @onDel="delUser"
         @onDetail="onDetail"
         @upload="getUserList"
+        @onResetPwa="onResetPwa"
       ></UserTable>
     </div>
     <div class="footer f-row-e-c">
@@ -156,6 +156,7 @@
         @on-change="pageChange"
       />
     </div>
+    <ResetPwa ref="refResetPwa"></ResetPwa>
   </div>
 </template>
 <script setup lang="ts">
@@ -166,6 +167,7 @@ import _ from "lodash";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { getDownloadTemplate } from "@/apis/user";
 import UserTable from "./comps/useTable.vue";
+import ResetPwa from "./comps/modal/resetPwa.vue";
 let searchForm = reactive<any>({
   nickname: "",
   status: "",
@@ -195,9 +197,9 @@ const deptId = ref<any>("");
 
 // 用户列表
 let refUserTable = ref<InstanceType<typeof UserTable>>();
+// 重置密码modal
+let refResetPwa = ref<InstanceType<typeof ResetPwa>>();
 
-// 用户选择更改
-const onTableSChange = () => {};
 // 详情查看
 const onDetail = () => {};
 
@@ -273,6 +275,10 @@ const delUser = () => {
   if (refUserTable.value!.selectArr.length > 0) {
     delOpt();
   }
+};
+// 重置密码
+const onResetPwa = (id: number) => {
+  refResetPwa.value?.handleShow(id);
 };
 const delOpt = () => {
   Modal.confirm({

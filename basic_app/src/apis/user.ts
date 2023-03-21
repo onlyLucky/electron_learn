@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-21 14:43:14
+ * @LastEditTime: 2023-03-21 17:36:52
  * @Description: user api
  */
 
@@ -16,6 +16,7 @@ const path = {
   getUserCareer: '/userCareer/getAllNoPageList',// 获取职位列表
   deleteUser: '/user/deleteBatch',// 删除用户
   quitJobUser: '/user/quitJobUser', // 离职
+  updatePassward: '/user/updatePassward', // 重置用户密码
 }
 
 export const getDept = (): Promise<ResultData<any>> => {
@@ -49,4 +50,9 @@ export const deleteUser = (params?: { ids: string }): Promise<ResultData<any>> =
 // 离职
 export const quitJobUser = (params?: { userId: number }): Promise<ResultData<any>> => {
   return http.get(path.quitJobUser, params)
+}
+
+// 更新用户密码
+export const uploadPassword = (params?: { id: number, password: string }): Promise<ResultData<any>> => {
+  return http.put(path.updatePassward, params)
 }
