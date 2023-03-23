@@ -212,7 +212,7 @@ function createLoginWin() {
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     loginWin.loadURL(urlPath)
     // Open devTool if the app is not packaged
-    loginWin.webContents.openDevTools()
+    // loginWin.webContents.openDevTools()
   } else {
     loginWin.loadFile(indexHtml)
   }

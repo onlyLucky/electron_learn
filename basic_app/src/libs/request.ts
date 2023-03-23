@@ -149,7 +149,6 @@ class Http {
       }
     }
     Object.assign(tempConfig, config)
-    console.log(tempConfig)
     return this.service.post(url, params, tempConfig);
   }
   put<T>(url: string, params?: object, config?: object): Promise<ResultData<T>> {

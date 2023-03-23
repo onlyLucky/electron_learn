@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-17 14:52:20
  * @LastEditors: fg
- * @LastEditTime: 2023-03-21 16:14:09
+ * @LastEditTime: 2023-03-22 15:10:46
  * @Description: 用户列表表格组件
 -->
 <template>
@@ -293,6 +293,7 @@ const columns = [
   },
   {
     title: "登录账号",
+    align: "center",
     key: "userName",
     tooltip: true,
     width: 150,

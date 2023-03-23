@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-21 16:24:15
+ * @LastEditTime: 2023-03-22 15:09:43
  * @Description: 用户模块
 -->
 <template>
@@ -81,7 +81,7 @@
           </div>
         </Tooltip>
 
-        <Tooltip placement="bottom-end" content="新增设备">
+        <Tooltip placement="bottom-end" content="新增人员">
           <div class="optItem f-row-c-c" v-debounce="showAdd">
             <svg-icon
               iconName="icon-icon-xinzeng"
@@ -156,7 +156,9 @@
         @on-change="pageChange"
       />
     </div>
+    <!-- modal -->
     <ResetPwa ref="refResetPwa"></ResetPwa>
+    <UserAdd ref="refUserAdd"></UserAdd>
   </div>
 </template>
 <script setup lang="ts">
@@ -168,6 +170,7 @@ import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { getDownloadTemplate } from "@/apis/user";
 import UserTable from "./comps/useTable.vue";
 import ResetPwa from "./comps/modal/resetPwa.vue";
+import UserAdd from "./comps/modal/userAdd.vue";
 let searchForm = reactive<any>({
   nickname: "",
   status: "",
@@ -199,6 +202,8 @@ const deptId = ref<any>("");
 let refUserTable = ref<InstanceType<typeof UserTable>>();
 // 重置密码modal
 let refResetPwa = ref<InstanceType<typeof ResetPwa>>();
+// 新增用户modal
+let refUserAdd = ref<InstanceType<typeof UserAdd>>();
 
 // 详情查看
 const onDetail = () => {};
@@ -378,8 +383,10 @@ const handleNotice = (data: any) => {
     },
   });
 };
-// 新增设备
-const showAdd = () => {};
+// 新增用户
+const showAdd = () => {
+  refUserAdd.value?.handleShow();
+};
 
 onMounted(() => {
   nextTick(() => {
