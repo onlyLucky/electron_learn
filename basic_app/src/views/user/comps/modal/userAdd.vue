@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-21 19:59:33
  * @LastEditors: fg
- * @LastEditTime: 2023-03-23 16:21:16
+ * @LastEditTime: 2023-03-23 19:54:36
  * @Description: 新增用户
 -->
 <template>
@@ -484,7 +484,7 @@ defineExpose({
         position: absolute;
         .size(4px, 18px);
         background: @f_color_active;
-        left: -12px;
+        left: 10px;
         top: 2px;
       }
     }

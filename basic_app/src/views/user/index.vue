@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-23 19:49:53
+ * @LastEditTime: 2023-03-23 19:58:36
  * @Description: 用户模块
 -->
 <template>
@@ -116,9 +116,9 @@
             ></svg-icon>
           </div>
           <template #list>
-            <div class="menuTitle">
+            <!-- <div class="menuTitle">
               <p>导入设备</p>
-            </div>
+            </div> -->
             <DropdownItem v-debounce="onDownloadTemplate">
               下载模板
             </DropdownItem>
@@ -132,6 +132,7 @@
                 导入设备
               </Upload>
             </DropdownItem>
+            <DropdownItem v-debounce="handleCareer"> 职位管理 </DropdownItem>
           </template>
         </Dropdown>
       </div>
@@ -409,6 +410,9 @@ const handleNotice = (data: any) => {
 const showAdd = () => {
   refUserAdd.value?.handleShow();
 };
+
+// 职位管理
+const handleCareer = () => {};
 
 onMounted(() => {
   nextTick(() => {
