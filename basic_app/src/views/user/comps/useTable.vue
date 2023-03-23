@@ -380,6 +380,10 @@ const onDel = (cb: Function) => {
   });
 };
 
+const onSingDelCancel = () => {
+  selectArr.value = [];
+};
+
 const computedCaeerName: any = (id: any) => {
   let temp = "";
   careerMap.value.map((item: any) => {
@@ -407,6 +411,7 @@ defineExpose({
   getDataByDept,
   getUserCareerData,
   onDel,
+  onSingDelCancel,
 });
 </script>
 <style scoped lang="less">

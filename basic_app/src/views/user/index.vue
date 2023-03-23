@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-22 15:09:43
+ * @LastEditTime: 2023-03-23 13:55:56
  * @Description: 用户模块
 -->
 <template>
@@ -139,7 +139,7 @@
     <div class="content">
       <UserTable
         ref="refUserTable"
-        @onDel="delUser"
+        @onDel="singDelUser"
         @onDetail="onDetail"
         @upload="getUserList"
         @onResetPwa="onResetPwa"
@@ -280,6 +280,22 @@ const delUser = () => {
   if (refUserTable.value!.selectArr.length > 0) {
     delOpt();
   }
+};
+//单个删除
+const singDelUser = () => {
+  Modal.confirm({
+    title: "是否确认删除用户",
+    loading: true,
+    onOk: () => {
+      refUserTable.value?.onDel(() => {
+        Modal.remove();
+        getUserList();
+      });
+    },
+    onCancel: () => {
+      refUserTable.value?.onSingDelCancel();
+    },
+  });
 };
 // 重置密码
 const onResetPwa = (id: number) => {
