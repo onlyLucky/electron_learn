@@ -2,14 +2,14 @@
  * @Author: fg
  * @Date: 2023-03-21 19:59:33
  * @LastEditors: fg
- * @LastEditTime: 2023-03-23 13:39:27
+ * @LastEditTime: 2023-03-23 16:21:16
  * @Description: 新增用户
 -->
 <template>
   <Modal
     v-model="isShow"
     width="520"
-    class-name="Modal f-row-c-c"
+    class-name="userModal f-row-c-c"
     :mask-closable="!loading"
     @on-cancel="onCancel"
   >
@@ -453,7 +453,7 @@ defineExpose({
 });
 </script>
 <style lang="less">
-.Modal {
+.userModal {
   user-select: none;
   box-sizing: border-box;
   .mTitle {
@@ -474,10 +474,11 @@ defineExpose({
       line-height: 24px;
       font-size: 14px;
       margin-bottom: 6px;
-      margin-left: 22px;
+      padding-left: 22px;
       color: @f_color_h6;
       position: relative;
       opacity: 0.8;
+      box-sizing: border-box;
       &::after {
         content: "";
         position: absolute;
@@ -504,9 +505,11 @@ defineExpose({
       .avatarBox {
         .size(120px,120px);
         background-color: @bg;
-        box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        border: 1px dashed @fontColor;
+        cursor: pointer;
         img {
-          .size(74px,74px);
+          .size(90px,90px);
         }
       }
     }

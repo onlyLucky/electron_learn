@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-23 10:44:47
+ * @LastEditTime: 2023-03-23 14:49:42
  * @Description: user api
  */
 
@@ -21,6 +21,7 @@ const path = {
   validateUserName: '/user/validateUserName',// 校验登录账号唯一性
   userUpdateRole: '/role/userUpdateRole',// 更新用户角色
   updateDept: '/user/updateDept',// 更新部门数据
+  getDeptByUserId: '/dept/getDeptByUserId',// 根据用户id获取部门数据
 }
 
 export const getDept = (): Promise<ResultData<any>> => {
@@ -84,12 +85,26 @@ export const addUser = (params: any): Promise<ResultData<any>> => {
   })
 }
 
+// 更新用户
+export const uploadUser = (params: any): Promise<ResultData<any>> => {
+  return http.put<any>(path.user, params, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
 // 更新用户角色
 export const updateRole = (params: { userId: number, ids: string }): Promise<ResultData<any>> => {
   return http.post<any>(path.userUpdateRole, params)
 }
 
 // 更新用户部门
-export const updateDept = (params: { userId: number, newDept: number }): Promise<ResultData<any>> => {
+export const updateDept = (params: { userId: number, newDept: number, oldDept?: any }): Promise<ResultData<any>> => {
   return http.post<any>(path.updateDept, params)
+}
+
+// 根据用户id获取部门数据
+export const getDeptByUserId = (params?: { userId: string }): Promise<ResultData<any>> => {
+  return http.get(path.getDeptByUserId, params)
 }

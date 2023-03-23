@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-23 13:55:56
+ * @LastEditTime: 2023-03-23 19:49:53
  * @Description: 用户模块
 -->
 <template>
@@ -158,7 +158,8 @@
     </div>
     <!-- modal -->
     <ResetPwa ref="refResetPwa"></ResetPwa>
-    <UserAdd ref="refUserAdd"></UserAdd>
+    <UserAdd ref="refUserAdd" @onSuccess="getUserList"></UserAdd>
+    <UserDetail ref="refUserDetail" @onSuccess="getUserList"></UserDetail>
   </div>
 </template>
 <script setup lang="ts">
@@ -171,6 +172,7 @@ import { getDownloadTemplate } from "@/apis/user";
 import UserTable from "./comps/useTable.vue";
 import ResetPwa from "./comps/modal/resetPwa.vue";
 import UserAdd from "./comps/modal/userAdd.vue";
+import UserDetail from "./comps/modal/userDetail.vue";
 let searchForm = reactive<any>({
   nickname: "",
   status: "",
@@ -204,9 +206,13 @@ let refUserTable = ref<InstanceType<typeof UserTable>>();
 let refResetPwa = ref<InstanceType<typeof ResetPwa>>();
 // 新增用户modal
 let refUserAdd = ref<InstanceType<typeof UserAdd>>();
+// 用户详情
+let refUserDetail = ref<InstanceType<typeof UserDetail>>();
 
 // 详情查看
-const onDetail = () => {};
+const onDetail: any = (data: any, flag: boolean) => {
+  refUserDetail.value?.handleShow(data, flag);
+};
 
 /* 用户搜索项更改 */
 // 职工状态

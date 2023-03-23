@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-21 10:52:25
  * @LastEditors: fg
- * @LastEditTime: 2023-02-23 14:56:38
+ * @LastEditTime: 2023-03-23 14:21:50
  * @Description: 设备详情modal
 -->
 <template>
@@ -550,7 +550,20 @@ defineExpose({
       .size(100%,40px);
       line-height: 40px;
       font-size: 14px;
-      color: @f_color_h3;
+      padding-bottom: 6px;
+      padding-left: 22px;
+      box-sizing: border;
+      color: @f_color_h6;
+      position: relative;
+      opacity: 0.8;
+      &::after {
+        content: "";
+        position: absolute;
+        .size(4px, 18px);
+        background: @f_color_active;
+        left: 6px;
+        top: 11px;
+      }
     }
     .conBox {
       .size(100%,auto);
