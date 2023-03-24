@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-23 19:58:36
+ * @LastEditTime: 2023-03-24 10:40:16
  * @Description: 用户模块
 -->
 <template>
@@ -161,6 +161,7 @@
     <ResetPwa ref="refResetPwa"></ResetPwa>
     <UserAdd ref="refUserAdd" @onSuccess="getUserList"></UserAdd>
     <UserDetail ref="refUserDetail" @onSuccess="getUserList"></UserDetail>
+    <CareerHandler ref="refCareerHandler"></CareerHandler>
   </div>
 </template>
 <script setup lang="ts">
@@ -174,6 +175,7 @@ import UserTable from "./comps/useTable.vue";
 import ResetPwa from "./comps/modal/resetPwa.vue";
 import UserAdd from "./comps/modal/userAdd.vue";
 import UserDetail from "./comps/modal/userDetail.vue";
+import CareerHandler from "./comps/modal/careerHandle.vue";
 let searchForm = reactive<any>({
   nickname: "",
   status: "",
@@ -209,6 +211,8 @@ let refResetPwa = ref<InstanceType<typeof ResetPwa>>();
 let refUserAdd = ref<InstanceType<typeof UserAdd>>();
 // 用户详情
 let refUserDetail = ref<InstanceType<typeof UserDetail>>();
+// 职位管理
+let refCareerHandler = ref<InstanceType<typeof CareerHandler>>();
 
 // 详情查看
 const onDetail: any = (data: any, flag: boolean) => {
@@ -412,7 +416,9 @@ const showAdd = () => {
 };
 
 // 职位管理
-const handleCareer = () => {};
+const handleCareer = () => {
+  refCareerHandler.value?.handleShow();
+};
 
 onMounted(() => {
   nextTick(() => {

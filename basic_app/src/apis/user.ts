@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-23 14:49:42
+ * @LastEditTime: 2023-03-24 14:39:45
  * @Description: user api
  */
 
@@ -22,6 +22,8 @@ const path = {
   userUpdateRole: '/role/userUpdateRole',// 更新用户角色
   updateDept: '/user/updateDept',// 更新部门数据
   getDeptByUserId: '/dept/getDeptByUserId',// 根据用户id获取部门数据
+  userCareer: '/userCareer',//职位
+  deleteUserCareer: '/userCareer/deleteBatch',//删除多个职位
 }
 
 export const getDept = (): Promise<ResultData<any>> => {
@@ -107,4 +109,31 @@ export const updateDept = (params: { userId: number, newDept: number, oldDept?: 
 // 根据用户id获取部门数据
 export const getDeptByUserId = (params?: { userId: string }): Promise<ResultData<any>> => {
   return http.get(path.getDeptByUserId, params)
+}
+
+// 新增职位
+export const addCareer = (params: any): Promise<ResultData<any>> => {
+  return http.post<any>(path.userCareer, params, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+// 删除职位
+export const deleteCareer = (params?: { id: any }): Promise<ResultData<any>> => {
+  return http.delete(path.userCareer, params)
+}
+// 删除多个职位
+export const deleteUserCareer = (params?: { ids: string }): Promise<ResultData<any>> => {
+  return http.delete(path.deleteUserCareer, params)
+}
+
+//更改职位
+export const uploadCareer = (params: any): Promise<ResultData<any>> => {
+  return http.put<any>(path.userCareer, params, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
 }

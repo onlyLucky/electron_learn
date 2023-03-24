@@ -2,14 +2,14 @@
  * @Author: fg
  * @Date: 2023-03-21 15:05:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-21 19:59:41
+ * @LastEditTime: 2023-03-24 14:12:39
  * @Description: 重置密码
 -->
 <template>
   <Modal
     v-model="isShow"
     width="520"
-    class-name="Modal f-row-c-c"
+    class-name="resetPwaModal f-row-c-c"
     :mask-closable="!loading"
   >
     <template #header>
@@ -135,7 +135,7 @@ defineExpose({
 });
 </script>
 <style lang="less">
-.Modal {
+.resetPwaModal {
   user-select: none;
   .mTitle {
     height: 50px;
