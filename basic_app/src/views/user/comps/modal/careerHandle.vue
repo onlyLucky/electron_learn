@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-24 10:15:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-24 16:44:14
+ * @LastEditTime: 2023-03-24 16:54:40
  * @Description: 职位管理
 -->
 <template>
@@ -34,6 +34,7 @@
       <div class="listBox" ref="refScroll">
         <div
           class="listItem f-row-b-c"
+          v-show="caeerData.length > 0"
           v-for="(item, index) in caeerData"
           :key="index"
           @click="onItemTap(index)"
@@ -106,6 +107,19 @@
             >
           </div>
         </div>
+        <Spin :show="loading" fix size="large" class="loading">
+          <Icon
+            type="ios-loading"
+            size="26"
+            class="conLoading iconLoading"
+          ></Icon>
+          <div class="conLoadingTxt">加载中...</div>
+        </Spin>
+        <div class="noDataCon f-col-s-c" v-show="caeerData.length <= 0">
+          <img src="@/assets/images/no_data.png" alt="" />
+          <span>当前暂无职位数据</span>
+        </div>
+        <div class=""></div>
       </div>
     </div>
     <template #footer>
@@ -310,6 +324,21 @@ defineExpose({
       padding: 0px 20px;
       box-sizing: border-box;
       margin-top: 10px;
+      .conLoadingTxt {
+        margin-top: 10px;
+        white-space: nowrap;
+      }
+      .noDataCon {
+        .size(100%,auto);
+        img {
+          .size(200px,200px);
+          margin-bottom: 10px;
+        }
+        span {
+          font-size: 14px;
+          color: @fontColor;
+        }
+      }
       .ivu-scroll-container {
         height: 100% !important;
       }
