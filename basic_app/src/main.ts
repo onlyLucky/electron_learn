@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import type { App } from "vue"
+import AppCom from './App.vue'
 import './samples/node-api'
 import 'amfe-flexible'
 
@@ -19,13 +20,17 @@ import { vDebounce, vMove } from "./directive/index"
 import http from './libs/request'
 import { webFrame } from "electron"
 
+// 引入组织架构
+import vue3TreeOrg from 'vue3-tree-org';
+import "vue3-tree-org/lib/vue3-tree-org.css";
+
 import 'default-passive-events'
 
 // vue3 event bus
 import mitt from 'mitt'
 
 // webFrame.setZoomFactor(0.5) 设置适配窗口分辨率缩放
-const app = createApp(App);
+const app = createApp(AppCom);
 
 // event bus
 const bus = mitt()
@@ -37,6 +42,7 @@ app.use(i18n)
   i18n
 }) */
 app.use(vDebounce).use(vMove)
+app.use(vue3TreeOrg)
 
 app.config.globalProperties.$http = http
 

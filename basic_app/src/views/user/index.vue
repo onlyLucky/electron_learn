@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-24 10:40:16
+ * @LastEditTime: 2023-03-25 10:34:02
  * @Description: 用户模块
 -->
 <template>
@@ -17,6 +17,7 @@
             :data="deptList"
             class="hLItemValue"
             :model-value="deptId"
+            :change-on-select="true"
             :render-format="handleFormat"
             clearable
             filterable
@@ -38,7 +39,6 @@
             class="hLItemValue"
             v-model="searchForm.status"
             clearable
-            filterable
             placeholder="请选择"
             @on-change="onStatusChange"
           >
@@ -133,6 +133,7 @@
               </Upload>
             </DropdownItem>
             <DropdownItem v-debounce="handleCareer"> 职位管理 </DropdownItem>
+            <DropdownItem v-debounce="handleGroup"> 部门管理 </DropdownItem>
           </template>
         </Dropdown>
       </div>
@@ -162,6 +163,7 @@
     <UserAdd ref="refUserAdd" @onSuccess="getUserList"></UserAdd>
     <UserDetail ref="refUserDetail" @onSuccess="getUserList"></UserDetail>
     <CareerHandler ref="refCareerHandler"></CareerHandler>
+    <DepartmentHandle ref="refDepartmentHandle"></DepartmentHandle>
   </div>
 </template>
 <script setup lang="ts">
@@ -176,6 +178,7 @@ import ResetPwa from "./comps/modal/resetPwa.vue";
 import UserAdd from "./comps/modal/userAdd.vue";
 import UserDetail from "./comps/modal/userDetail.vue";
 import CareerHandler from "./comps/modal/careerHandle.vue";
+import DepartmentHandle from "./comps/modal/departmentHandle.vue";
 let searchForm = reactive<any>({
   nickname: "",
   status: "",
@@ -201,7 +204,7 @@ const pageChange = (p: number) => {
   getUserList();
 };
 // 部门查询
-const deptId = ref<any>("");
+const deptId = ref<any[]>([]);
 
 // 用户列表
 let refUserTable = ref<InstanceType<typeof UserTable>>();
@@ -213,6 +216,8 @@ let refUserAdd = ref<InstanceType<typeof UserAdd>>();
 let refUserDetail = ref<InstanceType<typeof UserDetail>>();
 // 职位管理
 let refCareerHandler = ref<InstanceType<typeof CareerHandler>>();
+// 部门管理
+let refDepartmentHandle = ref<InstanceType<typeof DepartmentHandle>>();
 
 // 详情查看
 const onDetail: any = (data: any, flag: boolean) => {
@@ -249,7 +254,7 @@ const onUseNameChange = () => {
 
 // 重置数据
 const resetSearch = () => {
-  deptId.value = "";
+  deptId.value = [];
   page.pageSize = pageSizeArr[0];
   page.pageNum = 1;
   let temp = {
@@ -266,15 +271,20 @@ const resetSearch = () => {
 };
 // 部门数据更改
 const onDeptChange = (value: any): any => {
-  deptId.value = value[value.length - 1];
+  console.log(value);
+  deptId.value = value;
   let params = {
     params: {
       pageSize: page.pageSize,
       pageNum: page.pageNum,
     },
-    deptId: deptId.value,
+    deptId: value[value.length - 1],
   };
-  refUserTable.value?.getDataByDept(params);
+  if (value <= 0) {
+    getUserList();
+  } else {
+    refUserTable.value?.getDataByDept(params);
+  }
 };
 
 // 获取用户列表数据
@@ -418,6 +428,11 @@ const showAdd = () => {
 // 职位管理
 const handleCareer = () => {
   refCareerHandler.value?.handleShow();
+};
+
+// 部门管理
+const handleGroup = () => {
+  refDepartmentHandle.value?.handleShow();
 };
 
 onMounted(() => {

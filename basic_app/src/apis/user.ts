@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-24 14:39:45
+ * @LastEditTime: 2023-03-24 17:22:38
  * @Description: user api
  */
 
@@ -24,6 +24,7 @@ const path = {
   getDeptByUserId: '/dept/getDeptByUserId',// 根据用户id获取部门数据
   userCareer: '/userCareer',//职位
   deleteUserCareer: '/userCareer/deleteBatch',//删除多个职位
+  getParUserByDeptId: '/user/getParUserByDeptId',//根据部门id 获取上下级用户
 }
 
 export const getDept = (): Promise<ResultData<any>> => {
@@ -136,4 +137,9 @@ export const uploadCareer = (params: any): Promise<ResultData<any>> => {
       'Content-Type': 'application/json'
     }
   })
+}
+
+// 根据部门id 获取上下级用户
+export const getParUserByDeptId = (params?: { deptId: any }): Promise<ResultData<any>> => {
+  return http.get(path.getParUserByDeptId, params)
 }
