@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-23 14:25:15
  * @LastEditors: fg
- * @LastEditTime: 2023-03-25 10:25:36
+ * @LastEditTime: 2023-03-25 10:41:58
  * @Description: 用户详情
 -->
 <template>
@@ -494,7 +494,7 @@ const onConfirm = () => {
             updateDept({
               newDept: params.deptId as any,
               oldDept: detail.value.deptId[detail.value.deptId.length - 1],
-              userId: detail.id,
+              userId: detail.value.id,
             })
               .then((result) => {
                 uploadEnd();
