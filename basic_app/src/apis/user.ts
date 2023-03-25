@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-24 17:22:38
+ * @LastEditTime: 2023-03-25 16:09:45
  * @Description: user api
  */
 
@@ -27,8 +27,30 @@ const path = {
   getParUserByDeptId: '/user/getParUserByDeptId',//根据部门id 获取上下级用户
 }
 
+// 获取部门信息
 export const getDept = (): Promise<ResultData<any>> => {
   return http.get(path.dept, {})
+}
+
+// 新增部门
+export const addDept = (params: any): Promise<ResultData<any>> => {
+  return http.post<any>(path.dept, params, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+// 更新部门
+export const uploadDept = (params: any): Promise<ResultData<any>> => {
+  return http.put<any>(path.dept, params, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+// 删除部门
+export const deletedDept = (params: { id: any }): Promise<ResultData<any>> => {
+  return http.delete<any>(path.dept, params)
 }
 
 //获取导入设备模板
