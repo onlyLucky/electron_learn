@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-02-25 11:27:56
+ * @LastEditTime: 2023-03-27 16:34:56
  * @Description: 设备列表
 -->
 <template>
@@ -40,6 +40,7 @@ let emit = defineEmits<{
   (e: "onDel"): void;
   (e: "onSelectChange", len: number): void;
   (e: "onDetail", item: any, flag: boolean): void;
+  (e: "onSetManage", dId: number): void;
 }>();
 const columns = [
   {
@@ -204,15 +205,17 @@ const columns = [
                         default: () => [
                           h(
                             resolveComponent("DropdownItem"),
-                            {},
+                            {
+                              onClick: _.debounce(function () {
+                                emit("onSetManage", params.row.id);
+                              }, 300),
+                            },
                             { default: () => "设置管理员" }
                           ),
                           h(
                             resolveComponent("DropdownItem"),
                             {
                               onClick: _.debounce(function () {
-                                console.log(params.row);
-                                console.log("onClick");
                                 selectArr.value = [params.row.id];
                                 emit("onDel");
                               }, 300),

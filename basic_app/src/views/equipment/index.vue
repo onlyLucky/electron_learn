@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 10:55:45
+ * @LastEditTime: 2023-03-27 16:40:50
  * @Description: content
 -->
 <template>
@@ -110,6 +110,7 @@
         @onSelectChange="onETableSChange"
         @onDel="delEquip"
         @onDetail="onDetail"
+        @onSetManage="onSetManage"
       ></ETable>
     </div>
     <div class="footer f-row-e-c">
@@ -129,6 +130,8 @@
     <ImportList ref="refImportList"></ImportList>
     <!-- 设备详情 -->
     <EquipDetail ref="refEquipDetail" @on-success="getTableData"></EquipDetail>
+    <!-- 人员选择 -->
+    <UserSelect ref="refUserSelect" title="选择设备管理"></UserSelect>
   </div>
 </template>
 <script setup lang="ts">
@@ -144,6 +147,7 @@ import { withDirectives, resolveDirective } from "vue";
 import EquipAdd from "./comps/modal/equipAdd.vue";
 import ImportList from "./comps/modal/importList.vue";
 import EquipDetail from "./comps/modal/equipDetail.vue";
+import UserSelect from "@/commons/UserSelect/index.vue";
 
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
@@ -192,6 +196,12 @@ const onDetail = (item: any, flag: boolean) => {
   refEquipDetail.value?.handleShow();
   refEquipDetail.value?.getData(item);
   refEquipDetail.value?.exportEditModal(flag);
+};
+
+// 设备设置管理员
+const refUserSelect = ref<InstanceType<typeof UserSelect>>();
+const onSetManage = (dId: number) => {
+  refUserSelect.value?.handleShow();
 };
 
 // 模板下载
