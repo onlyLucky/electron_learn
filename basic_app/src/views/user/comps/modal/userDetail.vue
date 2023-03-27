@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-23 14:25:15
  * @LastEditors: fg
- * @LastEditTime: 2023-03-25 10:41:58
+ * @LastEditTime: 2023-03-27 13:35:03
  * @Description: 用户详情
 -->
 <template>
@@ -22,7 +22,9 @@
           <div class="hInfoLeft f-row-s-c">
             <div class="avatar">
               <img :src="computedAvatarPath" alt="" v-show="form.avatarPath" />
-              <div class="infoAva"></div>
+              <div class="infoAva f-row-c-c" v-show="!form.avatarPath">
+                <span>{{ form.nickname.slice(-2) }}</span>
+              </div>
               <div class="avaHover" v-show="isEdit">
                 <Upload
                   action="/"
@@ -599,6 +601,15 @@ defineExpose({
           img {
             .size(100%, 100%);
             border-radius: 6px;
+          }
+          .infoAva {
+            .size(100%, 100%);
+            border-radius: 6px;
+            background-color: @f_color_active;
+            span {
+              font-size: 18px;
+              color: @bg;
+            }
           }
           .avaHover {
             position: absolute;
