@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 10:55:53
+ * @LastEditTime: 2023-03-27 17:23:10
  * @Description: 用户模块
 -->
 <template>
@@ -40,6 +40,7 @@
             v-model="searchForm.status"
             clearable
             placeholder="请选择"
+            ref="refSelect"
             @on-change="onStatusChange"
           >
             <Option
@@ -242,25 +243,36 @@ let statusData = [
 ];
 const onStatusChange = (e: any) => {
   page.pageNum = 1;
+  if (deptId.value.length > 0) {
+    deptId.value = [];
+  }
   if (!e) searchForm.status = "";
   getUserList();
 };
 // 用户昵称更改
 const onNickNameChange = () => {
   page.pageNum = 1;
+  if (deptId.value.length > 0) {
+    deptId.value = [];
+  }
   getUserList();
 };
 // 登录账号更改
 const onUseNameChange = () => {
   page.pageNum = 1;
+  if (deptId.value.length > 0) {
+    deptId.value = [];
+  }
   getUserList();
 };
 
 // 重置数据
+let refSelect = ref();
 const resetSearch = () => {
   deptId.value = [];
   page.pageSize = pageSizeArr[0];
   page.pageNum = 1;
+  refSelect.value.clearSingleSelect();
   let temp = {
     nickname: "",
     status: "",
@@ -284,7 +296,16 @@ const onDeptChange = (value: any): any => {
     },
     deptId: value[value.length - 1],
   };
-  if (value <= 0) {
+
+  let temp = {
+    nickname: "",
+    status: "",
+    userName: "",
+  };
+  refSelect.value.clearSingleSelect();
+  Object.assign(searchForm, temp);
+
+  if (value.length <= 0) {
     getUserList();
   } else {
     refUserTable.value?.getDataByDept(params);
