@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-02-24 14:12:53
+ * @LastEditTime: 2023-03-27 10:55:45
  * @Description: content
 -->
 <template>
@@ -134,7 +134,7 @@
 <script setup lang="ts">
 // TODO: 列表添加模式 列表加载更多 底部分页模式
 
-import { Input, Modal, Notice } from "view-ui-plus";
+import { Input, Modal, Notice, Message } from "view-ui-plus";
 import ETable, { ParamsType } from "./comps/equipList/eTable.vue";
 import _ from "lodash";
 import { getDownloadTemplate, postUploadDeviceFile } from "@/apis/equipment";
@@ -215,11 +215,16 @@ const refImportList = ref<InstanceType<typeof ImportList>>();
 const handleUpload = (file: any) => {
   postUploadDeviceFile({ file: file })
     .then((res) => {
-      refImportList.value?.handleShow();
-      refImportList.value?.handleData(res.data);
+      if (res.data.length > 0) {
+        refImportList.value?.handleShow();
+        refImportList.value?.handleData(res.data);
+      } else {
+        Message.info("暂无解析人员数据");
+      }
     })
     .catch((err) => {
       console.log(err, "err");
+      Message.error(err || "解析表格数据失败");
     });
   return false;
 };

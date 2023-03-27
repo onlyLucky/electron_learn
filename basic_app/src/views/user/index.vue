@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-25 10:34:02
+ * @LastEditTime: 2023-03-27 10:55:53
  * @Description: 用户模块
 -->
 <template>
@@ -129,7 +129,7 @@
                 :show-upload-list="false"
                 :before-upload="handleUpload"
               >
-                导入设备
+                导入人员
               </Upload>
             </DropdownItem>
             <DropdownItem v-debounce="handleCareer"> 职位管理 </DropdownItem>
@@ -164,6 +164,7 @@
     <UserDetail ref="refUserDetail" @onSuccess="getUserList"></UserDetail>
     <CareerHandler ref="refCareerHandler"></CareerHandler>
     <DepartmentHandle ref="refDepartmentHandle"></DepartmentHandle>
+    <ImportList ref="refImportList"></ImportList>
   </div>
 </template>
 <script setup lang="ts">
@@ -172,13 +173,14 @@ import { Cascader, Message, Notice, Modal } from "view-ui-plus";
 import { ipcRenderer, shell } from "electron";
 import _ from "lodash";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
-import { getDownloadTemplate } from "@/apis/user";
+import { getDownloadTemplate, parseXlsxUser } from "@/apis/user";
 import UserTable from "./comps/useTable.vue";
 import ResetPwa from "./comps/modal/resetPwa.vue";
 import UserAdd from "./comps/modal/userAdd.vue";
 import UserDetail from "./comps/modal/userDetail.vue";
 import CareerHandler from "./comps/modal/careerHandle.vue";
 import DepartmentHandle from "./comps/modal/departmentHandle.vue";
+import ImportList from "./comps/modal/importList.vue";
 let searchForm = reactive<any>({
   nickname: "",
   status: "",
@@ -218,6 +220,8 @@ let refUserDetail = ref<InstanceType<typeof UserDetail>>();
 let refCareerHandler = ref<InstanceType<typeof CareerHandler>>();
 // 部门管理
 let refDepartmentHandle = ref<InstanceType<typeof DepartmentHandle>>();
+// 解析列表
+let refImportList = ref<InstanceType<typeof ImportList>>();
 
 // 详情查看
 const onDetail: any = (data: any, flag: boolean) => {
@@ -375,15 +379,20 @@ const onDownloadTemplate = () => {
 };
 // 处理上传
 const handleUpload = (file: any) => {
-  /* postUploadDeviceFile({ file: file })
+  parseXlsxUser({ file: file })
     .then((res) => {
-      refImportList.value?.handleShow();
-      refImportList.value?.handleData(res.data);
+      if (res.data.length > 0) {
+        refImportList.value?.handleShow();
+        refImportList.value?.handleData(res.data);
+      } else {
+        Message.info("暂无解析人员数据");
+      }
     })
     .catch((err) => {
       console.log(err, "err");
+      Message.error(err || "解析表格数据失败");
     });
-  return false; */
+  return false;
 };
 // 处理下载消息通知
 const handleNotice = (data: any) => {

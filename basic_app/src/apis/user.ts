@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-25 16:09:45
+ * @LastEditTime: 2023-03-27 11:36:11
  * @Description: user api
  */
 
@@ -25,6 +25,8 @@ const path = {
   userCareer: '/userCareer',//职位
   deleteUserCareer: '/userCareer/deleteBatch',//删除多个职位
   getParUserByDeptId: '/user/getParUserByDeptId',//根据部门id 获取上下级用户
+  validationImportUser: '/user/validationImportUser', //解析xlsx用户数据
+  importUser: '/user/importUser',// 解析xlsx数据，添加人员
 }
 
 // 获取部门信息
@@ -164,4 +166,18 @@ export const uploadCareer = (params: any): Promise<ResultData<any>> => {
 // 根据部门id 获取上下级用户
 export const getParUserByDeptId = (params?: { deptId: any }): Promise<ResultData<any>> => {
   return http.get(path.getParUserByDeptId, params)
+}
+
+// 解析xlsx用户数据
+export const parseXlsxUser = (params: any): Promise<ResultData<any>> => {
+  return http.post<any>(path.validationImportUser, params)
+}
+
+// 解析xlsx数据，添加人员
+export const postImportUser = (params: any): Promise<ResultData<any>> => {
+  return http.post<any>(path.importUser, params, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
 }

@@ -2,14 +2,14 @@
  * @Author: fg
  * @Date: 2023-02-20 15:34:10
  * @LastEditors: fg
- * @LastEditTime: 2023-02-21 14:20:02
+ * @LastEditTime: 2023-03-27 11:25:21
  * @Description: 导入设备列表
 -->
 <template>
   <Modal
     v-model="isShow"
     width="900"
-    class-name="Modal f-row-c-c"
+    class-name="equipParseModal f-row-c-c"
     :mask-closable="!loading"
   >
     <template #header>
@@ -101,7 +101,7 @@ const columns: any[] = [
                   h(
                     resolveComponent("Tooltip"),
                     {
-                      content: "设备已存在",
+                      content: params.row.errorMsg,
                       placement: "bottom-start",
                       transfer: true,
                       disabled: params.row.isSucceed,
@@ -158,7 +158,7 @@ const columns: any[] = [
               ]),
             ]
           ),
-          h(
+          /* h(
             "div",
             {
               class: "equipRight f-row-e-c",
@@ -225,7 +225,7 @@ const columns: any[] = [
               ),
               // h(SvgIcon,{})
             ]
-          ),
+          ), */
         ]
       );
     },
@@ -282,9 +282,15 @@ const onSelect = (selection: any) => {
 };
 // 处理数据列表
 const handleData = (list: any[]) => {
+  let temp: any[] = [];
   list.map((item) => {
     item._disabled = !item.isSucceed;
+    if (!item._disabled) {
+      item._checked = true;
+      temp.push(item);
+    }
   });
+  selectArr.value = temp;
   tData = [...list];
 };
 // 加载
@@ -319,7 +325,7 @@ defineExpose({
   margin-top: 10px;
   white-space: nowrap;
 }
-.Modal {
+.equipParseModal {
   user-select: none;
   .mTitle {
     height: 50px;
