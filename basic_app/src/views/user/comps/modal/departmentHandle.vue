@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-24 17:05:17
  * @LastEditors: fg
- * @LastEditTime: 2023-03-25 17:53:36
+ * @LastEditTime: 2023-03-27 15:31:36
  * @Description: 部门管理
 -->
 <template>
@@ -50,6 +50,7 @@
           :horizontal="depConf.horizontal"
           :label-style="depConf.style"
           :tool-bar="depConf.toolBar"
+          :define-menus="[]"
           :filter-node-method="filterNodeMethod"
           @on-node-click="onNodeTap"
         >
@@ -145,7 +146,7 @@
             <div class="formValCon">
               <Select
                 v-show="isEdit"
-                :model-value="form.leader"
+                v-model="form.leader"
                 placeholder="请选择负责人"
                 @on-change="onLeaderChange"
               >
@@ -390,6 +391,7 @@ const onDeptAdd = async (node: any) => {
   form.id = "";
   form.pid = node.id;
   form.parentId = node.id;
+  console.log(form, "from");
   await getUserList(node.id);
   isShowModal.value = true;
 };
@@ -439,6 +441,7 @@ const onCancel = () => {
   isShowModal.value = false;
   editLoading.value = false;
   initForm();
+  (refForm.value?.resetFields as any)();
 };
 // 提交
 const onConfirm = () => {
@@ -450,6 +453,7 @@ const onConfirm = () => {
       } else {
         handleEdit();
       }
+      initForm();
     }
   });
 };

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 14:41:51
  * @LastEditors: fg
- * @LastEditTime: 2023-02-23 13:53:39
+ * @LastEditTime: 2023-03-27 13:59:40
  * @Description: 设备功能api
  */
 
@@ -21,6 +21,9 @@ const path = {
   importDevice: "/device/importDevice",//表格文件导入返回数据提交新增设备
   getMouseByDevice: '/device/getMouseByDevice',//获取设备鼠标信息
   updateMouse: '/device/updateMouse',//更新鼠标信息
+  addUser: '/deviceUser/addUser',// 添加多个设备管理员
+  getUserListByDeviceId: '/deviceUser/getUserListByDeviceId',//获取当前设备管理员
+
 }
 
 // 获取设备列表表格
@@ -78,4 +81,14 @@ export const putDevice = (params: any): Promise<ResultData<any>> => {
 // 更新设备鼠标信息
 export const updateMouse = (params: any): Promise<ResultData<any>> => {
   return http.put<any>(path.updateMouse, params)
+}
+
+// 获取当前设备管理员
+export const getUserListByDeviceId = (params: any): Promise<ResultData<any>> => {
+  return http.get<any[]>(path.getUserListByDeviceId, params)
+}
+
+// 添加多个设备管理员
+export const setDeviceUser = (params: any): Promise<ResultData<any>> => {
+  return http.get<any[]>(path.addUser, params)
 }
