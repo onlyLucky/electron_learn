@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-02-25 16:18:33
+ * @LastEditTime: 2023-03-28 15:11:48
  * @Description: 会议纪要
 -->
 <template>
@@ -110,12 +110,10 @@
             <span
               class="conFooterLink"
               v-debounce="goNextPage"
-              v-show="!(pageTotal - pageList.length < pageSize)"
+              v-show="pageTotal > pageList.length"
               >查看更多</span
             >
-            <span
-              class="conFooterTxt"
-              v-show="pageTotal - pageList.length < pageSize"
+            <span class="conFooterTxt" v-show="pageTotal == pageList.length"
               >已经到底了哦</span
             >
           </div>
@@ -306,15 +304,17 @@ const getData = () => {
 };
 //查看下一页
 const goNextPage = () => {
-  pageNum.value = pageNum.value + 1;
-  getData();
+  if (!loading.value) {
+    pageNum.value = pageNum.value + 1;
+    getData();
+  }
 };
 // 滚动区域监听
 const onConScroll = (e: any) => {
   const { scrollTop, clientHeight, scrollHeight } = e.target;
   if (scrollTop + clientHeight === scrollHeight) {
     // console.log("滚动到底部");
-    if (pageTotal.value - pageList.length >= pageSize.value) {
+    if (pageTotal.value > pageList.length) {
       goNextPage();
     }
   }

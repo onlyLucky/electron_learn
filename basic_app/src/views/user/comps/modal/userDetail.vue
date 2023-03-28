@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-23 14:25:15
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 13:35:03
+ * @LastEditTime: 2023-03-28 11:08:51
  * @Description: 用户详情
 -->
 <template>
