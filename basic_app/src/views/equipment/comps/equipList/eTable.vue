@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 16:34:56
+ * @LastEditTime: 2023-03-28 19:32:09
  * @Description: 设备列表
 -->
 <template>
@@ -28,7 +28,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useBytesUnit } from "@/hooks/useTools";
+import { useTools } from "@/hooks/useTools";
 import { getDevicePage, deleteEquipByIds } from "@/apis/equipment";
 import _ from "lodash";
 export type ParamsType = {
@@ -42,6 +42,7 @@ let emit = defineEmits<{
   (e: "onDetail", item: any, flag: boolean): void;
   (e: "onSetManage", dId: number): void;
 }>();
+const { useBytesUnit } = useTools();
 const columns = [
   {
     type: "selection",

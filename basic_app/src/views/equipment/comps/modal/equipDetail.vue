@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-21 10:52:25
  * @LastEditors: fg
- * @LastEditTime: 2023-03-23 14:21:50
+ * @LastEditTime: 2023-03-28 19:33:04
  * @Description: 设备详情modal
 -->
 <template>
@@ -311,7 +311,7 @@
 </template>
 <script setup lang="ts">
 import { Message, Form } from "view-ui-plus";
-import { useBytesUnit } from "@/hooks/useTools";
+import { useTools } from "@/hooks/useTools";
 import {
   getDeviceDetail,
   getMouseByDevice,
@@ -323,6 +323,7 @@ import _ from "lodash";
 let emit = defineEmits<{
   (e: "onSuccess"): void;
 }>();
+const { useBytesUnit } = useTools();
 let isShow = ref<boolean>(false);
 let isEdit = ref<boolean>(false); // 编辑状态 查看状态
 const handleChange = () => {

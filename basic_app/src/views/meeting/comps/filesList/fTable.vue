@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 19:19:26
+ * @LastEditTime: 2023-03-28 19:32:49
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -30,7 +30,7 @@
 import { useType } from "./useType";
 import { useRoute } from "vue-router";
 import { getAllFileByMeetId } from "@/apis/meet";
-import { useBytesUnit } from "@/hooks/useTools";
+import { useTools } from "@/hooks/useTools";
 import { useMsgTimeShow } from "@/hooks/useMsgTime";
 import hdObj from "_v/setting/handleData";
 import { join } from "path";
@@ -44,6 +44,7 @@ let emit = defineEmits<{
   (e: "onDownload"): void;
   (e: "onDel"): void;
 }>();
+const { useBytesUnit } = useTools();
 // 加载
 let loading = ref<boolean>(false);
 // props
