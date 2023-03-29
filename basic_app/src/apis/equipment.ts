@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 14:41:51
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 13:59:40
+ * @LastEditTime: 2023-03-29 13:48:39
  * @Description: 设备功能api
  */
 
@@ -22,8 +22,8 @@ const path = {
   getMouseByDevice: '/device/getMouseByDevice',//获取设备鼠标信息
   updateMouse: '/device/updateMouse',//更新鼠标信息
   addUser: '/deviceUser/addUser',// 添加多个设备管理员
+  delUser: '/deviceUser/deleteBatch', // 删除多个用户设备管理员
   getUserListByDeviceId: '/deviceUser/getUserListByDeviceId',//获取当前设备管理员
-
 }
 
 // 获取设备列表表格
@@ -91,4 +91,9 @@ export const getUserListByDeviceId = (params: any): Promise<ResultData<any>> => 
 // 添加多个设备管理员
 export const setDeviceUser = (params: any): Promise<ResultData<any>> => {
   return http.get<any[]>(path.addUser, params)
+}
+
+// 删除多个用户设备管理员
+export const deleteDeviceUser = (params: any): Promise<ResultData<any>> => {
+  return http.delete<any[]>(path.delUser, params)
 }

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 15:13:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 16:40:50
+ * @LastEditTime: 2023-03-29 14:15:50
  * @Description: content
 -->
 <template>
@@ -131,7 +131,12 @@
     <!-- 设备详情 -->
     <EquipDetail ref="refEquipDetail" @on-success="getTableData"></EquipDetail>
     <!-- 人员选择 -->
-    <UserSelect ref="refUserSelect" title="选择设备管理"></UserSelect>
+    <UserSelect
+      ref="refUserSelect"
+      title="选择设备管理"
+      :selectData="selectData"
+      @onConfirm="onSelectConfirm"
+    ></UserSelect>
   </div>
 </template>
 <script setup lang="ts">
@@ -140,7 +145,13 @@
 import { Input, Modal, Notice, Message } from "view-ui-plus";
 import ETable, { ParamsType } from "./comps/equipList/eTable.vue";
 import _ from "lodash";
-import { getDownloadTemplate, postUploadDeviceFile } from "@/apis/equipment";
+import {
+  getDownloadTemplate,
+  postUploadDeviceFile,
+  getUserListByDeviceId,
+  deleteDeviceUser,
+  setDeviceUser,
+} from "@/apis/equipment";
 import { ipcRenderer, shell } from "electron";
 import { useNodeStreamDownload } from "@/hooks/useElectronDownload";
 import { withDirectives, resolveDirective } from "vue";
@@ -148,7 +159,9 @@ import EquipAdd from "./comps/modal/equipAdd.vue";
 import ImportList from "./comps/modal/importList.vue";
 import EquipDetail from "./comps/modal/equipDetail.vue";
 import UserSelect from "@/commons/UserSelect/index.vue";
+import { useTools } from "@/hooks/useTools";
 
+const { useArrJsonHandleAttr } = useTools();
 // 顶部搜索部分
 let refSearchInput = ref<InstanceType<typeof Input>>();
 let searchFlag = ref<boolean>(false);
@@ -199,9 +212,54 @@ const onDetail = (item: any, flag: boolean) => {
 };
 
 // 设备设置管理员
+let selectData = ref<any[]>([]);
+let deviceId = ref<any>("");
 const refUserSelect = ref<InstanceType<typeof UserSelect>>();
 const onSetManage = (dId: number) => {
-  refUserSelect.value?.handleShow();
+  deviceId.value = dId;
+  getUserListByDeviceId({ deviceId: dId }).then((res) => {
+    selectData.value = res.data;
+    refUserSelect.value?.handleShow();
+  });
+};
+
+// 完成设置管理员
+const onSelectConfirm = () => {
+  let result = refUserSelect.value?.returnSelect().handle;
+  let delUserIds = useArrJsonHandleAttr(result?.left || [], "id");
+  let addUserIds = useArrJsonHandleAttr(result?.right || [], "id");
+  let promiseArray = [];
+  if (delUserIds.length > 0) {
+    promiseArray.push(
+      deleteDeviceUser({
+        ids: delUserIds.toString(),
+        deviceId: deviceId.value,
+      })
+    );
+  }
+  if (addUserIds.length > 0) {
+    promiseArray.push(
+      setDeviceUser({
+        userIds: addUserIds.toString(),
+        deviceId: deviceId.value,
+      })
+    );
+  }
+  if (promiseArray.length > 0) {
+    Promise.all(promiseArray)
+      .then((res) => {
+        refUserSelect.value?.onCancel();
+        Message.success("用户管理员操作成功");
+      })
+      .catch((err) => {
+        getUserListByDeviceId({ deviceId: deviceId.value }).then((res) => {
+          refUserSelect.value!.loadingBtn = false;
+          selectData.value = res.data;
+        });
+      });
+  } else {
+    refUserSelect.value?.onCancel();
+  }
 };
 
 // 模板下载

@@ -12,7 +12,90 @@ export const useTools = () => {
     return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
   }
 
+  /**
+   * @description: 数组处理arr，删除项为对象，删除某一项属性attr中属性值为value
+   * @param {any} arr 预处理数组
+   * @param {string} attr 属性
+   * @param {any} value 属性值
+   * @return {*} 处理后的数组
+   */
+  const useArrRemoveJson = (arr: any[], attr: string, value: any) => {
+    if (!arr || arr.length == 0) {
+      return []
+    }
+    let newArr = arr.filter(function (item, index) {
+      return item[attr] != value
+    }) || []
+    return newArr
+  }
+
+  /**
+   * @description: 获取当前数组对象arr 是否存在attr属性 值为value
+   * @param {any} arr 数组对象
+   * @param {string} attr 属性
+   * @param {any} value 属性值
+   * @return {*} 返回当前key为attr， value 为value的数组
+   */
+  const useArrHasJson = (arr: any[], attr: string, value: any) => {
+    if (!arr || arr.length == 0) {
+      return []
+    }
+    return arr.filter(function (item, index) {
+      return item[attr] == value
+    })
+  }
+
+  /**
+   * @description: 获取 arr1 与 arr2 属性key 为 attr 的并集
+   * @param {any} arr1 第一个数组
+   * @param {any} arr2 第二个数组
+   * @param {string} attr key
+   * @return {*} 返回并集数组
+   */
+  const useArrJsonOverlap = (arr1: any[], arr2: any[], attr: string) => {
+    let res: any[] = []
+    res = arr1.filter(x => arr2.some(y => y[attr] === x[attr]))
+    return res
+  }
+
+  /**
+   * @description: 获取arr1 与 arr2 属性key 为 attr 不是并集部分，
+   * @param {any} arr1 第一个数组
+   * @param {any} arr2 第二个数组
+   * @param {string} attr key
+   * @return {*} 返回为对象 left为左侧（arr1） right为右侧（arr2）
+   */
+  const useArrJsonNoOverlap = (arr1: any[], arr2: any[], attr: string) => {
+    type ResType = {
+      left: any[],
+      right: any[]
+    }
+    let res: ResType = { left: [], right: [] }
+    res.left = arr1.filter(x => !arr2.some(y => y[attr] === x[attr]))
+    res.right = arr2.filter(y => !arr1.some(x => x[attr] === y[attr]))
+    return res
+  }
+
+  /**
+   * @description: 数组按照attr 的值 返回 [..value]
+   * @param {any} arr 
+   * @param {string} attr
+   * @return {*} [..value]
+   */
+  const useArrJsonHandleAttr = (arr: any[], attr: string) => {
+    let res: any[] = [];
+    arr.map(item => {
+      res.push(item[attr])
+    })
+    return res;
+  }
+
   return {
-    useBytesUnit
+    useBytesUnit,
+    useArrRemoveJson,
+    useArrHasJson,
+    useArrJsonOverlap,
+    useArrJsonNoOverlap,
+    useArrJsonHandleAttr
   }
 }
