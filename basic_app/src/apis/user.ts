@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 17:14:52
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 11:36:11
+ * @LastEditTime: 2023-03-29 14:52:03
  * @Description: user api
  */
 
@@ -27,6 +27,7 @@ const path = {
   getParUserByDeptId: '/user/getParUserByDeptId',//根据部门id 获取上下级用户
   validationImportUser: '/user/validationImportUser', //解析xlsx用户数据
   importUser: '/user/importUser',// 解析xlsx数据，添加人员
+  getOrgDept: '/user/getOrgDept',// 获取部门数据
 }
 
 // 获取部门信息
@@ -180,4 +181,9 @@ export const postImportUser = (params: any): Promise<ResultData<any>> => {
       'Content-Type': 'application/json'
     }
   })
+}
+
+// 获取部门人员数据
+export const getOrgDept = (params?: any): Promise<ResultData<any>> => {
+  return http.get(path.getOrgDept, params)
 }

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-28 15:39:14
  * @LastEditors: fg
- * @LastEditTime: 2023-03-29 11:43:01
+ * @LastEditTime: 2023-03-30 09:58:28
  * @Description: 用户列表模式
  */
 
@@ -128,10 +128,8 @@ export const useUser = () => {
     userList.value = temp
   }
 
-  // 删除某一项
-  const onDelItem = (index: number, id: any) => {
-    selectIds.value = _.without([...selectIds.value], id);
-    selectList.value = useArrRemoveJson([...selectList.value], 'id', id)
+  // 更新用户数据选中
+  const uploadSelect = () => {
     let temp = [...userList.value];
     temp.map((item) => {
       item.select = selectIds.value.indexOf(item.id) != -1;
@@ -140,6 +138,13 @@ export const useUser = () => {
     selectAll.value = userList.value.every((item, index, arr) => {
       return item.select == true
     })
+  }
+
+  // 删除某一项
+  const onDelItem = (index: number, id: any) => {
+    selectIds.value = _.without([...selectIds.value], id);
+    selectList.value = useArrRemoveJson([...selectList.value], 'id', id)
+    uploadSelect()
   }
 
 
@@ -178,6 +183,7 @@ export const useUser = () => {
     onSearchChange,
     onItemSelect,
     onSelectAll,
-    onDelItem
+    onDelItem,
+    uploadSelect
   }
 }

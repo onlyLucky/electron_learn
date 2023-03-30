@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 14:41:51
  * @LastEditors: fg
- * @LastEditTime: 2023-03-29 13:48:39
+ * @LastEditTime: 2023-03-29 14:45:43
  * @Description: 设备功能api
  */
 
@@ -22,7 +22,7 @@ const path = {
   getMouseByDevice: '/device/getMouseByDevice',//获取设备鼠标信息
   updateMouse: '/device/updateMouse',//更新鼠标信息
   addUser: '/deviceUser/addUser',// 添加多个设备管理员
-  delUser: '/deviceUser/deleteBatch', // 删除多个用户设备管理员
+  delUser: '/deviceUser/deleteBatchBycurUserId', // 删除多个用户设备管理员
   getUserListByDeviceId: '/deviceUser/getUserListByDeviceId',//获取当前设备管理员
 }
 
