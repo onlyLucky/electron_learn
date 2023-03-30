@@ -17,6 +17,7 @@ import { release } from 'os'
 import { join } from 'path'
 import _ from 'lodash';
 const fs = require('fs')
+const { setTimeout, setInterval, clearTimeout, clearInterval } = require('timers');
 
 let Config = require(join(process.env.PUBLIC, 'config/index.json'))
 const STORE_PATH = app.getPath('userData') // 获取应用的用户目录 C:\Users\XXX\AppData\Roaming\basic-app
@@ -304,7 +305,8 @@ app.on('activate', () => {
   }
 })
 
-
+let tokenTimer = null;
+let tokenTime = 0;
 // 接收num change改变的通信
 ipcMain.on('num_change', (event, arg) => {
   console.log(arg, 'num_change')
@@ -339,12 +341,29 @@ ipcMain.on('on_login_out', (event, arg) => {
     }
   })
   win = null;
-
 })
 ipcMain.on('on_login', (event, arg) => {
   BrowserWindow.getFocusedWindow().close();
   loginWin = null;
+  tokenTimer = setInterval(() => {
+    tokenTime = tokenTime + 10;
+    if (tokenTime >= Config.network.timeOut - 60 * 10) {
+      BrowserWindow.getFocusedWindow().webContents.send('timeout')
+    }
+  }, 10000)
   createWindow()
+})
+//  关闭定时器
+ipcMain.on('clear_timeout', (event, arg) => {
+  // Config.network.timeOut - 60*10
+  tokenTime = 0
+  clearInterval(tokenTimer)
+  tokenTimer = setInterval(() => {
+    tokenTime = tokenTime + 10;
+    if (tokenTime >= Config.network.timeOut - 60 * 10) {
+      BrowserWindow.getFocusedWindow().webContents.send('timeout')
+    }
+  }, 10000)
 })
 // 关闭窗口
 ipcMain.on('window_close', function (e) {

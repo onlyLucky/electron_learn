@@ -8,6 +8,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { ipcRenderer } from "electron";
+import { goRefresh } from "@/apis/login";
 const { locale } = useI18n();
 
 onMounted(() => {
@@ -19,6 +20,12 @@ onMounted(() => {
   ipcRenderer.on("set_url", (e, url, lang) => {
     locale.value = lang;
     localStorage.setItem("app_url", url);
+  });
+  ipcRenderer.on("timeout", (e) => {
+    goRefresh({ oldToken: localStorage.getItem("token") || "" }).then((res) => {
+      localStorage.setItem("token", res.data);
+      ipcRenderer.send("clear_timeout");
+    });
   });
 });
 </script>
