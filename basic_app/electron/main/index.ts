@@ -105,7 +105,7 @@ function createWindow() {
   // 替换聚焦窗口
   focusWin = win;
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
-    win.loadURL(urlPath + '#/meeting')
+    win.loadURL(urlPath + '#/home')
     // Open devTool if the app is not packaged
     win.webContents.openDevTools()
   } else {
@@ -113,7 +113,7 @@ function createWindow() {
       pathname: indexHtml,
       protocol: 'file:',
       slashes: true,
-      hash: "meeting"
+      hash: "home"
     }))
   }
   // Test actively push message to the Electron-Renderer
@@ -284,7 +284,7 @@ app.whenReady().then(() => {
 })
 // 当所有的窗口都被关闭时触发
 app.on('window-all-closed', (e) => {
-  console.log('window-all-closed', BrowserWindow.getAllWindows().length)
+  console.log('window-all-closed')
 })
 
 app.on('second-instance', () => {
@@ -331,6 +331,16 @@ ipcMain.on('win_full', (event, flag) => {
   BrowserWindow.getFocusedWindow().setFullScreen(flag);
 })
 
+ipcMain.on('on_login_out', (event, arg) => {
+  createLoginWin()
+  BrowserWindow.getAllWindows().forEach(v => {
+    if (v.id != loginWin.id) {
+      v.webContents.close()
+    }
+  })
+  win = null;
+
+})
 ipcMain.on('on_login', (event, arg) => {
   BrowserWindow.getFocusedWindow().close();
   loginWin = null;
