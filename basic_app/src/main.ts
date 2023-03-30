@@ -17,7 +17,6 @@ import './assets/iconfont/iconfont.js';
 import "@/styles/index"
 // 自定义指令引入
 import { vDebounce, vMove } from "./directive/index"
-import http from './libs/request'
 import { webFrame } from "electron"
 
 // 引入组织架构
@@ -44,7 +43,6 @@ app.use(i18n)
 app.use(vDebounce).use(vMove)
 app.use(vue3TreeOrg)
 
-app.config.globalProperties.$http = http
 
 app.component('SvgIcon', SvgIcon)
 app.component('Button', Button)

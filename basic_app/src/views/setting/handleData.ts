@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-02-01 11:34:17
+ * @LastEditTime: 2023-03-30 14:44:46
  * @Description: 处理动态数据
  */
 
@@ -24,8 +24,13 @@ class HandleData {
     this.init()
   }
 
-  getConfigItem(key: ConfigKey): any {
-    return this.config[key]
+  getConfigItem(key?: ConfigKey): any {
+    if (key) {
+      return this.config[key]
+    } else {
+      return this.config
+    }
+
   }
 
   init() {
@@ -34,6 +39,7 @@ class HandleData {
 
   readFile() {
     this.menu = []
+    if (!this.app_url) return false;
     this.config = JSON.parse(fs.readFileSync(join(this.app_url, '/config.json'), { encoding: 'utf8' }))
     let key: keyof ConfigType
     for (key in this.config) {

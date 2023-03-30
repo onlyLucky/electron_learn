@@ -2,12 +2,14 @@
  * @Author: fg
  * @Date: 2022-12-26 16:10:58
  * @LastEditors: fg
- * @LastEditTime: 2023-02-23 14:57:51
+ * @LastEditTime: 2023-03-30 14:42:35
  * @Description: 请求接口封装
  */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from "axios"
 import { Message } from "view-ui-plus"
+import { useConfig } from "@/hooks/useConfig"
 
+const { Config } = useConfig();
 // 响应数据结构
 interface Result {
   code: number;
@@ -24,8 +26,8 @@ enum RequestEnums {
   SUCCESS = 200,//请求成功
   TIMEOUT = 20000,//超时时间
 }
-// Config.baseUrl
-const URL: string = '/api'
+// const URL: string = '/api' Config.network.baseUrl
+const URL: string = Config.network.baseUrl
 const config = {
   // 默认地址
   baseURL: URL as string,
@@ -47,7 +49,8 @@ class Http {
      * 客户端发送请求 -> [请求拦截器] -> 服务器
      */
     this.service.interceptors.request.use(
-      (config: AxiosRequestConfig): AxiosRequestConfig => {
+      // (config: AxiosRequestConfig): AxiosRequestConfig => {
+      (config) => {
         const token = localStorage.getItem('token') || '';
         if (token) {
           config.headers!['Authorization'] = token

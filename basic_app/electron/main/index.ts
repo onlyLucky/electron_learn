@@ -216,8 +216,8 @@ function createLoginWin() {
   } else {
     loginWin.loadFile(indexHtml)
   }
-
-  loginWin.focus()
+  loginWin.webContents.focus()
+  // loginWin.focus()
   loginWin.on('close', (e) => {
     e.preventDefault();  //阻止窗口的关闭事件
     focusWin = loginWin

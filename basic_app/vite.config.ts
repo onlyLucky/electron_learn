@@ -101,7 +101,7 @@ export default defineConfig({
 
     },
   },
-  server: {
+  /* server: {
     host: "0.0.0.0",
     proxy: {
       '/api': {
@@ -110,7 +110,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, "")//重写路径,替换/api
       }
     }
-  },
+  }, */
   /* server: process.env.VSCODE_DEBUG ? (() => {
     const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
     return {
