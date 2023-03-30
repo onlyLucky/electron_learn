@@ -73,7 +73,7 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
           icon: 'icon-shouye'
         },
-        component: () => import('_v/meeting/index.vue')
+        component: () => import('_v/home/index.vue')
       },
       {
         path: '/meeting',
