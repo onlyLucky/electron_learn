@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-03-31 11:45:13
+ * @LastEditTime: 2023-03-31 17:56:47
  * @Description: 首页
 -->
 <template>
@@ -135,7 +135,7 @@
       </div>
       <div class="history">
         <div class="hTitle f-row-s-c">
-          <span class="f-row-s-c">播放历史</span>
+          <span class="hTitleTxt f-row-s-c">播放历史</span>
         </div>
         <div class="historyBox">
           <div class="historyItem f-row-b-c">
@@ -213,8 +213,183 @@
         </div>
       </div>
     </div>
-    <div class="HomeMeet"></div>
-    <div class="HomeEquip"></div>
+    <div class="HomeMeet">
+      <div class="HomeMeetBox">
+        <div class="hTitle f-row-b-c">
+          <span class="hTitleTxt f-row-s-c">数据总览</span>
+          <div class="filterBox">
+            <div class="filterItem">
+              <Select v-model="time" size="small" style="width: 68px">
+                <Option
+                  v-for="(item, index) in timeType"
+                  :value="item.value"
+                  :key="index"
+                  >{{ item.name }}</Option
+                >
+              </Select>
+            </div>
+          </div>
+        </div>
+        <div class="totalBox f-row-b-c">
+          <div class="totalItem f-col-c-c">
+            <div class="totalItemTop f-row-s-c">
+              <CountUp :start="0" :duration="1" :end="300"></CountUp>
+            </div>
+            <span class="labelTitle">会议总数</span>
+          </div>
+          <div class="totalItem f-col-c-c">
+            <div class="totalItemTop f-row-s-c">
+              <CountUp :start="0" :duration="1" :end="300"></CountUp>
+            </div>
+            <span class="labelTitle">设备总数</span>
+          </div>
+          <div class="totalItem f-col-c-c">
+            <div class="totalItemTop f-row-s-c">
+              <CountUp :start="0" :duration="1" :end="300"></CountUp>
+            </div>
+            <span class="labelTitle">人员总数</span>
+          </div>
+          <div class="totalItem f-col-c-c">
+            <div class="totalItemTop f-row-s-c">
+              <CountUp :start="0" :duration="1" :end="30000"></CountUp>
+            </div>
+            <span class="labelTitle">可下载会议数</span>
+          </div>
+        </div>
+        <div class="circleBox f-row-b-c">
+          <div class="circleItem f-col-c-c">
+            <Circle
+              :percent="80"
+              :size="100"
+              :strokeWidth="7"
+              :trailWidth="7"
+              stroke-color="var(--home_color2)"
+            >
+              <div class="circleCon">
+                <CountUp :duration="1" :end="12"></CountUp>
+              </div>
+            </Circle>
+            <div class="circleLabel">
+              <span>本地下载</span>
+            </div>
+          </div>
+          <div class="circleItem f-col-c-c">
+            <Circle
+              :percent="80"
+              :size="100"
+              :strokeWidth="7"
+              :trailWidth="7"
+              stroke-color="var(--f_color_active)"
+            >
+              <div class="circleCon">
+                <CountUp :duration="1" :end="12"></CountUp>
+              </div>
+            </Circle>
+            <div class="circleLabel">
+              <span>使用中设备</span>
+            </div>
+          </div>
+          <div class="circleItem f-col-c-c">
+            <Circle
+              :percent="80"
+              :size="100"
+              :strokeWidth="7"
+              :trailWidth="7"
+              stroke-color="var(--home_color1)"
+            >
+              <div class="circleCon">
+                <CountUp :duration="1" :end="12"></CountUp>
+              </div>
+            </Circle>
+            <div class="circleLabel">
+              <span>保密会议</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chartBox">
+          <div class="hTitle f-row-b-c">
+            <span class="hTitleTxt f-row-s-c">会议图表</span>
+            <div class="filterBox">
+              <div class="filterItem">
+                <Select v-model="time" size="small" style="width: 68px">
+                  <Option
+                    v-for="(item, index) in timeType"
+                    :value="item.value"
+                    :key="index"
+                    >{{ item.name }}</Option
+                  >
+                </Select>
+              </div>
+            </div>
+          </div>
+          <div class="conEcharts">
+            <MeetEcharts></MeetEcharts>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="HomeEquip">
+      <div class="equipTop">
+        <div class="hTitle f-row-b-c">
+          <span class="hTitleTxt f-row-s-c">设备图表</span>
+          <div class="filterBox">
+            <div class="filterItem">
+              <Select v-model="time" size="small" style="width: 68px">
+                <Option
+                  v-for="(item, index) in timeType"
+                  :value="item.value"
+                  :key="index"
+                  >{{ item.name }}</Option
+                >
+              </Select>
+            </div>
+          </div>
+        </div>
+        <div class="equipEcharts">
+          <EquipEcharts></EquipEcharts>
+        </div>
+      </div>
+      <div class="equipBottom">
+        <div class="hTitle f-row-b-c">
+          <span class="hTitleTxt f-row-s-c">今日会议</span>
+        </div>
+        <div class="todayCon">
+          <Timeline>
+            <TimelineItem>
+              <p class="meetTime">下午 3:00</p>
+              <p class="meetName">
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </p>
+            </TimelineItem>
+            <TimelineItem>
+              <p class="meetTime">下午 3:00</p>
+              <p class="meetName">
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </p>
+            </TimelineItem>
+            <TimelineItem>
+              <p class="meetTime">下午 3:00</p>
+              <p class="meetName">
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </p>
+            </TimelineItem>
+            <TimelineItem>
+              <p class="meetTime">下午 3:00</p>
+              <p class="meetName">
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </p>
+            </TimelineItem>
+            <TimelineItem>
+              <p class="meetTime">下午 3:00</p>
+              <p class="meetName">
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </p>
+            </TimelineItem>
+          </Timeline>
+        </div>
+      </div>
+    </div>
     <!-- <h1>meet index</h1>
     <Button @click="loginOut">退出登录</Button> -->
   </div>
@@ -222,14 +397,33 @@
 <script setup lang="ts">
 import { ipcRenderer } from "electron";
 import useUserInfo from "./hooks/useUserInfo";
-import { CountUp } from "view-ui-plus";
-
+import { CountUp, Timeline, TimelineItem, Time } from "view-ui-plus";
+import MeetEcharts from "./comps/meetEcharts.vue";
+import EquipEcharts from "./comps/equipEcharts.vue";
 const { isEdit } = useUserInfo();
 const loginOut = () => {
   // on_login_out
   console.log("on_login_out");
   ipcRenderer.send("on_login_out");
 };
+let time = ref<number>(0);
+let timeType = [
+  {
+    name: "本周",
+    value: 0,
+    times: [],
+  },
+  {
+    name: "本月",
+    value: 1,
+    times: [],
+  },
+  {
+    name: "所有",
+    value: 2,
+    times: [],
+  },
+];
 </script>
 <style scoped lang="less">
 :deep(.HomeUser) {
@@ -247,6 +441,7 @@ const loginOut = () => {
       color: @home_num_t;
     }
   }
+
   .history {
     .historyTxt {
       .ivu-typography {
@@ -256,8 +451,44 @@ const loginOut = () => {
     }
   }
 }
+:deep(.HomeMeet) {
+  .totalBox {
+    .ivu-count-up {
+      font-size: 30px;
+      color: @home_num_t;
+    }
+  }
+}
+:deep(.ivu-select-selection) {
+  color: @fontColor;
+  border: none;
+}
+:deep(.ivu-select-visible .ivu-select-selection) {
+  box-shadow: none;
+}
+:deep(.circleCon) {
+  .ivu-count-up {
+    font-size: 30px;
+    color: @home_num_t;
+  }
+}
 .Home {
   .size(100%,100%);
+  .hTitle {
+    .size(100%, 50px);
+    padding-right: 20px;
+    box-sizing: border-box;
+    .hTitleTxt {
+      .size(120px, 40px);
+      font-weight: bold;
+      font-size: 14px;
+      color: @fontColor;
+      padding-left: 20px;
+      box-sizing: border-box;
+      // background-color: @f_color_active;
+      border-radius: 0% 20px 20px 0%;
+    }
+  }
   .HomeUser {
     .size(27%,100%);
     flex-shrink: 0;
@@ -284,7 +515,7 @@ const loginOut = () => {
       .size(100%,324px);
       padding: 20px;
       box-sizing: border-box;
-      border-bottom: 1px solid @search_bottom_border;
+      border-bottom: 1px solid @home_b_color;
       .optBox {
         .size(100%, 40px);
         // background: pink;
@@ -394,21 +625,7 @@ const loginOut = () => {
     .history {
       .size(100%, calc(100% - 374px));
       margin-top: 10px;
-      .hTitle {
-        .size(100%, 50px);
-        font-size: 14px;
-        color: @bg;
-        padding-right: 20px;
-        box-sizing: border-box;
-        font-weight: bold;
-        span {
-          .size(120px, 40px);
-          padding-left: 20px;
-          box-sizing: border-box;
-          background-color: @f_color_active;
-          border-radius: 0% 20px 20px 0%;
-        }
-      }
+
       .historyBox {
         .size(100%, calc(100% - 50px));
         overflow: auto;
@@ -442,11 +659,106 @@ const loginOut = () => {
   }
   .HomeMeet {
     .size(46%,100%);
+    padding: 0px 50px;
+    box-sizing: border-box;
+    border-right: 1px solid @home_b_color;
+    .HomeMeetBox {
+      .size(100%,100%);
+      .hTitle {
+        padding: 0px;
+        span {
+          padding: 0px;
+        }
+      }
+      .totalBox {
+        .size(100%, 80px);
+        margin-bottom: 20px;
+        .totalItem {
+          .totalItemTop {
+            .optIcon {
+              margin-right: 10px;
+            }
+          }
+          .labelTitle {
+            font-size: 12px;
+            color: @fontColor;
+          }
+        }
+      }
+      .circleBox {
+        .size(100%,180px);
+        padding-bottom: 30px;
+        border-bottom: 1px solid @home_b_color;
+        box-sizing: border-box;
+        .circleItem {
+          .size(100px,auto);
+          .circleLabel {
+            font-size: 14px;
+            margin-top: 4px;
+            color: @fontColor;
+          }
+        }
+      }
+      .chartBox {
+        .size(100%,calc(100% - 370px));
+        margin-top: 30px;
+
+        .hTitle {
+          padding: 0px;
+          span {
+            padding: 0px;
+          }
+        }
+        .conEcharts {
+          .size(100%, calc(100% - 50px));
+        }
+      }
+    }
   }
   .HomeEquip {
     .size(27%,100%);
     flex-shrink: 0;
-    background-color: lightblue;
+    .equipTop {
+      .size(100%,45%);
+      padding: 0 20px;
+      box-sizing: border-box;
+      border-bottom: 1px solid @home_b_color;
+      .hTitle {
+        padding: 0px;
+        span {
+          padding: 0px;
+        }
+      }
+      .equipEcharts {
+        .size(100%, calc(100% - 50px));
+        padding-bottom: 20px;
+        box-sizing: border-box;
+      }
+    }
+    .equipBottom {
+      .size(100%,55%);
+      padding: 20px 20px 0px;
+      box-sizing: border-box;
+      .hTitle {
+        padding: 0px;
+        margin-bottom: 10px;
+        span {
+          padding: 0px;
+        }
+      }
+      .todayCon {
+        .size(100%,calc(100% - 60px));
+        overflow: auto;
+        .meetTime {
+          font-size: 14px;
+          color: @f_color_active;
+        }
+        .meetName {
+          font-size: 14px;
+          color: @fontColor;
+        }
+      }
+    }
   }
   .optMenuItem {
     .optIcon {
@@ -456,9 +768,6 @@ const loginOut = () => {
       font-size: 14px;
       color: @f_color_h3;
     }
-  }
-  h1 {
-    font-size: 30px;
   }
 }
 @keyframes roll {
