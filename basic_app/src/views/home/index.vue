@@ -2,17 +2,229 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-03-30 10:35:05
+ * @LastEditTime: 2023-03-31 11:45:13
  * @Description: 首页
 -->
 <template>
-  <div class="meetListCon">
-    <h1>meet index</h1>
-    <Button @click="loginOut">退出登录</Button>
+  <div class="Home f-row">
+    <div class="HomeUser">
+      <div class="topTip f-row-c-c">
+        <div class="con f-row-s-c">
+          <div class="conTip f-row-c-c">
+            【参会通知】今日您有一个会议参加，最近一次会议【这是一个会议名称】将于12分钟后开始，请留意参会时间及时做好会议准备。
+          </div>
+        </div>
+      </div>
+      <div class="userInfo">
+        <div class="optBox f-row-b-c">
+          <Tooltip placement="bottom" content="退出登录">
+            <div class="optLeft optItem f-row-c-c" v-debounce="loginOut">
+              <svg-icon
+                iconName="icon-tuichudenglu"
+                className="optIcon"
+                size="16"
+                color="var(--fontColor)"
+              ></svg-icon>
+              <!-- <span>新增</span> -->
+            </div>
+          </Tooltip>
+          <Dropdown placement="bottom-start" trigger="contextMenu">
+            <div class="optItem f-row-c-c">
+              <svg-icon
+                iconName="icon-gengduo1"
+                className="optIcon"
+                size="20"
+                color="var(--fontColor)"
+              ></svg-icon>
+            </div>
+            <template #list>
+              <DropdownMenu>
+                <DropdownItem>
+                  <div class="optMenuItem f-row-s-c">
+                    <svg-icon
+                      iconName="icon-bianji"
+                      className="optIcon"
+                      size="20"
+                      color="var(--fontColor)"
+                    ></svg-icon>
+                    <span>编辑信息</span>
+                  </div>
+                </DropdownItem>
+                <DropdownItem>
+                  <div class="optMenuItem f-row-s-c">
+                    <svg-icon
+                      iconName="icon-Union-32"
+                      className="optIcon"
+                      size="20"
+                      color="var(--fontColor)"
+                    ></svg-icon>
+                    <span>退出应用</span>
+                  </div>
+                </DropdownItem>
+              </DropdownMenu>
+            </template>
+          </Dropdown>
+        </div>
+        <div class="userAvatar f-row-c-c">
+          <div class="avatar">
+            <!-- <img :src="computedAvatarPath" alt="" v-show="form.avatarPath" /> -->
+            <div class="infoAva f-row-c-c">
+              <span>张三</span>
+            </div>
+            <!-- <div class="avaHover" v-show="isEdit">
+              <Upload
+                action="/"
+                accept=".jpg, .jpeg, .png"
+                :show-upload-list="false"
+                :before-upload="handleUpload"
+              >
+                <div class="uploadAvatar f-row-c-c">
+                  <Icon
+                    type="ios-camera"
+                    size="30"
+                    color="var(--meet_summary_icon_time)"
+                  ></Icon>
+                </div>
+              </Upload>
+            </div> -->
+            <div class="genderBox f-row-c-c">
+              <svg-icon
+                iconName="icon-nan"
+                className="iconGender"
+                size="16"
+                color="var(--f_color_active)"
+              ></svg-icon>
+              <!-- <svg-icon
+                iconName="icon-nv"
+                v-show="detail.userSex == 2"
+                className="iconGender"
+                size="16"
+                color="var(--error)"
+              ></svg-icon> -->
+            </div>
+          </div>
+        </div>
+        <div class="userName f-row-c-c">
+          <Text
+            :ellipsis-config="{ tooltip: true }"
+            ellipsis
+            placement="bottom-start"
+          >
+            张三丰•杰克•jian
+          </Text>
+        </div>
+        <div class="deptName f-row-c-c">
+          <Text
+            :ellipsis-config="{ tooltip: true }"
+            ellipsis
+            placement="bottom-start"
+          >
+            蓝翔技校/技术检测部门
+          </Text>
+        </div>
+        <div class="msgBox f-row-c-c">
+          <div class="msgItem f-col-c-c">
+            <CountUp :start="0" :duration="1" :end="300"></CountUp>
+            <span class="msgItemTitle">参加会议数</span>
+          </div>
+          <div class="msgItem f-col-c-c">
+            <CountUp :duration="1" :end="12"></CountUp>
+            <span class="msgItemTitle">绑定设备数</span>
+          </div>
+        </div>
+      </div>
+      <div class="history">
+        <div class="hTitle f-row-s-c">
+          <span class="f-row-s-c">播放历史</span>
+        </div>
+        <div class="historyBox">
+          <div class="historyItem f-row-b-c">
+            <div class="historyTxt f-row-b-c">
+              <svg-icon
+                iconName="icon-zanting"
+                className="optIcon"
+                size="26"
+                color="var(--f_color_active)"
+              ></svg-icon>
+              <Text
+                :ellipsis-config="{ tooltip: true }"
+                ellipsis
+                placement="bottom-start"
+              >
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </Text>
+            </div>
+            <div class="historyProgress">观看至<span>22</span>%</div>
+          </div>
+          <div class="historyItem f-row-b-c">
+            <div class="historyTxt f-row-b-c">
+              <svg-icon
+                iconName="icon-zanting"
+                className="optIcon"
+                size="26"
+                color="var(--f_color_active)"
+              ></svg-icon>
+              <Text
+                :ellipsis-config="{ tooltip: true }"
+                ellipsis
+                placement="bottom-start"
+              >
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </Text>
+            </div>
+            <div class="historyProgress">观看至<span>22</span>%</div>
+          </div>
+          <div class="historyItem f-row-b-c">
+            <div class="historyTxt f-row-b-c">
+              <svg-icon
+                iconName="icon-zanting"
+                className="optIcon"
+                size="26"
+                color="var(--f_color_active)"
+              ></svg-icon>
+              <Text
+                :ellipsis-config="{ tooltip: true }"
+                ellipsis
+                placement="bottom-start"
+              >
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </Text>
+            </div>
+            <div class="historyProgress">观看至<span>22</span>%</div>
+          </div>
+          <div class="historyItem f-row-b-c">
+            <div class="historyTxt f-row-b-c">
+              <svg-icon
+                iconName="icon-zanting"
+                className="optIcon"
+                size="26"
+                color="var(--f_color_active)"
+              ></svg-icon>
+              <Text
+                :ellipsis-config="{ tooltip: true }"
+                ellipsis
+                placement="bottom-start"
+              >
+                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+              </Text>
+            </div>
+            <div class="historyProgress">观看至<span>22</span>%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="HomeMeet"></div>
+    <div class="HomeEquip"></div>
+    <!-- <h1>meet index</h1>
+    <Button @click="loginOut">退出登录</Button> -->
   </div>
 </template>
 <script setup lang="ts">
 import { ipcRenderer } from "electron";
+import useUserInfo from "./hooks/useUserInfo";
+import { CountUp } from "view-ui-plus";
+
+const { isEdit } = useUserInfo();
 const loginOut = () => {
   // on_login_out
   console.log("on_login_out");
@@ -20,9 +232,249 @@ const loginOut = () => {
 };
 </script>
 <style scoped lang="less">
-.meetListCon {
+:deep(.HomeUser) {
+  .userName .ivu-typography {
+    color: @f_color_h3;
+    font-size: 16px;
+  }
+  .deptName .ivu-typography {
+    font-size: 14px;
+    color: @fontColor;
+  }
+  .msgBox .msgItem {
+    .ivu-count-up {
+      font-size: 28px;
+      color: @home_num_t;
+    }
+  }
+  .history {
+    .historyTxt {
+      .ivu-typography {
+        color: @home_num_t;
+        font-size: 16px;
+      }
+    }
+  }
+}
+.Home {
+  .size(100%,100%);
+  .HomeUser {
+    .size(27%,100%);
+    flex-shrink: 0;
+    box-sizing: border-box;
+    background-color: @home_user_bg;
+    .topTip {
+      .size(100%,40px);
+      background: @home_tip;
+      padding: 0 20px;
+      box-sizing: border-box;
+      .con {
+        .size(100%,100%);
+        overflow: hidden;
+        .conTip {
+          white-space: nowrap;
+          width: max-content;
+          font-size: 14px;
+          color: @f_color_h3;
+          animation: roll 18s infinite linear;
+        }
+      }
+    }
+    .userInfo {
+      .size(100%,324px);
+      padding: 20px;
+      box-sizing: border-box;
+      border-bottom: 1px solid @search_bottom_border;
+      .optBox {
+        .size(100%, 40px);
+        // background: pink;
+        // margin-bottom: 10px;
+        .optItem {
+          padding: 6px;
+          cursor: pointer;
+          /* &:hover {
+            background-color: @search_bottom_border;
+          } */
+          span {
+            margin-left: 4px;
+            font-size: 14px;
+            color: @f_color_h3;
+            border: 1px solid @fontColor;
+          }
+        }
+        .optItem.optLeft {
+          border-radius: 50%;
+          border: 1px solid @fontColor;
+        }
+      }
+      .userAvatar {
+        .size(100%,80px);
+        margin-bottom: 10px;
+        .avatar {
+          .size(80px, 80px);
+          border-radius: 50%;
+          position: relative;
+          &:hover {
+            .avaHover {
+              display: block;
+            }
+          }
+          img {
+            .size(100%, 100%);
+            border-radius: 50%;
+          }
+          .infoAva {
+            .size(100%, 100%);
+            border-radius: 50%;
+            background-color: @f_color_active;
+            span {
+              font-size: 18px;
+              color: @bg;
+            }
+          }
+          .avaHover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            cursor: pointer;
+            .size(100%, 100%);
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.4);
+            .uploadAvatar {
+              .size(74px, 74px);
+            }
+          }
+          .genderBox {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: @bg;
+            padding: 2px;
+            border-radius: 20px;
+            border: 1px solid @search_bottom_border;
+            cursor: pointer;
+            span.noGender {
+              display: inline-block;
+              font-size: 12px;
+              width: 30px;
+              text-align: center;
+              color: @fontColor;
+            }
+            .iconEditGender {
+              margin-left: 10px;
+            }
+          }
+        }
+      }
+      .userName {
+        .size(100%,30px);
+      }
+      .deptName {
+        .size(100%,20px);
+      }
+      .msgBox {
+        .size(100%,80px);
+        margin-top: 20px;
+        margin-bottom: 20px;
+        .msgItem {
+          .size(50%,100%);
+          border-right: 1px solid @search_bottom_border;
+          &:last-child {
+            border-right: none;
+          }
+          .msgItemTitle {
+            font-size: 14px;
+            color: @fontColor;
+          }
+        }
+      }
+    }
+    .history {
+      .size(100%, calc(100% - 374px));
+      margin-top: 10px;
+      .hTitle {
+        .size(100%, 50px);
+        font-size: 14px;
+        color: @bg;
+        padding-right: 20px;
+        box-sizing: border-box;
+        font-weight: bold;
+        span {
+          .size(120px, 40px);
+          padding-left: 20px;
+          box-sizing: border-box;
+          background-color: @f_color_active;
+          border-radius: 0% 20px 20px 0%;
+        }
+      }
+      .historyBox {
+        .size(100%, calc(100% - 50px));
+        overflow: auto;
+        .historyItem {
+          .size(100%, 50px);
+          padding: 0 20px;
+          box-sizing: border-box;
+          cursor: pointer;
+          // border-bottom: 1px solid @search_bottom_border;
+          .historyTxt {
+            .size(100%, auto);
+            font-size: 16px;
+            .optIcon {
+              flex-shrink: 0;
+              margin-right: 10px;
+            }
+          }
+          .historyProgress {
+            .size(auto,auto);
+            flex-shrink: 0;
+            margin-left: 10px;
+            font-size: 14px;
+            color: @fontColor;
+            span {
+              color: @f_color_active;
+            }
+          }
+        }
+      }
+    }
+  }
+  .HomeMeet {
+    .size(46%,100%);
+  }
+  .HomeEquip {
+    .size(27%,100%);
+    flex-shrink: 0;
+    background-color: lightblue;
+  }
+  .optMenuItem {
+    .optIcon {
+      margin-right: 14px;
+    }
+    span {
+      font-size: 14px;
+      color: @f_color_h3;
+    }
+  }
   h1 {
     font-size: 30px;
   }
 }
+@keyframes roll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+/* @media screen and (min-width: 1500px) {
+  .Home .HomeUser {
+    width: 500px;
+  }
+  .Home .HomeEquip {
+    width: 500px;
+  }
+} */
 </style>

@@ -335,6 +335,8 @@ ipcMain.on('win_full', (event, flag) => {
 
 ipcMain.on('on_login_out', (event, arg) => {
   createLoginWin()
+  tokenTime = 0
+  clearInterval(tokenTimer)
   BrowserWindow.getAllWindows().forEach(v => {
     if (v.id != loginWin.id) {
       v.webContents.close()
