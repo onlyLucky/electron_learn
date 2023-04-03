@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-31 16:57:19
  * @LastEditors: fg
- * @LastEditTime: 2023-03-31 17:49:41
+ * @LastEditTime: 2023-04-03 09:25:18
  * @Description: 设备echarts
 -->
 <template>
@@ -64,12 +64,15 @@ const init = () => {
   };
   myChart.setOption(option);
 };
+const onResize = () => {
+  myChart.resize();
+};
 onMounted(() => {
   init();
-  window.onresize = () => {
-    console.log("equip onresize");
-    myChart.resize();
-  };
+});
+defineExpose({
+  myChart,
+  onResize,
 });
 </script>
 <style scoped lang="less">

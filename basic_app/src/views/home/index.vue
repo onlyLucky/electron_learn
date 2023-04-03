@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-03-31 17:56:47
+ * @LastEditTime: 2023-04-03 10:40:08
  * @Description: 首页
 -->
 <template>
@@ -324,7 +324,7 @@
             </div>
           </div>
           <div class="conEcharts">
-            <MeetEcharts></MeetEcharts>
+            <MeetEcharts ref="refMeetEcharts"></MeetEcharts>
           </div>
         </div>
       </div>
@@ -347,7 +347,7 @@
           </div>
         </div>
         <div class="equipEcharts">
-          <EquipEcharts></EquipEcharts>
+          <EquipEcharts ref="refEquipEcharts"></EquipEcharts>
         </div>
       </div>
       <div class="equipBottom">
@@ -406,6 +406,9 @@ const loginOut = () => {
   console.log("on_login_out");
   ipcRenderer.send("on_login_out");
 };
+// echarts ref
+const refMeetEcharts = ref<InstanceType<typeof MeetEcharts>>();
+const refEquipEcharts = ref<InstanceType<typeof EquipEcharts>>();
 let time = ref<number>(0);
 let timeType = [
   {
@@ -424,6 +427,12 @@ let timeType = [
     times: [],
   },
 ];
+onMounted(() => {
+  window.onresize = () => {
+    refMeetEcharts.value?.onResize();
+    refEquipEcharts.value?.onResize();
+  };
+});
 </script>
 <style scoped lang="less">
 :deep(.HomeUser) {
