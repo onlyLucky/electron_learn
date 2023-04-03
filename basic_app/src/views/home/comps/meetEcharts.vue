@@ -2,15 +2,25 @@
  * @Author: fg
  * @Date: 2023-03-31 16:57:19
  * @LastEditors: fg
- * @LastEditTime: 2023-04-03 09:23:27
+ * @LastEditTime: 2023-04-03 18:01:23
  * @Description: 会议echarts
 -->
 <template>
   <div class="Echarts" ref="refMeetEcharts"></div>
 </template>
 <script setup lang="ts">
+import { getMeetChart } from "@/apis/home";
 //  按需引入 echarts
 import * as echarts from "echarts";
+
+let props = withDefaults(
+  defineProps<{
+    type: 1 | 2 | 3;
+  }>(),
+  {
+    type: 1,
+  }
+);
 // refEcharts
 const refMeetEcharts = ref<any>("");
 type EChartsOption = echarts.EChartsOption;
@@ -31,13 +41,19 @@ const init = () => {
       },
     },
     legend: {
-      data: ["Line 1", "Line 2", "Line 3", "Line 4", "Line 5"],
+      type: "scroll",
+      data: [
+        "Line 1",
+        "Line 2",
+        "Line 3",
+        "Line 4",
+        "Line 5",
+        "Line 6",
+        "Line 7",
+        "Line 8",
+      ],
     },
-    toolbox: {
-      feature: {
-        saveAsImage: {},
-      },
-    },
+    toolbox: {},
     grid: {
       left: "3%",
       right: "4%",
@@ -48,7 +64,14 @@ const init = () => {
       {
         type: "category",
         boundaryGap: false,
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        data: ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6", "3/7"],
+        axisLabel: {
+          formatter: (value, index) => {
+            // 每逢索引 8 的倍数显示（规则可自定义，在所有轴类型中有效）
+            // 此处返回要显示的文本
+            return index % 3 == 0 ? value : "";
+          },
+        },
       },
     ],
     yAxis: [
@@ -194,7 +217,7 @@ const init = () => {
         emphasis: {
           focus: "series",
         },
-        data: [220, 302, 181, 234, 210, 290, 150],
+        data: [220, 302, 181, 234, 500, 290, 150],
       },
     ],
   };
@@ -203,8 +226,14 @@ const init = () => {
 const onResize = () => {
   myChart.resize();
 };
+const getData = () => {
+  getMeetChart({ type: props.type }).then((res) => {
+    console.log(res);
+  });
+};
 onMounted(() => {
   init();
+  getData();
 });
 defineExpose({
   myChart,

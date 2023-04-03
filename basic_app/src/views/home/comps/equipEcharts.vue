@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-31 16:57:19
  * @LastEditors: fg
- * @LastEditTime: 2023-04-03 09:25:18
+ * @LastEditTime: 2023-04-03 15:00:25
  * @Description: 设备echarts
 -->
 <template>
@@ -11,6 +11,14 @@
 <script setup lang="ts">
 //  按需引入 echarts
 import * as echarts from "echarts";
+let props = withDefaults(
+  defineProps<{
+    type: 1 | 2 | 3;
+  }>(),
+  {
+    type: 1,
+  }
+);
 // refEcharts
 const refEquipEcharts = ref<any>("");
 type EChartsOption = echarts.EChartsOption;
@@ -45,8 +53,8 @@ const init = () => {
         emphasis: {
           label: {
             show: true,
-            fontSize: 40,
-            fontWeight: "bold",
+            fontSize: 20,
+            // fontWeight: "bold",
           },
         },
         labelLine: {

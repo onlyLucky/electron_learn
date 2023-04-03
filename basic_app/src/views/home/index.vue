@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-03 10:40:08
+ * @LastEditTime: 2023-04-03 18:00:11
  * @Description: 首页
 -->
 <template>
@@ -67,11 +67,17 @@
         </div>
         <div class="userAvatar f-row-c-c">
           <div class="avatar">
-            <!-- <img :src="computedAvatarPath" alt="" v-show="form.avatarPath" /> -->
-            <div class="infoAva f-row-c-c">
-              <span>张三</span>
+            <img
+              :src="computedAvatarPath"
+              alt=""
+              v-show="userInfo.avatarPath"
+            />
+            <div class="infoAva f-row-c-c" v-show="!userInfo.avatarPath">
+              <span v-show="userInfo.nickname">{{
+                userInfo?.nickname?.slice(-2)
+              }}</span>
             </div>
-            <!-- <div class="avaHover" v-show="isEdit">
+            <div class="avaHover" v-show="isEdit">
               <Upload
                 action="/"
                 accept=".jpg, .jpeg, .png"
@@ -86,21 +92,25 @@
                   ></Icon>
                 </div>
               </Upload>
-            </div> -->
-            <div class="genderBox f-row-c-c">
+            </div>
+            <div
+              class="genderBox f-row-c-c"
+              v-show="userInfo.userSex == 1 || userInfo.userSex == 2"
+            >
               <svg-icon
                 iconName="icon-nan"
                 className="iconGender"
+                v-show="userInfo.userSex == 1"
                 size="16"
                 color="var(--f_color_active)"
               ></svg-icon>
-              <!-- <svg-icon
+              <svg-icon
                 iconName="icon-nv"
-                v-show="detail.userSex == 2"
+                v-show="userInfo.userSex == 2"
                 className="iconGender"
                 size="16"
                 color="var(--error)"
-              ></svg-icon> -->
+              ></svg-icon>
             </div>
           </div>
         </div>
@@ -110,7 +120,7 @@
             ellipsis
             placement="bottom-start"
           >
-            张三丰•杰克•jian
+            {{ userInfo.nickname }}
           </Text>
         </div>
         <div class="deptName f-row-c-c">
@@ -119,16 +129,24 @@
             ellipsis
             placement="bottom-start"
           >
-            蓝翔技校/技术检测部门
+            {{ userInfo.deptName }}
           </Text>
         </div>
         <div class="msgBox f-row-c-c">
           <div class="msgItem f-col-c-c">
-            <CountUp :start="0" :duration="1" :end="300"></CountUp>
+            <CountUp
+              :start="0"
+              :duration="numDuration"
+              :end="totalData.MeetNum || 0"
+            ></CountUp>
             <span class="msgItemTitle">参加会议数</span>
           </div>
           <div class="msgItem f-col-c-c">
-            <CountUp :duration="1" :end="12"></CountUp>
+            <CountUp
+              :start="0"
+              :duration="numDuration"
+              :end="totalData.DeviceNum || 0"
+            ></CountUp>
             <span class="msgItemTitle">绑定设备数</span>
           </div>
         </div>
@@ -138,7 +156,7 @@
           <span class="hTitleTxt f-row-s-c">播放历史</span>
         </div>
         <div class="historyBox">
-          <div class="historyItem f-row-b-c">
+          <!-- <div class="historyItem f-row-b-c">
             <div class="historyTxt f-row-b-c">
               <svg-icon
                 iconName="icon-zanting"
@@ -155,60 +173,10 @@
               </Text>
             </div>
             <div class="historyProgress">观看至<span>22</span>%</div>
-          </div>
-          <div class="historyItem f-row-b-c">
-            <div class="historyTxt f-row-b-c">
-              <svg-icon
-                iconName="icon-zanting"
-                className="optIcon"
-                size="26"
-                color="var(--f_color_active)"
-              ></svg-icon>
-              <Text
-                :ellipsis-config="{ tooltip: true }"
-                ellipsis
-                placement="bottom-start"
-              >
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
-              </Text>
-            </div>
-            <div class="historyProgress">观看至<span>22</span>%</div>
-          </div>
-          <div class="historyItem f-row-b-c">
-            <div class="historyTxt f-row-b-c">
-              <svg-icon
-                iconName="icon-zanting"
-                className="optIcon"
-                size="26"
-                color="var(--f_color_active)"
-              ></svg-icon>
-              <Text
-                :ellipsis-config="{ tooltip: true }"
-                ellipsis
-                placement="bottom-start"
-              >
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
-              </Text>
-            </div>
-            <div class="historyProgress">观看至<span>22</span>%</div>
-          </div>
-          <div class="historyItem f-row-b-c">
-            <div class="historyTxt f-row-b-c">
-              <svg-icon
-                iconName="icon-zanting"
-                className="optIcon"
-                size="26"
-                color="var(--f_color_active)"
-              ></svg-icon>
-              <Text
-                :ellipsis-config="{ tooltip: true }"
-                ellipsis
-                placement="bottom-start"
-              >
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
-              </Text>
-            </div>
-            <div class="historyProgress">观看至<span>22</span>%</div>
+          </div> -->
+          <div class="noDataCon f-col-s-c">
+            <img src="@/assets/images/no_data.png" alt="" />
+            <span>当前暂无播放历史</span>
           </div>
         </div>
       </div>
@@ -217,41 +185,45 @@
       <div class="HomeMeetBox">
         <div class="hTitle f-row-b-c">
           <span class="hTitleTxt f-row-s-c">数据总览</span>
-          <div class="filterBox">
-            <div class="filterItem">
-              <Select v-model="time" size="small" style="width: 68px">
-                <Option
-                  v-for="(item, index) in timeType"
-                  :value="item.value"
-                  :key="index"
-                  >{{ item.name }}</Option
-                >
-              </Select>
-            </div>
-          </div>
         </div>
         <div class="totalBox f-row-b-c">
           <div class="totalItem f-col-c-c">
             <div class="totalItemTop f-row-s-c">
-              <CountUp :start="0" :duration="1" :end="300"></CountUp>
+              <CountUp
+                :start="0"
+                :duration="numDuration"
+                :end="totalData.MeetAllNum || 0"
+              ></CountUp>
             </div>
             <span class="labelTitle">会议总数</span>
           </div>
           <div class="totalItem f-col-c-c">
             <div class="totalItemTop f-row-s-c">
-              <CountUp :start="0" :duration="1" :end="300"></CountUp>
+              <CountUp
+                :start="0"
+                :duration="numDuration"
+                :end="totalData.DeviceAllNum || 0"
+              ></CountUp>
             </div>
             <span class="labelTitle">设备总数</span>
           </div>
           <div class="totalItem f-col-c-c">
             <div class="totalItemTop f-row-s-c">
-              <CountUp :start="0" :duration="1" :end="300"></CountUp>
+              <CountUp
+                :start="0"
+                :duration="numDuration"
+                :end="totalData.UserNum || 0"
+              ></CountUp>
             </div>
             <span class="labelTitle">人员总数</span>
           </div>
           <div class="totalItem f-col-c-c">
             <div class="totalItemTop f-row-s-c">
-              <CountUp :start="0" :duration="1" :end="30000"></CountUp>
+              <CountUp
+                :start="0"
+                :duration="numDuration"
+                :end="totalData.DownMeetNum || 0"
+              ></CountUp>
             </div>
             <span class="labelTitle">可下载会议数</span>
           </div>
@@ -259,14 +231,14 @@
         <div class="circleBox f-row-b-c">
           <div class="circleItem f-col-c-c">
             <Circle
-              :percent="80"
+              :percent="totalData.downRatio"
               :size="100"
               :strokeWidth="7"
               :trailWidth="7"
               stroke-color="var(--home_color2)"
             >
               <div class="circleCon">
-                <CountUp :duration="1" :end="12"></CountUp>
+                <CountUp :duration="numDuration" :end="12"></CountUp>
               </div>
             </Circle>
             <div class="circleLabel">
@@ -275,14 +247,18 @@
           </div>
           <div class="circleItem f-col-c-c">
             <Circle
-              :percent="80"
+              :percent="totalData.useDeviceRatio"
               :size="100"
               :strokeWidth="7"
               :trailWidth="7"
               stroke-color="var(--f_color_active)"
             >
               <div class="circleCon">
-                <CountUp :duration="1" :end="12"></CountUp>
+                <CountUp
+                  :start="0"
+                  :duration="numDuration"
+                  :end="totalData.UseDeviceNum || 0"
+                ></CountUp>
               </div>
             </Circle>
             <div class="circleLabel">
@@ -291,14 +267,18 @@
           </div>
           <div class="circleItem f-col-c-c">
             <Circle
-              :percent="80"
+              :percent="totalData.secretRatio"
               :size="100"
               :strokeWidth="7"
               :trailWidth="7"
               stroke-color="var(--home_color1)"
             >
               <div class="circleCon">
-                <CountUp :duration="1" :end="12"></CountUp>
+                <CountUp
+                  :start="0"
+                  :duration="numDuration"
+                  :end="totalData.SecretMeetNum || 0"
+                ></CountUp>
               </div>
             </Circle>
             <div class="circleLabel">
@@ -312,7 +292,7 @@
             <span class="hTitleTxt f-row-s-c">会议图表</span>
             <div class="filterBox">
               <div class="filterItem">
-                <Select v-model="time" size="small" style="width: 68px">
+                <Select v-model="meetType" size="small" style="width: 88px">
                   <Option
                     v-for="(item, index) in timeType"
                     :value="item.value"
@@ -324,7 +304,7 @@
             </div>
           </div>
           <div class="conEcharts">
-            <MeetEcharts ref="refMeetEcharts"></MeetEcharts>
+            <MeetEcharts :type="meetType" ref="refMeetEcharts"></MeetEcharts>
           </div>
         </div>
       </div>
@@ -335,7 +315,7 @@
           <span class="hTitleTxt f-row-s-c">设备图表</span>
           <div class="filterBox">
             <div class="filterItem">
-              <Select v-model="time" size="small" style="width: 68px">
+              <Select v-model="equipType" size="small" style="width: 88px">
                 <Option
                   v-for="(item, index) in timeType"
                   :value="item.value"
@@ -347,7 +327,7 @@
           </div>
         </div>
         <div class="equipEcharts">
-          <EquipEcharts ref="refEquipEcharts"></EquipEcharts>
+          <EquipEcharts :type="equipType" ref="refEquipEcharts"></EquipEcharts>
         </div>
       </div>
       <div class="equipBottom">
@@ -355,7 +335,7 @@
           <span class="hTitleTxt f-row-s-c">今日会议</span>
         </div>
         <div class="todayCon">
-          <Timeline>
+          <!-- <Timeline>
             <TimelineItem>
               <p class="meetTime">下午 3:00</p>
               <p class="meetName">
@@ -386,7 +366,11 @@
                 融合视频会议-20221027-1172-测试版本v1.42_beta会议
               </p>
             </TimelineItem>
-          </Timeline>
+          </Timeline> -->
+          <div class="noDataCon f-col-s-c">
+            <img src="@/assets/images/no_data.png" alt="" />
+            <span>今天没有会议耶</span>
+          </div>
         </div>
       </div>
     </div>
@@ -400,7 +384,17 @@ import useUserInfo from "./hooks/useUserInfo";
 import { CountUp, Timeline, TimelineItem, Time } from "view-ui-plus";
 import MeetEcharts from "./comps/meetEcharts.vue";
 import EquipEcharts from "./comps/equipEcharts.vue";
-const { isEdit } = useUserInfo();
+const {
+  isEdit,
+  userInfo,
+  totalData,
+  numDuration,
+  handleUpload,
+  computedAvatarPath,
+} = useUserInfo();
+
+let staticPath = localStorage.getItem("staticPath");
+
 const loginOut = () => {
   // on_login_out
   console.log("on_login_out");
@@ -409,21 +403,22 @@ const loginOut = () => {
 // echarts ref
 const refMeetEcharts = ref<InstanceType<typeof MeetEcharts>>();
 const refEquipEcharts = ref<InstanceType<typeof EquipEcharts>>();
-let time = ref<number>(0);
+let meetType = ref<1 | 2 | 3>(1);
+let equipType = ref<1 | 2 | 3>(1);
 let timeType = [
   {
-    name: "本周",
-    value: 0,
-    times: [],
-  },
-  {
-    name: "本月",
+    name: "最近一周",
     value: 1,
     times: [],
   },
   {
-    name: "所有",
+    name: "最近一月",
     value: 2,
+    times: [],
+  },
+  {
+    name: "最近一年",
+    value: 3,
     times: [],
   },
 ];
@@ -776,6 +771,18 @@ onMounted(() => {
     span {
       font-size: 14px;
       color: @f_color_h3;
+    }
+  }
+  .noDataCon {
+    .size(auto,auto);
+    img {
+      .size(200px,200px);
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    span {
+      font-size: 14px;
+      color: @fontColor;
     }
   }
 }
