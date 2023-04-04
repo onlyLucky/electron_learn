@@ -2,16 +2,21 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-04 14:47:42
+ * @LastEditTime: 2023-04-04 16:07:10
  * @Description: 首页
 -->
 <template>
   <div class="Home f-row">
     <div class="HomeUser">
-      <div class="topTip f-row-c-c">
+      <div class="topTip f-row-c-c" v-show="topTipIndex >= 0">
         <div class="con f-row-s-c">
           <div class="conTip f-row-c-c">
-            【参会通知】今日您有一个会议参加，最近一次会议【这是一个会议名称】将于12分钟后开始，请留意参会时间及时做好会议准备。
+            【参会通知】今日您有{{
+              totalData.meetList.length
+            }}个会议参加，最近一次会议【 {{ computedMeetName }} 】将于<Time
+              :time="computedMeetTime"
+            ></Time
+            >开始，请留意参会时间及时做好会议准备。
           </div>
         </div>
       </div>
@@ -151,13 +156,24 @@
           </div>
         </div>
       </div>
-      <div class="history">
+      <div
+        class="history"
+        :style="{
+          height:
+            topTipIndex >= 0 ? 'calc(100% - 374px)' : 'calc(100% - 334px)',
+        }"
+      >
         <div class="hTitle f-row-s-c">
           <span class="hTitleTxt f-row-s-c">播放历史</span>
         </div>
         <div class="historyBox">
-          <!-- <div class="historyItem f-row-b-c">
-            <div class="historyTxt f-row-b-c">
+          <div
+            v-show="historyList.length > 0"
+            class="historyItem f-row-b-c"
+            v-for="(item, index) in historyList"
+            :key="index"
+          >
+            <div class="historyTxt f-row-s-c">
               <svg-icon
                 iconName="icon-zanting"
                 className="optIcon"
@@ -169,12 +185,19 @@
                 ellipsis
                 placement="bottom-start"
               >
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+                {{ item.meetName }}
               </Text>
             </div>
-            <div class="historyProgress">观看至<span>22</span>%</div>
-          </div> -->
-          <div class="noDataCon f-col-s-c">
+            <div class="historyProgress">
+              观看至<span>{{
+                ((item.playLength / item.meetLength) * 100).toFixed(2) == "NaN"
+                  ? "0"
+                  : Math.ceil((item.playLength / item.meetLength) * 100)
+              }}</span
+              >%
+            </div>
+          </div>
+          <div class="noDataCon f-col-s-c" v-show="historyList.length <= 0">
             <img src="@/assets/images/no_data.png" alt="" />
             <span>当前暂无播放历史</span>
           </div>
@@ -335,39 +358,24 @@
           <span class="hTitleTxt f-row-s-c">今日会议</span>
         </div>
         <div class="todayCon">
-          <!-- <Timeline>
-            <TimelineItem>
-              <p class="meetTime">下午 3:00</p>
+          <Timeline v-show="totalData.todayMeetList.length > 0">
+            <TimelineItem
+              v-for="(item, index) in totalData.todayMeetList"
+              :key="index"
+            >
+              <p class="meetTime f-row-s-c">
+                <Time :time="new Date(item.meetTime).getTime()"></Time>
+                <span class="rTime">({{ item.meetTime }})</span>
+              </p>
               <p class="meetName">
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
+                {{ item.name }}
               </p>
             </TimelineItem>
-            <TimelineItem>
-              <p class="meetTime">下午 3:00</p>
-              <p class="meetName">
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
-              </p>
-            </TimelineItem>
-            <TimelineItem>
-              <p class="meetTime">下午 3:00</p>
-              <p class="meetName">
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
-              </p>
-            </TimelineItem>
-            <TimelineItem>
-              <p class="meetTime">下午 3:00</p>
-              <p class="meetName">
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
-              </p>
-            </TimelineItem>
-            <TimelineItem>
-              <p class="meetTime">下午 3:00</p>
-              <p class="meetName">
-                融合视频会议-20221027-1172-测试版本v1.42_beta会议
-              </p>
-            </TimelineItem>
-          </Timeline> -->
-          <div class="noDataCon f-col-s-c">
+          </Timeline>
+          <div
+            class="noDataCon f-col-s-c"
+            v-show="totalData.todayMeetList.length <= 0"
+          >
             <img src="@/assets/images/no_data.png" alt="" />
             <span>今天没有会议耶</span>
           </div>
@@ -389,8 +397,12 @@ const {
   userInfo,
   totalData,
   numDuration,
+  historyList,
+  topTipIndex,
   handleUpload,
   computedAvatarPath,
+  computedMeetTime,
+  computedMeetName,
 } = useUserInfo();
 
 let staticPath = localStorage.getItem("staticPath");
@@ -552,6 +564,7 @@ onMounted(() => {
           .size(80px, 80px);
           border-radius: 50%;
           position: relative;
+          box-shadow: 0px 1px 6px 0px rgba(0, 0, 0, 0.13);
           &:hover {
             .avaHover {
               display: block;
@@ -759,6 +772,11 @@ onMounted(() => {
         .meetTime {
           font-size: 14px;
           color: @f_color_active;
+          .rTime {
+            margin-left: 10px;
+            font-size: 12px;
+            color: @fontColor;
+          }
         }
         .meetName {
           font-size: 14px;

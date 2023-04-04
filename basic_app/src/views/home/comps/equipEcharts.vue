@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-31 16:57:19
  * @LastEditors: fg
- * @LastEditTime: 2023-04-04 13:54:50
+ * @LastEditTime: 2023-04-04 16:02:19
  * @Description: 设备echarts
 -->
 <template>
@@ -87,7 +87,6 @@ const onResize = () => {
 };
 const getData = () => {
   getDeviceChart({ type: props.type }).then((res) => {
-    console.log(res);
     echartsData.value = res.data;
     init();
     onResize();
