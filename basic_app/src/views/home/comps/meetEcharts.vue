@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-31 16:57:19
  * @LastEditors: fg
- * @LastEditTime: 2023-04-04 13:55:19
+ * @LastEditTime: 2023-04-04 14:42:03
  * @Description: 会议echarts
 -->
 <template>
@@ -12,7 +12,9 @@
 import { getMeetChart } from "@/apis/home";
 //  按需引入 echarts
 import * as echarts from "echarts";
+import { useTools } from "@/hooks/useTools";
 
+const { useDateGetDay, doHandleMonth } = useTools();
 let props = withDefaults(
   defineProps<{
     type: 1 | 2 | 3;
@@ -134,7 +136,7 @@ const init = () => {
             if (optionData.xData.length <= 10) {
               return value;
             } else {
-              return index % 3 == 0 ? value : "";
+              return index % 2 == 0 ? value : "";
             }
           },
         },
@@ -177,12 +179,48 @@ const onResize = () => {
 const getData = () => {
   getMeetChart({ type: props.type })
     .then((res) => {
+      handleTypeXData();
+      let tempName: any[] = [];
+      let tempData: any[] = [];
+      res.data.map((item: any) => {
+        tempData.push(item.value);
+        tempName.push(item.name);
+      });
+      optionData.nameArr = tempName;
+      optionData.data = tempData;
       init();
+      onResize();
     })
     .catch((err) => {
       init();
       onResize();
     });
+};
+const handleTypeXData = () => {
+  console.log(useDateGetDay(-7), "useDateGetDay(-7)");
+  let temp = [];
+  if (props.type == 1) {
+    for (let i = 0; i < 7; i++) {
+      temp.push(useDateGetDay(-i));
+    }
+  }
+  if (props.type == 2) {
+    for (let i = 0; i < 30; i++) {
+      temp.push(useDateGetDay(-i));
+    }
+  }
+  if (props.type == 3) {
+    let y = new Date().getFullYear();
+    let m = new Date().getMonth() + 1;
+    for (let i = 0; i < 12; i++) {
+      temp.push(
+        `${m - i <= 0 ? y - 1 : y}/${doHandleMonth(
+          m - i <= 0 ? 12 + (m - i) : m - i
+        )}`
+      );
+    }
+  }
+  optionData.xData = temp;
 };
 watch(
   () => props.type,

@@ -90,12 +90,34 @@ export const useTools = () => {
     return res;
   }
 
+  const useDateGetDay = (day: number) => {
+    let today = new Date();
+    let target_day_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;
+    today.setTime(target_day_milliseconds); //注意，这行是关键代码
+    let tYear = today.getFullYear();
+    let tMonth: any = today.getMonth();
+    let tDate: any = today.getDate();
+    tMonth = doHandleMonth(tMonth + 1);
+    tDate = doHandleMonth(tDate);
+    return tYear + "/" + tMonth + "/" + tDate;
+  }
+
+  const doHandleMonth = (month: any) => {
+    let m: string = month;
+    if (month.toString().length == 1) {
+      m = "0" + month;
+    }
+    return m;
+  }
+
   return {
     useBytesUnit,
     useArrRemoveJson,
     useArrHasJson,
     useArrJsonOverlap,
     useArrJsonNoOverlap,
-    useArrJsonHandleAttr
+    useArrJsonHandleAttr,
+    useDateGetDay,
+    doHandleMonth
   }
 }

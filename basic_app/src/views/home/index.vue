@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-04 13:51:25
+ * @LastEditTime: 2023-04-04 14:47:42
  * @Description: 首页
 -->
 <template>
@@ -403,8 +403,8 @@ const loginOut = () => {
 // echarts ref
 const refMeetEcharts = ref<InstanceType<typeof MeetEcharts>>();
 const refEquipEcharts = ref<InstanceType<typeof EquipEcharts>>();
-let meetType = ref<1 | 2 | 3>(3);
-let equipType = ref<1 | 2 | 3>(3);
+let meetType = ref<1 | 2 | 3>(1);
+let equipType = ref<1 | 2 | 3>(1);
 let timeType = [
   {
     name: "最近一周",
