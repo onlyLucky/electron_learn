@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-03 18:00:11
+ * @LastEditTime: 2023-04-04 13:51:25
  * @Description: 首页
 -->
 <template>
@@ -403,8 +403,8 @@ const loginOut = () => {
 // echarts ref
 const refMeetEcharts = ref<InstanceType<typeof MeetEcharts>>();
 const refEquipEcharts = ref<InstanceType<typeof EquipEcharts>>();
-let meetType = ref<1 | 2 | 3>(1);
-let equipType = ref<1 | 2 | 3>(1);
+let meetType = ref<1 | 2 | 3>(3);
+let equipType = ref<1 | 2 | 3>(3);
 let timeType = [
   {
     name: "最近一周",
@@ -443,6 +443,7 @@ onMounted(() => {
     .ivu-count-up {
       font-size: 28px;
       color: @home_num_t;
+      font-weight: bold;
     }
   }
 
@@ -460,6 +461,7 @@ onMounted(() => {
     .ivu-count-up {
       font-size: 30px;
       color: @home_num_t;
+      font-weight: bold;
     }
   }
 }
@@ -474,6 +476,7 @@ onMounted(() => {
   .ivu-count-up {
     font-size: 30px;
     color: @home_num_t;
+    font-weight: bold;
   }
 }
 .Home {
