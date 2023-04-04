@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-21 10:52:25
  * @LastEditors: fg
- * @LastEditTime: 2023-03-28 19:33:04
+ * @LastEditTime: 2023-04-04 18:02:36
  * @Description: 设备详情modal
 -->
 <template>
@@ -20,7 +20,10 @@
         <Circle
           class="circle"
           :size="80"
-          :percent="80"
+          :percent="
+            ((form.hardDiskSize - form.localStoreUseSize) / form.hardDiskSize) *
+              100 || 0
+          "
           :strokeWidth="7"
           :trailWidth="7"
           strokeColor="var(--f_color_active)"
@@ -399,6 +402,9 @@ const computedHardDiskSize = computed(() => {
 const computedRemainderDisk = computed(() => {
   if (form.hardDiskSize && form.localStoreUseSize) {
     return useBytesUnit(form.hardDiskSize - form.localStoreUseSize);
+  }
+  if (!form.localStoreUseSize && form.hardDiskSize) {
+    return useBytesUnit(form.hardDiskSize);
   }
   return 0;
 });
