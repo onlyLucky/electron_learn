@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-01-16 15:29:33
+ * @LastEditTime: 2023-04-06 18:02:11
  * @Description: 设置
 -->
 <template>
@@ -133,7 +133,8 @@ const menuMouseLeave = (index: number, item: any) => {
     }
     .conBox {
       width: 100%;
-      height: calc(100% - 50px);
+      // 50
+      height: calc(100% - 90px);
       display: flex;
       .leftCon {
         .size(200px, 100%);
