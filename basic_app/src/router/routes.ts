@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/models/meet/video',
-    name: 'meet_share',
+    name: 'meet_video',
     component: () => import("@/views/meeting/video/index.vue")
   },
   {

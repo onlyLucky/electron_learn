@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-24 14:03:33
  * @LastEditors: fg
- * @LastEditTime: 2023-03-03 11:18:05
+ * @LastEditTime: 2023-04-06 10:51:21
  * @Description: 会议列表
 -->
 <template>
@@ -219,6 +219,7 @@ const columns = reactive<any[]>([
                     content: "更多",
                     placement: "top",
                     transfer: true,
+                    disabled: true,
                   },
                   // <Icon type="ios-more" />
                   {
