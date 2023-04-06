@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-04 16:07:10
+ * @LastEditTime: 2023-04-06 11:21:05
  * @Description: 首页
 -->
 <template>
@@ -22,16 +22,18 @@
       </div>
       <div class="userInfo">
         <div class="optBox f-row-b-c">
-          <Tooltip placement="bottom" content="退出登录">
-            <div class="optLeft optItem f-row-c-c" v-debounce="loginOut">
-              <svg-icon
-                iconName="icon-tuichudenglu"
-                className="optIcon"
-                size="16"
-                color="var(--fontColor)"
-              ></svg-icon>
-              <!-- <span>新增</span> -->
-            </div>
+          <Tooltip placement="bottom" content="我的消息">
+            <Badge :count="msgNum">
+              <div class="optLeft optItem f-row-c-c" v-debounce="onShowMsg">
+                <svg-icon
+                  iconName="icon-xitongxiaoxi"
+                  className="optIcon"
+                  size="16"
+                  color="var(--fontColor)"
+                ></svg-icon>
+                <!-- <span>新增</span> -->
+              </div>
+            </Badge>
           </Tooltip>
           <Dropdown placement="bottom-start" trigger="contextMenu">
             <div class="optItem f-row-c-c">
@@ -49,7 +51,7 @@
                     <svg-icon
                       iconName="icon-bianji"
                       className="optIcon"
-                      size="20"
+                      size="16"
                       color="var(--fontColor)"
                     ></svg-icon>
                     <span>编辑信息</span>
@@ -58,9 +60,20 @@
                 <DropdownItem>
                   <div class="optMenuItem f-row-s-c">
                     <svg-icon
+                      iconName="icon-tuichudenglu"
+                      className="optIcon"
+                      size="16"
+                      color="var(--fontColor)"
+                    ></svg-icon>
+                    <span>切换用户</span>
+                  </div>
+                </DropdownItem>
+                <DropdownItem>
+                  <div class="optMenuItem f-row-s-c">
+                    <svg-icon
                       iconName="icon-Union-32"
                       className="optIcon"
-                      size="20"
+                      size="16"
                       color="var(--fontColor)"
                     ></svg-icon>
                     <span>退出应用</span>
@@ -384,6 +397,7 @@
     </div>
     <!-- <h1>meet index</h1>
     <Button @click="loginOut">退出登录</Button> -->
+    <MsgList ref="refMsgList"></MsgList>
   </div>
 </template>
 <script setup lang="ts">
@@ -392,6 +406,7 @@ import useUserInfo from "./hooks/useUserInfo";
 import { CountUp, Timeline, TimelineItem, Time } from "view-ui-plus";
 import MeetEcharts from "./comps/meetEcharts.vue";
 import EquipEcharts from "./comps/equipEcharts.vue";
+import MsgList from "./modal/msgList.vue";
 const {
   isEdit,
   userInfo,
@@ -412,9 +427,11 @@ const loginOut = () => {
   console.log("on_login_out");
   ipcRenderer.send("on_login_out");
 };
+const msgNum = ref<number>(0);
 // echarts ref
 const refMeetEcharts = ref<InstanceType<typeof MeetEcharts>>();
 const refEquipEcharts = ref<InstanceType<typeof EquipEcharts>>();
+const refMsgList = ref<InstanceType<typeof MsgList>>();
 let meetType = ref<1 | 2 | 3>(1);
 let equipType = ref<1 | 2 | 3>(1);
 let timeType = [
@@ -434,6 +451,11 @@ let timeType = [
     times: [],
   },
 ];
+
+//  msg
+const onShowMsg = () => {
+  refMsgList.value?.handleShow();
+};
 onMounted(() => {
   window.onresize = () => {
     refMeetEcharts.value?.onResize();
