@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-06 11:21:05
+ * @LastEditTime: 2023-04-06 17:57:48
  * @Description: 首页
 -->
 <template>
@@ -46,7 +46,7 @@
             </div>
             <template #list>
               <DropdownMenu>
-                <DropdownItem>
+                <!-- <DropdownItem>
                   <div class="optMenuItem f-row-s-c">
                     <svg-icon
                       iconName="icon-bianji"
@@ -56,9 +56,9 @@
                     ></svg-icon>
                     <span>编辑信息</span>
                   </div>
-                </DropdownItem>
+                </DropdownItem> -->
                 <DropdownItem>
-                  <div class="optMenuItem f-row-s-c">
+                  <div class="optMenuItem f-row-s-c" v-debounce="loginOut">
                     <svg-icon
                       iconName="icon-tuichudenglu"
                       className="optIcon"
@@ -69,7 +69,7 @@
                   </div>
                 </DropdownItem>
                 <DropdownItem>
-                  <div class="optMenuItem f-row-s-c">
+                  <div class="optMenuItem f-row-s-c" v-debounce="quitApp">
                     <svg-icon
                       iconName="icon-Union-32"
                       className="optIcon"
@@ -421,12 +421,15 @@ const {
 } = useUserInfo();
 
 let staticPath = localStorage.getItem("staticPath");
-
+// 切换用户
 const loginOut = () => {
-  // on_login_out
-  console.log("on_login_out");
   ipcRenderer.send("on_login_out");
 };
+// 退出应用
+const quitApp = () => {
+  ipcRenderer.send("quit_app");
+};
+
 const msgNum = ref<number>(0);
 // echarts ref
 const refMeetEcharts = ref<InstanceType<typeof MeetEcharts>>();

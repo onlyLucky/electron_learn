@@ -344,6 +344,14 @@ ipcMain.on('on_login_out', (event, arg) => {
   })
   win = null;
 })
+
+ipcMain.on('quit_app', (event, arg) => {
+  if (process.platform !== 'darwin') {
+    loginWin = null;
+    win = null
+    app.exit(0);
+  }
+})
 ipcMain.on('on_login', (event, arg) => {
   BrowserWindow.getFocusedWindow().close();
   loginWin = null;
