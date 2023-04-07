@@ -2,14 +2,22 @@
  * @Author: fg
  * @Date: 2022-12-26 16:10:58
  * @LastEditors: fg
- * @LastEditTime: 2023-03-30 14:42:35
+ * @LastEditTime: 2023-04-07 14:45:58
  * @Description: 请求接口封装
  */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from "axios"
+import { join } from 'path'
 import { Message } from "view-ui-plus"
-import { useConfig } from "@/hooks/useConfig"
+const fs = require('fs')
+import ConfigData from "../../public/config/index.json"
 
-const { Config } = useConfig();
+let Config = ConfigData
+let tempApp_url = localStorage.getItem('app_url') || ''
+if (tempApp_url) {
+  Config = JSON.parse(fs.readFileSync(join(tempApp_url, '/config.json'), { encoding: "utf8" }))
+}
+
+
 // 响应数据结构
 interface Result {
   code: number;

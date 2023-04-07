@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-03-30 14:44:46
+ * @LastEditTime: 2023-04-07 14:02:53
  * @Description: 处理动态数据
  */
 
@@ -14,14 +14,19 @@ import { ipcRenderer } from 'electron'
 
 class HandleData {
   private config: ConfigType;
-  readonly app_url: string;
+  public app_url: any;
   public menu: any[] = [];
   public mList: any[] = [];
 
   constructor() {
     this.config = {} as ConfigType;
-    this.app_url = localStorage.getItem('app_url') || ''
-    this.init()
+    ipcRenderer.send("get_app");
+    ipcRenderer.on("set_url", (e, url, lang) => {
+      localStorage.setItem("app_url", url);
+      this.app_url = localStorage.getItem('app_url') || ''
+      this.init()
+    });
+
   }
 
   getConfigItem(key?: ConfigKey): any {
@@ -39,6 +44,7 @@ class HandleData {
 
   readFile() {
     this.menu = []
+    console.log(this.app_url, 'this.app_url')
     if (!this.app_url) return false;
     this.config = JSON.parse(fs.readFileSync(join(this.app_url, '/config.json'), { encoding: 'utf8' }))
     let key: keyof ConfigType

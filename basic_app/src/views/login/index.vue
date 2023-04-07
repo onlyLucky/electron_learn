@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-03-30 14:36:38
+ * @LastEditTime: 2023-04-07 15:21:41
  * @Description: content
 -->
 <template>
@@ -88,12 +88,26 @@
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt/index";
 import { onMounted, ref } from "vue";
-import { goLogin, getFileIp } from "@/apis/login";
+// import { goLogin, getFileIp } from "@/apis/login";
 import { ipcRenderer } from "electron";
 import { useI18n } from "vue-i18n";
 import { Message } from "view-ui-plus";
 import { useRouter } from "vue-router";
+import { anyTypeAnnotation } from "@babel/types";
 
+let goLogin: any;
+let getFileIp: any;
+ipcRenderer.send("get_app");
+ipcRenderer.on("set_url", (e, url, lang) => {
+  localStorage.setItem("app_url", url);
+  // Config.json 读取的地址找不到， 项目进入先运行App.vue => main.ts
+  import("@/apis/login").then((res) => {
+    goLogin = res.goLogin;
+    getFileIp = res.getFileIp;
+  });
+});
+
+console.log("login.vue");
 const { t } = useI18n();
 
 const isShowChangeSize = false;
@@ -137,7 +151,7 @@ const loginTo = async () => {
     userName: userName.value,
     password: password.value,
   })
-    .then((res) => {
+    .then((res: any) => {
       let userInfo = {
         avatarPath: res.data?.avatarPath,
         deptName: res.data?.deptName,
@@ -159,13 +173,13 @@ const loginTo = async () => {
         tempRme.userName = userName.value;
         tempRme.password = password.value;
       }
-      getFileIp({}).then((res) => {
+      getFileIp({}).then((res: any) => {
         localStorage.setItem("staticPath", res.data);
       });
       localStorage.setItem("remember", JSON.stringify(tempRme));
       ipcRenderer.send("on_login");
     })
-    .catch((err) => {});
+    .catch((err: any) => {});
 };
 </script>
 <style scoped lang="less">

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-06 17:57:48
+ * @LastEditTime: 2023-04-07 09:39:06
  * @Description: 首页
 -->
 <template>
@@ -35,7 +35,7 @@
               </div>
             </Badge>
           </Tooltip>
-          <Dropdown placement="bottom-start" trigger="contextMenu">
+          <Dropdown placement="bottom-start" trigger="click">
             <div class="optItem f-row-c-c">
               <svg-icon
                 iconName="icon-gengduo1"

@@ -217,6 +217,7 @@ function createLoginWin() {
   } else {
     loginWin.loadFile(indexHtml)
   }
+
   loginWin.webContents.focus()
   // loginWin.focus()
   loginWin.on('close', (e) => {
@@ -231,8 +232,7 @@ function createLoginWin() {
 // 托盘对象
 let tray;
 app.whenReady().then(() => {
-
-  // createWindow()
+  console.log('app.whenReady')
   createLoginWin()
   // 创建托盘
   const icon = nativeImage.createFromPath(join(process.env.PUBLIC, 'resources/logo.png'))
@@ -399,10 +399,6 @@ ipcMain.on('window_close', function (e) {
   // BrowserWindow.getFocusedWindow().close();
 })
 
-ipcMain.on('win_size', function (event, arg) {
-  // console.log(url, arg)
-  createLoginWin()
-})
 // 初始化传递app_url 语言
 ipcMain.on('get_app', function (event) {
   BrowserWindow.getFocusedWindow().webContents.send('set_url', STORE_PATH, Config.language.lang)
