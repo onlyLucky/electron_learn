@@ -2,12 +2,15 @@
  * @Author: fg
  * @Date: 2023-01-29 09:35:31
  * @LastEditors: fg
- * @LastEditTime: 2023-01-30 16:40:14
+ * @LastEditTime: 2023-04-07 19:15:39
  * @Description: dd风格的头像组件处理
 -->
 <template>
   <div class="avatarBox f-col-b-c">
-    <div class="avatar f-col-c-c" :style="style">
+    <div
+      :class="['avatar', 'f-col-c-c', !avatar ? 'avatarColor' : '']"
+      :style="style"
+    >
       <div class="imgBox f-col-c-c" v-if="avatar">
         <img :src="avatar" :alt="nickname" />
       </div>
@@ -79,9 +82,11 @@ let style = computed(() => {
 .avatarBox {
   .size(100%,100%);
   user-select: none;
+  .avatarColor {
+    background-color: @f_color_active;
+  }
   .avatar {
     .size(36px,36px);
-    background-color: @f_color_active;
     border-radius: 4px;
     font-size: 14px;
     color: @bg;
