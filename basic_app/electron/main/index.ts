@@ -108,7 +108,7 @@ function createWindow() {
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(urlPath + '#/home')
     // Open devTool if the app is not packaged
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
   } else {
     win.loadURL(url.format({
       pathname: indexHtml,
@@ -117,6 +117,7 @@ function createWindow() {
       hash: "home"
     }))
   }
+  win.webContents.openDevTools()
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString())
@@ -534,7 +535,7 @@ function createModelWin(
   if (process.env.VITE_DEV_SERVER_URL) {
 
     modelWin.loadURL(`${urlPath}#/${urlName}`)
-    modelWin.webContents.openDevTools()
+    // modelWin.webContents.openDevTools()
   } else {
     modelWin.loadURL(url.format({
       pathname: indexHtml,
@@ -543,6 +544,7 @@ function createModelWin(
       hash: urlName
     }))
   }
+  modelWin.webContents.openDevTools()
 
   modelWin.once('ready-to-show', () => {
     modelWin.show();

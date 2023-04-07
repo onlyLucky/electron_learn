@@ -16,6 +16,7 @@ type MeetDetailType = {
   secrecy: 0 | 1,
   secrecyPassword: string | null,
   state: 0 | 1,
+  fileUpload: 0 | 1,
 }
 
 type ConfigKey = 'basic' | 'windows' | 'language' | 'network' | 'download'

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-05 17:47:11
  * @LastEditors: fg
- * @LastEditTime: 2023-03-02 13:23:58
+ * @LastEditTime: 2023-04-07 16:10:23
  * @Description: 会议详情
 -->
 <template>
@@ -259,13 +259,19 @@
                   >
                 </div>
               </div>
-              <div class="linkInfoItem partInfoItem f-row-b-c">
+              <div
+                class="linkInfoItem partInfoItem f-row-b-c"
+                v-show="detail.fileUpload == 1"
+              >
                 <h3>分享列表</h3>
-                <span>查看</span>
+                <span @click="goShareWin">查看</span>
               </div>
-              <div class="linkInfoItem partInfoItem f-row-b-c">
+              <div
+                class="linkInfoItem partInfoItem f-row-b-c"
+                v-show="detail.fileUpload == 1"
+              >
                 <h3>会议纪要</h3>
-                <span>查看</span>
+                <span @click="goSummaryWin">查看</span>
               </div>
             </div>
             <div class="useInfo partInfo">
@@ -602,6 +608,34 @@ const goFileWin = () => {
     title: `${detail.name}_文件列表`,
   });
 };
+// 会议纪要
+const goSummaryWin = () => {
+  ipcRenderer.invoke("open-win", {
+    type: 0,
+    urlName: `models/meet/summary?name=${detail.name}&id=${props.mId}`,
+    width: 1024,
+    height: 700,
+    minWidth: 1024,
+    minHeight: 700,
+    resizable: false,
+    title: `${detail.name}_会议纪要`,
+  });
+};
+
+// 会议分享列表
+const goShareWin = () => {
+  ipcRenderer.invoke("open-win", {
+    type: 0,
+    urlName: `models/meet/share?name=${detail.name}&id=${props.mId}`,
+    width: 800,
+    height: 700,
+    minWidth: 800,
+    minHeight: 700,
+    resizable: false,
+    title: `${detail.name}_分享列表`,
+  });
+};
+
 defineExpose({
   handleEdit,
 });

@@ -20,17 +20,13 @@ class HandleData {
 
   constructor() {
     this.config = {} as ConfigType;
-    ipcRenderer.send("get_app");
-    ipcRenderer.on("set_url", (e, url, lang) => {
-      localStorage.setItem("app_url", url);
-      this.app_url = localStorage.getItem('app_url') || ''
-      this.init()
-    });
-
+    this.app_url = localStorage.getItem('app_url') || ''
+    this.init()
   }
 
   getConfigItem(key?: ConfigKey): any {
     if (key) {
+      console.log(key, this.config, 'key')
       return this.config[key]
     } else {
       return this.config

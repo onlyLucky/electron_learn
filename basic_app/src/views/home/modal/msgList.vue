@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-04-06 10:34:03
  * @LastEditors: fg
- * @LastEditTime: 2023-04-06 17:41:48
+ * @LastEditTime: 2023-04-07 16:31:46
  * @Description: 消息列表
 -->
 <template>
@@ -82,10 +82,7 @@
               @on-change="onSelectChange"
             ></Checkbox>
             <div class="msgBox f-row-s">
-              <img
-                :src="`/src/assets/icons/message/icon_message${item.type}.png`"
-                alt=""
-              />
+              <img :src="useMsgType(item.type)" alt="" />
               <div class="imgRight">
                 <div class="msgHeader f-row-b-c">
                   <div class="msgTitle">
@@ -148,6 +145,7 @@ import {
   deleteBatchNotice,
 } from "@/apis/home";
 import _ from "lodash";
+import { useMsgType } from "./useMsgType";
 let emit = defineEmits<{
   (e: "onSuccess"): void;
 }>();

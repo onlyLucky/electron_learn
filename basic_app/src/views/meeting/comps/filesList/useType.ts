@@ -60,3 +60,5 @@ export const useType = (fileName: string) => {
   }
   return resOther
 }
+
+
