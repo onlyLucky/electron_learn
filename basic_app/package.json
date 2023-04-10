@@ -26,11 +26,13 @@
       ]
     },
     "win": {
+      "icon": "./",
       "target": [
         "nsis",
         "zip"
       ]
     },
+    "nsis": {},
     "files": [
       "dist/**/*",
       "main.js",
