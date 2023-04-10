@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-09 10:39:59
  * @LastEditors: fg
- * @LastEditTime: 2023-03-28 15:11:48
+ * @LastEditTime: 2023-04-10 18:03:34
  * @Description: 会议纪要
 -->
 <template>
@@ -18,14 +18,19 @@
     <div class="content">
       <div class="conHeader f-row-b-c">
         <div class="cHLeft">
-          <Text
-            className="meetName"
-            :ellipsis-config="{ tooltip: true }"
-            ellipsis
-            placement="bottom-start"
+          <div
+            :class="['meetName', downloadDocStatus == 4 ? 'meetDownload' : '']"
+            v-debounce="goReadFile"
           >
-            {{ queryParams.name }}
-          </Text>
+            <Text
+              :ellipsis-config="{ tooltip: true }"
+              ellipsis
+              placement="bottom-start"
+            >
+              {{ queryParams.name }}
+            </Text>
+          </div>
+
           <div class="timeCon f-row-s-c">
             <SvgIcon
               iconName="icon-shijian-xianxing"
@@ -56,7 +61,7 @@
           ></svg-icon>
           <!-- 已下载 -->
           <svg-icon
-            v-show="downloadDocStatus == 2"
+            v-show="downloadDocStatus == 2 || downloadDocStatus == 4"
             iconName="icon-duihao"
             className="cHRightIcon"
             size="20"
@@ -77,6 +82,8 @@
               ? "下载中"
               : downloadDocStatus == 2
               ? "已下载"
+              : downloadDocStatus == 4
+              ? "查看文件"
               : "下载失败"
           }}</span>
         </div>
@@ -237,6 +244,7 @@ import {
 import hdObj from "_v/setting/handleData";
 import { join } from "path";
 import { Message } from "view-ui-plus";
+import { shell } from "electron";
 const fs = require("fs");
 
 // 文件存在
@@ -246,11 +254,12 @@ const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 
 // 会议纪要下载
-let downloadDocStatus = ref<0 | 1 | 2 | 3>(0); //0 下载 1下载中 2已下载 3下载失败
+let downloadDocStatus = ref<0 | 1 | 2 | 3 | 4>(0); //0 下载 1下载中 2已下载 3下载失败 4查看文件
 const goDownloadDoc = () => {
   let temp = `/${queryParams.name}.${queryParams.id}/${queryParams.name}_${queryParams.id}.docx`;
   if (fs.existsSync(join(downloadPath, temp))) {
     // 查看文件
+    goReadFile();
     return false;
   }
   downloadDocStatus.value = 1;
@@ -262,6 +271,9 @@ const goDownloadDoc = () => {
       },
       () => {
         downloadDocStatus.value = 2;
+        setTimeout(() => {
+          downloadDocStatus.value = 4;
+        }, 1200);
       },
       (err: any) => {
         downloadDocStatus.value = 3;
@@ -269,6 +281,15 @@ const goDownloadDoc = () => {
       }
     );
   });
+};
+
+// 查看文件
+const goReadFile = () => {
+  // 查看文件
+  let temp = `/${queryParams.name}.${queryParams.id}/${queryParams.name}_${queryParams.id}.docx`;
+  if (downloadDocStatus.value == 4) {
+    shell.openPath(join(downloadPath, temp));
+  }
 };
 
 // 会议纪要主体内容列表
@@ -406,7 +427,7 @@ onMounted(async () => {
   });
   // 会议纪要文档文件检测
   let temp = `/${queryParams.name}.${queryParams.id}/${queryParams.name}_${queryParams.id}.docx`;
-  downloadDocStatus.value = fs.existsSync(join(downloadPath, temp)) ? 2 : 0;
+  downloadDocStatus.value = fs.existsSync(join(downloadPath, temp)) ? 4 : 0;
 });
 </script>
 <style scoped lang="less">
@@ -421,6 +442,16 @@ onMounted(async () => {
 :deep(.ivu-slider-button) {
   .size(16px,16px);
   border-color: @f_color_active;
+}
+:deep(.meetName) {
+  .ivu-typography {
+    color: @f_color_h3;
+  }
+}
+:deep(.meetName.meetDownload) {
+  .ivu-typography {
+    color: @f_color_active;
+  }
 }
 .summary {
   .size(100vw,100vh);
@@ -439,10 +470,11 @@ onMounted(async () => {
   .content {
     width: 100%;
     height: calc(100% - 124px);
-    padding: 20px;
+    padding: 10px 20px;
     box-sizing: border-box;
     .conHeader {
       .size(100%,74px);
+      margin-bottom: 10px;
       .cHLeft {
         width: calc(100% - 100px);
         .meetName {
@@ -452,6 +484,10 @@ onMounted(async () => {
           font-weight: bold;
           color: @f_color_h3;
           margin-bottom: 6px;
+        }
+        .meetName.meetDownload {
+          cursor: pointer;
+          color: @f_color_active;
         }
         .timeCon {
           span {
@@ -493,7 +529,7 @@ onMounted(async () => {
     }
     .conCon {
       width: 100%;
-      height: calc(100% - 74px);
+      height: calc(100% - 84px);
       position: relative;
       .conBox {
         .size(100%,100%);
