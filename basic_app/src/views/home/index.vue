@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-07 09:39:06
+ * @LastEditTime: 2023-04-10 16:58:37
  * @Description: 首页
 -->
 <template>
@@ -274,7 +274,10 @@
               stroke-color="var(--home_color2)"
             >
               <div class="circleCon">
-                <CountUp :duration="numDuration" :end="12"></CountUp>
+                <CountUp
+                  :duration="numDuration"
+                  :end="totalData.downAlreadyNum"
+                ></CountUp>
               </div>
             </Circle>
             <div class="circleLabel">

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 17:50:16
  * @LastEditors: fg
- * @LastEditTime: 2023-04-04 16:01:11
+ * @LastEditTime: 2023-04-10 16:59:43
  * @Description: 用户信息处理
  */
 import { getUserInfo, postUploadAvatar } from "@/apis/user"
@@ -89,10 +89,11 @@ const useUserInfo = () => {
   // 计算本地下载个数
   const handleDownNum = () => {
     // Config
-    let temp = fs.readdirSync(Config.download.downloadPath, { encoding: 'utf8' }) || []
-    temp.map((item: any, index: number) => {
-      if (fs.statSync(join(Config.download.downloadPath, item)).isFile()) {
-        temp.splice(index, 1)
+    let temp: any[] = []
+    let tempFile = fs.readdirSync(Config.download.downloadPath, { encoding: 'utf8' }) || []
+    tempFile.map((item: any, index: number) => {
+      if (fs.statSync(join(Config.download.downloadPath, item)).isDirectory()) {
+        temp.push(item)
       }
     })
     totalData.downAlreadyNum = temp.length
