@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-03-28 19:32:49
+ * @LastEditTime: 2023-04-10 17:27:25
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -300,6 +300,9 @@ const getData = () => {
     });
 };
 let selection = ref<any[]>([]);
+let dirPath = ref<string>(
+  join(downloadPath, `/${queryParams.name}.${queryParams.id}`)
+);
 // 选项更改变化
 let downloadNum = ref<number>(0);
 let delNum = ref<number>(0);
@@ -321,6 +324,7 @@ defineExpose({
   selection,
   downloadNum,
   delNum,
+  dirPath,
   getData,
 });
 </script>

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-03 14:55:51
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 19:21:14
+ * @LastEditTime: 2023-04-10 17:39:16
  * @Description: content
 -->
 <template>
@@ -122,7 +122,7 @@ const bus = cxt.appContext.config.globalProperties.$bus;
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 
-const { downloadUse, handleDownload } = useDownload(
+const { downloadUse, handleDownloadAsync } = useDownload(
   queryParams.id,
   queryParams.name || ""
 ) as any;
@@ -165,7 +165,7 @@ const onMenuTap = (val: number) => {
   filter.typeName = filterData[val].name;
 };
 // 文件下载
-const onDownloadFile = () => {
+const onDownloadFile = async () => {
   if (refFTable.value!.downloadNum > 0 && downloadUse.status != 1) {
     let temp: any[] = [];
     refFTable.value!.selection.map((item: any) => {
@@ -180,7 +180,14 @@ const onDownloadFile = () => {
       }
     });
     downloadUse.needDownloadArr = temp;
-    handleDownload(false);
+    const res = await handleDownloadAsync();
+    console.log(res, "handleDownloadAsync");
+    if (res) {
+      refFTable.value?.getData();
+      setTimeout(() => {
+        Message.success("所选的文件下载完成");
+      }, 400);
+    }
   }
 };
 // 文件删除
@@ -200,6 +207,11 @@ const onDelFile = () => {
             Message.success("所选的文件删除完成");
           }
         });
+        let tempDir =
+          fs.readdirSync(refFTable.value?.dirPath, { encoding: "utf8" }) || [];
+        if (tempDir.length <= 0) {
+          fs.rmdirSync(refFTable.value!.dirPath);
+        }
       },
     });
   }
@@ -210,18 +222,6 @@ const handleDelFile = (path: string) => {
     fs.unlinkSync(path);
   }
 };
-
-watch(
-  () => downloadUse.isNeedDownload,
-  (val) => {
-    if (!val) {
-      refFTable.value?.getData();
-      setTimeout(() => {
-        Message.success("所选的文件下载完成");
-      }, 400);
-    }
-  }
-);
 
 watch(
   () => downloadUse.progress,
