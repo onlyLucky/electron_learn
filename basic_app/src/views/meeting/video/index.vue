@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-13 16:05:27
+ * @LastEditTime: 2023-04-10 15:17:44
  * @Description: 视频播放
 -->
 <template>
@@ -37,7 +37,6 @@
           ref="refVideoComp"
           :width="mediaConfig.width"
           :height="mediaConfig.height"
-          :download="downloadUse.isNeedDownload"
         ></VideoComp>
         <!-- 底部进度条 -->
         <div class="ControlBox">
@@ -74,9 +73,13 @@
           ref="refCaption"
           :show="refBControl?.isShowCaption"
           :time="refVideoComp?.canvasConfig.currentTime"
-          :download="downloadUse.isNeedDownload"
           :stt="computedStt"
         ></Caption>
+        <div class="loadMsg" v-show="loadMsg.length > 0">
+          <div class="msgItem" v-for="(item, index) in loadMsg" :key="index">
+            {{ item.msg }}
+          </div>
+        </div>
       </div>
 
       <!-- 侧边展示内容 -->
@@ -97,6 +100,7 @@
         ></RightTab>
       </div>
     </div>
+
     <div class="downLoading f-col-c-c" v-show="downloadUse.isNeedDownload">
       <div class="dTop f-row-c-c">
         <svg-icon
@@ -130,10 +134,13 @@ import { useDownload, DownloadType } from "../comps/mListDetail/useDownload";
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 
-const { downloadUse, handleDownload } = useDownload(
-  queryParams.id,
-  queryParams.name || ""
-) as any;
+const {
+  downloadUse,
+  handleDownload,
+  isExistMeetFileAsync,
+  handleDownloadAsync,
+  doDownloadAsync,
+} = useDownload(queryParams.id, queryParams.name || "") as any;
 
 let mediaConfig = reactive<any>({
   width: "",
@@ -150,13 +157,13 @@ const onRightChange = () => {
   }, 200);
 };
 
-watch(
+/* watch(
   () => downloadUse.isNeedDownload,
   (val) => {
     console.log("upload: " + val);
     if (val) handleDownload();
   }
-);
+); */
 const refVideoCon = ref<HTMLElement>();
 
 const refVideoComp = ref<InstanceType<typeof VideoComp>>();
@@ -181,8 +188,12 @@ const onSeek = (progress: number) => {
 
 // 计算字幕文件路径
 const computedStt = computed(() => {
-  return refVideoComp.value?.fileList[refVideoComp.value.videoConfig.current]
-    .stt;
+  if (refVideoComp.value?.fileList && refVideoComp.value!.fileList.length > 0) {
+    return refVideoComp.value?.fileList[refVideoComp.value.videoConfig.current]
+      .stt;
+  } else {
+    return "";
+  }
 });
 
 // 音量更改
@@ -200,7 +211,115 @@ const onAnalectaChange = (index: number) => {
   refVideoComp.value?.uploadCurrent(index);
 };
 
+// 页面加载处理
+let loadMsg = ref<any[]>([
+  {
+    type: 0, // 0 普通  1 可操作  2 报错
+    msg: "播放器初始化中...",
+  },
+]);
+
+// 检测是否允许后面代码继续处理
+let errorFlag = ref<boolean>(false);
+const onLoadHandle = async () => {
+  // 文件检测
+  handleLoadMsg({
+    type: 0,
+    msg: "本地文件开始检测...",
+  });
+  const resHandle1 = await isExistMeetFileAsync().catch((e: any) => {
+    errorFlag.value = true;
+    handleLoadMsg({
+      type: 2,
+      msg: "本地文件检测失败",
+    });
+  });
+  if (resHandle1 && !errorFlag.value) {
+    if (resHandle1.isNeedDownload) {
+      handleLoadMsg({
+        type: 0,
+        msg: "正在获取云端文件数据...",
+      });
+      const resHandle2 = await doDownloadAsync().catch((e: any) => {
+        errorFlag.value = true;
+        handleLoadMsg({
+          type: 2,
+          msg: "获取云端文件数据失败",
+        });
+      });
+      if (resHandle2 && !errorFlag.value) {
+        handleLoadMsg({
+          type: 0,
+          msg: "正在进行文件下载...",
+        });
+        //下载处理
+        const resHandle3 = await handleDownloadAsync().catch((e: any) => {
+          errorFlag.value = true;
+          handleLoadMsg({
+            type: 2,
+            msg: "云端文件下载操作失败",
+          });
+        });
+      }
+    } else {
+      handleLoadMsg({
+        type: 0,
+        msg: "文件加载中...",
+      });
+    }
+  }
+  // 文件解析
+  if (!errorFlag.value) {
+    handleLoadMsg({
+      type: 0,
+      msg: "本地文件数据读取中...",
+    });
+    refVideoComp.value?.uploadFileData();
+    handleLoadMsg({
+      type: 0,
+      msg: "本地批注文件数据解析中...",
+    });
+    const resHandle4 = await refVideoComp.value?.parseFile().catch((err) => {
+      handleLoadMsg({
+        type: 2,
+        msg: "本地批注文件数据解析失败",
+      });
+    });
+
+    if (resHandle4) {
+      handleLoadMsg({
+        type: 0,
+        msg: "本地字幕文件数据解析中...",
+      });
+      try {
+        refCaption.value?.readStt();
+      } catch (error) {
+        handleLoadMsg({
+          type: 2,
+          msg: "本地字幕文件数据解析失败",
+        });
+      }
+      handleLoadMsg({
+        type: 0,
+        msg: "本地字幕文件数据解析成功",
+      });
+    }
+    setTimeout(() => {
+      loadMsg.value = [];
+    }, 2000);
+  }
+};
+const handleLoadMsg = (data: any) => {
+  setTimeout(() => {
+    let temp = loadMsg.value;
+    temp.push(data);
+    loadMsg.value = temp;
+  }, 200);
+};
+
 onMounted(() => {
+  console.log("basic onMounted");
+  onLoadHandle();
   mediaConfig.height = refVideoCon.value?.clientHeight;
   mediaConfig.width = refVideoCon.value?.clientWidth;
   window.onresize = () => {
@@ -288,6 +407,22 @@ onMounted(() => {
       .switchIcon {
         right: 0px;
       }
+    }
+  }
+  .loadMsg {
+    .size(auto, auto);
+    padding: 20px 10px;
+    padding-bottom: 4px;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    bottom: 100px;
+    left: 0px;
+    z-index: 10;
+    .msgItem {
+      font-size: 14px;
+      color: #fff;
+      opacity: 0.8;
+      margin-bottom: 2px;
     }
   }
 

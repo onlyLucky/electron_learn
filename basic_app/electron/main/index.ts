@@ -182,6 +182,7 @@ function createWindow() {
           win.webContents.send('downloadEnd')
         }
       } else {
+        win.webContents.send('downloadError')
         dialog.showErrorBox('下载失败', `文件因为某些原因被中断下载`);
         console.log(`Download failed: ${state}`)
       }
@@ -233,7 +234,6 @@ function createLoginWin() {
 // 托盘对象
 let tray;
 app.whenReady().then(() => {
-  console.log('app.whenReady')
   createLoginWin()
   // 创建托盘
   const icon = nativeImage.createFromPath(join(process.env.PUBLIC, 'resources/logo.png'))
@@ -607,6 +607,7 @@ function createModelWin(
           webContents.send('downloadEnd')
         }
       } else {
+        webContents.send('downloadError')
         dialog.showErrorBox('下载失败', `文件因为某些原因被中断下载`);
         console.log(`Download failed: ${state}`)
       }

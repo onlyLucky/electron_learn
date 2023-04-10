@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 09:09:19
+ * @LastEditTime: 2023-04-10 15:27:36
  * @Description: content
 -->
 <template>
@@ -206,6 +206,7 @@ watch(
 // 计算媒体控制
 const computedMediaCtl = computed(() => {
   // true ctrl  false loading
+  console.log("computedMediaCtl:", props.files.length, props.mediaData);
   if (props.files.length <= 0) {
     return false;
   }
@@ -235,6 +236,7 @@ const computedMediaCtl = computed(() => {
 // 音量更改
 const onVoiceChange = (val: number) => {
   voiceNum.value = val;
+  console.log("onVoice", val);
   emit("onVoice", val);
 };
 

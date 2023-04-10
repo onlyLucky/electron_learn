@@ -2,11 +2,11 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 15:16:59
+ * @LastEditTime: 2023-04-10 15:31:29
  * @Description: video audio canvas comp 
 -->
 <template>
-  <div class="mediaBox f-row-c-c">
+  <div class="mediaBox f-row-c-c" v-if="fileList.length > 0">
     <video
       id="player"
       ref="refPlayer"
@@ -43,14 +43,10 @@ import { useCanvas } from "./hooks/useCanvas";
 
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
-const props = withDefaults(
-  defineProps<{ width: number; height: number; download: boolean }>(),
-  {
-    width: 1100,
-    height: 652,
-    download: false,
-  }
-);
+const props = withDefaults(defineProps<{ width: number; height: number }>(), {
+  width: 1100,
+  height: 652,
+});
 let mediaConfig = reactive<any>({
   videoBg:
     "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AAOEiEk.img",
@@ -63,8 +59,6 @@ const { fileList, handleFolder } = useFile(
   queryParams.name || "",
   queryParams.id
 );
-
-console.log(fileList, "fileList");
 
 const refPlayer = ref<HTMLVideoElement>();
 const refAudio = ref<HTMLAudioElement>();
@@ -83,8 +77,6 @@ const {
   seekTo,
 } = useVideo(queryParams.name || "", queryParams.id);
 
-uploadFile(fileList.value);
-
 watch(refPlayer, (val) => {
   if (val) {
     uploadDomObj(true, val);
@@ -92,6 +84,7 @@ watch(refPlayer, (val) => {
 });
 watch(refAudio, (val) => {
   if (val) {
+    refAudio.value!.volume = 0.5;
     uploadDomObj(false, val);
   }
 });
@@ -101,15 +94,7 @@ watch(
     computedCanvasSize();
   }
 );
-watch(
-  () => props.download,
-  (val) => {
-    if (!val) {
-      handleFolder();
-      parseXmlFile(fileList.value[videoConfig.current].xml);
-    }
-  }
-);
+
 watch(
   () => props.height,
   (val) => {
@@ -128,7 +113,25 @@ const {
   userDataChange,
   handleCtxPlay,
 } = useCanvas();
-parseXmlFile(fileList.value[videoConfig.current].xml);
+
+// 加载数据
+const uploadFileData = () => {
+  handleFolder();
+  uploadFile(fileList.value);
+};
+
+// 解析文件
+const parseFile = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      parseXmlFile(fileList.value[videoConfig.current].xml);
+      resolve({ data: "success" });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 let refCanvas = ref<HTMLCanvasElement>();
 watch(refCanvas, (val) => {
   if (val) {
@@ -152,6 +155,7 @@ const onCanPlay = (e: Event) => {
 };
 // 处理canvas比例计算
 const computedCanvasSize = () => {
+  if (!refCanvas.value) return false;
   // video ref 的宽高比例
   let videoDomRatio = props.width / props.height;
   if (videoDomRatio >= ratio.value) {
@@ -179,6 +183,7 @@ const onPlayEnd = () => {
 const onVoiceChange = (val: number) => {
   videoConfig.voiceNum = val;
   refAudio.value!.volume = val;
+  console.log(val, refAudio.value!.volume, "refAudio.value!.volume");
 };
 
 watch(
@@ -187,7 +192,9 @@ watch(
     // 暂停批注
     onPathEnd();
     // 更新批注文件
-    parseXmlFile(fileList.value[videoConfig.current].xml);
+    if (fileList.value.length > 0) {
+      parseXmlFile(fileList.value[videoConfig.current].xml);
+    }
     // 修改为异步调用，音频视频监听过canplay之后才能调用播放
     setTimeout(() => {
       // 播放设置
@@ -214,6 +221,8 @@ defineExpose({
   onVoiceChange,
   userDataChange,
   uploadCurrent,
+  uploadFileData,
+  parseFile,
 });
 </script>
 <style scoped lang="less">

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-09 17:20:04
  * @LastEditors: fg
- * @LastEditTime: 2023-03-14 11:41:43
+ * @LastEditTime: 2023-04-10 15:15:31
  * @Description: 字幕文件
 -->
 <template>
@@ -25,13 +25,11 @@ let props = withDefaults(
     show: boolean;
     time: number;
     stt: string;
-    download: boolean;
   }>(),
   {
     show: false,
     time: 0,
     stt: "",
-    download: false,
   }
 );
 type CaptionType = {
@@ -168,15 +166,6 @@ watch(
 );
 
 watch(
-  () => props.download,
-  (val) => {
-    if (!val) {
-      readStt();
-    }
-  }
-);
-
-watch(
   () => props.stt,
   (val) => {
     readStt();
@@ -184,15 +173,15 @@ watch(
 );
 
 onMounted(() => {
-  console.log(refCaption.value?.parentElement);
+  console.log("handlePosition");
   handlePosition();
-  readStt();
   window.onresize = () => {
     handlePosition();
   };
 });
 defineExpose({
   handlePosition,
+  readStt,
 });
 </script>
 <style scoped lang="less">
