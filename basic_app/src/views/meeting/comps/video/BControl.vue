@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-04-10 15:27:36
+ * @LastEditTime: 2023-04-10 15:40:06
  * @Description: content
 -->
 <template>
@@ -64,7 +64,7 @@
           ></svg-icon>
         </div>
 
-        <div class="ctrlIcon f-row-c-c">
+        <div class="ctrlIcon f-row-c-c" v-debounce="onRefresh">
           <Tooltip content="刷新">
             <svg-icon
               iconName="icon-reset"
@@ -179,6 +179,7 @@ let emit = defineEmits<{
   (e: "onMediaChange"): void;
   (e: "onSeek", progress: number): void;
   (e: "onVoice", num: number): void;
+  (e: "onRefresh"): void;
 }>();
 const onMediaCtrlTap = () => {
   emit("onMediaChange");
@@ -246,6 +247,9 @@ const onCaptionTap = () => {
   isShowCaption.value = !isShowCaption.value;
 };
 
+const onRefresh = () => {
+  emit("onRefresh");
+};
 // 导出数据
 defineExpose({
   smallSizeFlag,

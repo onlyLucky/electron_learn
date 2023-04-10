@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-27 16:50:04
  * @LastEditors: fg
- * @LastEditTime: 2023-04-10 15:17:44
+ * @LastEditTime: 2023-04-10 15:46:35
  * @Description: 视频播放
 -->
 <template>
@@ -47,6 +47,7 @@
             @onSeek="onSeek"
             @onMediaChange="onMediaChange"
             @onVoice="onVoice"
+            @onRefresh="onRefresh"
           ></BControl>
         </div>
         <div class="switchIcon f-row-c-c" v-debounce="onRightChange">
@@ -209,6 +210,14 @@ const onUseChange = (list: any[]) => {
 // 选集数据修改
 const onAnalectaChange = (index: number) => {
   refVideoComp.value?.uploadCurrent(index);
+};
+
+// 页面刷新
+const onRefresh = () => {
+  if (refVideoComp.value?.videoConfig.playing) {
+    refVideoComp.value?.onMediaCtrl();
+  }
+  onLoadHandle();
 };
 
 // 页面加载处理
