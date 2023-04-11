@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-31 16:57:19
  * @LastEditors: fg
- * @LastEditTime: 2023-04-04 14:42:03
+ * @LastEditTime: 2023-04-11 14:47:04
  * @Description: 会议echarts
 -->
 <template>
@@ -116,6 +116,10 @@ const init = () => {
     legend: {
       type: "scroll",
       data: optionData.nameArr,
+      textStyle: {
+        fontSize: "14px",
+        color: "#666",
+      },
     },
     toolbox: {},
     grid: {

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-31 16:57:19
  * @LastEditors: fg
- * @LastEditTime: 2023-04-04 16:02:19
+ * @LastEditTime: 2023-04-11 14:47:54
  * @Description: 设备echarts
 -->
 <template>
@@ -46,6 +46,10 @@ const init = () => {
       type: "scroll",
       bottom: "0px",
       left: "center",
+      textStyle: {
+        fontSize: "14px",
+        color: "#666",
+      },
     },
     series: [
       {

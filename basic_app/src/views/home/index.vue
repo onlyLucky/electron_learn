@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-10 16:58:37
+ * @LastEditTime: 2023-04-11 14:48:51
  * @Description: 首页
 -->
 <template>
@@ -728,7 +728,7 @@ onMounted(() => {
             }
           }
           .labelTitle {
-            font-size: 12px;
+            font-size: 14px;
             color: @fontColor;
           }
         }
