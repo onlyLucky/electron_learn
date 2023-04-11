@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-16 16:03:18
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 17:23:10
+ * @LastEditTime: 2023-04-11 14:25:01
  * @Description: 用户模块
 -->
 <template>
@@ -466,6 +466,9 @@ const handleGroup = () => {
 };
 
 onMounted(() => {
+  window.onresize = () => {
+    refUserTable.value?.onResizeHeight();
+  };
   nextTick(() => {
     // 获取用户
     getUserList();

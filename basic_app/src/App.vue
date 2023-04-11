@@ -24,6 +24,7 @@ const { locale } = useI18n();
 onMounted(() => {
   // 主题初始化
   document.body.setAttribute("class", "theme_basic");
+  document.body.style.fontSize = "14px";
   // document.getElementById("app")!.className = "theme_basic";
   // 判断当前是否有config配置
 

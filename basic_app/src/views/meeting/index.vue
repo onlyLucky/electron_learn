@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-03-15 19:43:33
+ * @LastEditTime: 2023-04-11 11:13:57
  * @Description: content
 -->
 <template>
@@ -323,7 +323,7 @@ onUnmounted(() => {
         margin-right: 20px;
         .label {
           flex-shrink: 0;
-          font-size: 14px;
+          font-size: 1em;
           color: @fontColor;
           margin-right: 12px;
         }

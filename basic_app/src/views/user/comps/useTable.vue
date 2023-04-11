@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-17 14:52:20
  * @LastEditors: fg
- * @LastEditTime: 2023-03-22 15:10:46
+ * @LastEditTime: 2023-04-11 14:31:59
  * @Description: 用户列表表格组件
 -->
 <template>
@@ -302,13 +302,13 @@ const columns = [
     title: "联系方式",
     key: "phone",
     tooltip: true,
-    width: 220,
+    width: 180,
   },
   {
     title: "邮箱",
     key: "email",
     tooltip: true,
-    width: 220,
+    width: 240,
   },
 ];
 
@@ -397,12 +397,14 @@ const computedCaeerName: any = (id: any) => {
   return temp;
 };
 
+const onResizeHeight = () => {
+  console.log("onResizeHeight--");
+  tableHeight.value = refTable.value?.clientHeight;
+};
+
 onMounted(() => {
   tableHeight.value = refTable.value?.clientHeight;
   getUserCareerData();
-  window.onresize = () => {
-    tableHeight.value = refTable.value?.clientHeight;
-  };
 });
 defineExpose({
   pageTotal,
@@ -412,6 +414,7 @@ defineExpose({
   getUserCareerData,
   onDel,
   onSingDelCancel,
+  onResizeHeight,
 });
 </script>
 <style scoped lang="less">
@@ -435,6 +438,17 @@ defineExpose({
 }
 :deep(.equipTItem) {
   color: @f_color_h3;
+}
+:deep(.ivu-tooltip-rel) {
+  font-size: 16px;
+}
+:deep(.ivu-table-body) {
+  .ivu-table-cell {
+    font-size: 16px;
+  }
+  .ivu-typography {
+    font-size: 16px;
+  }
 }
 :deep(.equipName) {
   .size(100%, 66px);
@@ -480,13 +494,13 @@ defineExpose({
         cursor: pointer;
         color: @f_color_active;
         .careerName {
-          font-size: 12px;
+          font-size: 14px;
           color: @fontColor;
           margin-left: 10px;
         }
       }
       .equipBottom {
-        font-size: 12px;
+        font-size: 14px;
         color: @fontColor;
         .equipStatus {
           margin-right: 10px;

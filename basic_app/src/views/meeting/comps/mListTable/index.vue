@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-24 14:03:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-06 10:51:21
+ * @LastEditTime: 2023-04-11 13:46:33
  * @Description: 会议列表
 -->
 <template>
@@ -514,6 +514,14 @@ defineExpose({
 :deep(.ivu-table:before) {
   display: none;
 }
+:deep(.ivu-tooltip-rel) {
+  font-size: 16px;
+}
+:deep(.ivu-table-body) {
+  .ivu-table-cell {
+    font-size: 16px;
+  }
+}
 :deep(.meetNameBox) {
   .size(100%, 70px);
   .mNameLeft {
@@ -538,7 +546,7 @@ defineExpose({
           margin-right: 4px;
         }
         .statusTxt {
-          font-size: 12px;
+          font-size: 14px;
         }
       }
       .equipmentBox {
@@ -548,7 +556,7 @@ defineExpose({
           margin-right: 6px;
         }
         .equipTxt {
-          font-size: 12px;
+          font-size: 14px;
           color: @fontColor;
         }
       }

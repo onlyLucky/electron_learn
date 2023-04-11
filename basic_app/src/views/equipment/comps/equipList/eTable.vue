@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-03-28 19:32:09
+ * @LastEditTime: 2023-04-11 13:51:20
  * @Description: 设备列表
 -->
 <template>
@@ -247,7 +247,6 @@ const columns = [
           placement: "bottom-start",
           ellipsis: true,
           class: "equipTItem",
-          style: { fontSize: "14px" },
           "ellipsis-config": { tooltip: true },
         },
         () => params.row.code
@@ -266,7 +265,6 @@ const columns = [
           placement: "bottom-start",
           ellipsis: true,
           class: "equipTItem",
-          style: { fontSize: "14px" },
           "ellipsis-config": { tooltip: true },
         },
         () => params.row.softwareVersion
@@ -352,6 +350,17 @@ defineExpose({
 :deep(.ivu-table-header thead tr th) {
   padding: 16px 0px;
 }
+:deep(.ivu-tooltip-rel) {
+  font-size: 16px;
+}
+:deep(.ivu-table-body) {
+  .ivu-table-cell {
+    font-size: 16px;
+  }
+  .ivu-typography {
+    font-size: 16px;
+  }
+}
 :deep(.equipTItem) {
   color: @f_color_h3;
 }
@@ -384,7 +393,7 @@ defineExpose({
         color: @f_color_active;
       }
       .equipBottom {
-        font-size: 12px;
+        font-size: 14px;
         color: @fontColor;
         .equipBite {
         }

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-27 09:56:54
  * @LastEditors: fg
- * @LastEditTime: 2023-03-27 11:34:20
+ * @LastEditTime: 2023-04-11 14:18:22
  * @Description: 导入xlsx解析数据列表
 -->
 <template>
@@ -443,7 +443,7 @@ defineExpose({
               }
             }
             .equipBottom {
-              font-size: 12px;
+              font-size: 14px;
               color: @fontColor;
               .equipBite {
               }

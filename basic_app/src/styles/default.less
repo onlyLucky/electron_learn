@@ -40,7 +40,6 @@ td {
   src: url("../assets/fonts/KeHeiTi-2.ttf");
 }
 @font-face {
-  font-size: 120%;
   font-family: "HarmonyOS_Sans";
   src: url("../assets/fonts/HarmonyOS_Sans_SC_Light.ttf");
 }
@@ -126,47 +125,6 @@ textarea {
 #app {
   user-select: none;
   touch-action: none;
-}
-
-//自定义弹出框
-.toast {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-  .toast-content {
-    .loadImg {
-      width: 0.6rem;
-      -webkit-animation: myRotate 2s infinite linear;
-      animation: myRotate 2s infinite linear;
-      margin-bottom: 0.2rem;
-    }
-
-    text-align: center;
-    background: #fff;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 0.26rem;
-    padding: 0.6rem 1rem;
-    border-radius: 0.1rem;
-  }
-}
-
-@keyframes myRotate {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
 }
 
 /*滚动条样式*/

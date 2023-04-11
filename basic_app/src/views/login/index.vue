@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-04-07 15:21:41
+ * @LastEditTime: 2023-04-11 14:06:19
  * @Description: content
 -->
 <template>
@@ -28,6 +28,7 @@
           </div>
           <Input
             :placeholder="t('login.user_placeholder')"
+            style="font-size: 16px"
             v-model="userName"
             clearable
           ></Input>
@@ -185,6 +186,7 @@ const loginTo = async () => {
 <style scoped lang="less">
 :deep(.ivu-input) {
   height: 40px;
+  font-size: 16px;
 }
 :deep(.ivu-input-wrapper) {
   display: flex;
