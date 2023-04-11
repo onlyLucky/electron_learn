@@ -31,7 +31,7 @@ import mitt from 'mitt'
 // 设置适配窗口分辨率缩放
 // console.log('screen.getPrimaryDisplay().workAreaSize')
 // console.log(screen.getPrimaryDisplay().workAreaSize)
-// webFrame.setZoomFactor(1.2)
+webFrame.setZoomFactor(1)
 const app = createApp(AppCom);
 // event bus
 const bus = mitt()

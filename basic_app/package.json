@@ -1,5 +1,5 @@
 {
-  "name": "basic-app",
+  "name": "kelipi",
   "version": "1.0.0",
   "main": "dist-electron/main/index.js",
   "description": "Really simple Electron + Vue + Vite boilerplate.",
@@ -26,13 +26,19 @@
       ]
     },
     "win": {
-      "icon": "./",
+      "icon": "./public/logo.ico",
       "target": [
         "nsis",
         "zip"
       ]
     },
-    "nsis": {},
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./public/logo.ico",
+      "uninstallerIcon": "./public/logo.ico",
+      "perMachine": true
+    },
     "files": [
       "dist/**/*",
       "main.js",
