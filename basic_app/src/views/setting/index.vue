@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-06 18:02:11
+ * @LastEditTime: 2023-04-11 17:38:41
  * @Description: 设置
 -->
 <template>
@@ -64,6 +64,10 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="optBox f-row-e-c">
+        <Button type="text">取消</Button>
+        <Button type="primary">保存</Button>
       </div>
     </div>
   </div>
@@ -134,7 +138,7 @@ const menuMouseLeave = (index: number, item: any) => {
     .conBox {
       width: 100%;
       // 50
-      height: calc(100% - 90px);
+      height: calc(100% - 105px);
       display: flex;
       .leftCon {
         .size(200px, 100%);
@@ -192,6 +196,14 @@ const menuMouseLeave = (index: number, item: any) => {
             }
           }
         }
+      }
+    }
+    .optBox {
+      .size(100%, 50px);
+      padding: 0 14px;
+      box-sizing: border-box;
+      button {
+        margin-left: 20px;
       }
     }
   }

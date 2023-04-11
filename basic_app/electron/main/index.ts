@@ -233,6 +233,7 @@ function createLoginWin() {
 }
 // 托盘对象
 let tray;
+let timeCount = 0;
 app.whenReady().then(() => {
   createLoginWin()
   // 创建托盘
@@ -267,14 +268,9 @@ app.whenReady().then(() => {
   tray.setToolTip('basic app')
   tray.setTitle('This is my title')
   // 任务栏点击事件
-  let timeCount = 0
+
   tray.on('click', function (Event) {
-    setTimeout(() => {
-      if (timeCount === 0) {
-        focusWin.show();
-        timeCount = 0
-      }
-    }, 300)
+    winActive()
   })
   // 任务栏双击点击事件
   tray.on('double-click', function () {
@@ -283,7 +279,21 @@ app.whenReady().then(() => {
       timeCount = 0
     }, 300)
   })
+
+  // 注册全局快捷键
+
 })
+
+// 激活窗口
+function winActive() {
+  setTimeout(() => {
+    if (timeCount === 0) {
+      focusWin.show();
+      timeCount = 0
+    }
+  }, 300)
+}
+
 // 当所有的窗口都被关闭时触发
 app.on('window-all-closed', (e) => {
   console.log('window-all-closed')
