@@ -3,7 +3,46 @@
     "name": "basic",
     "description": "基础设置",
     "show": true,
-    "children": []
+    "children": [
+      {
+        "name": "fontFamily",
+        "parent": "basic",
+        "description": "字体",
+        "type": "Select",
+        "value": "HarmonyOS_Sans",
+        "props": {
+          "option": [
+            {
+              "label": "华为鸿蒙系统字体",
+              "value": "HarmonyOS_Sans"
+            }
+          ]
+        }
+      },
+      {
+        "name": "fontSize",
+        "parent": "basic",
+        "description": "字体大小",
+        "type": "Select",
+        "value": "14px",
+        "props": {
+          "option": [
+            {
+              "label": "偏小",
+              "value": "14px"
+            },
+            {
+              "label": "标准",
+              "value": "16px"
+            },
+            {
+              "label": "偏大",
+              "value": "28px"
+            }
+          ]
+        }
+      }
+    ]
   },
   "windows": {
     "name": "windows",
@@ -78,6 +117,29 @@
             }
           ],
           "filterable": true
+        }
+      }
+    ]
+  },
+  "keyboard": {
+    "name": "keyboard",
+    "description": "快捷键",
+    "show": true,
+    "downloadPath": "",
+    "children": [
+      {
+        "name": "downloadPath",
+        "parent": "keyboard",
+        "value": "",
+        "description": "键盘快捷键",
+        "type": "Keyboard",
+        "props": {
+          "list": [
+            {
+              "name": "",
+              "keyArr": []
+            }
+          ]
         }
       }
     ]

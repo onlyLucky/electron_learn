@@ -334,6 +334,12 @@ ipcMain.on('win_full', (event, flag) => {
   BrowserWindow.getFocusedWindow().setFullScreen(flag);
 })
 
+// 应用重启
+ipcMain.on('win_reset', function () {
+  app.relaunch()
+  app.exit()
+})
+
 ipcMain.on('on_login_out', (event, arg) => {
   createLoginWin()
   tokenTime = 0

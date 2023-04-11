@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 14:06:19
+ * @LastEditTime: 2023-04-11 16:44:11
  * @Description: content
 -->
 <template>
@@ -96,8 +96,8 @@ import { Message } from "view-ui-plus";
 import { useRouter } from "vue-router";
 import { anyTypeAnnotation } from "@babel/types";
 
-let goLogin: any;
-let getFileIp: any;
+let goLogin: Function;
+let getFileIp: Function;
 ipcRenderer.send("get_app");
 ipcRenderer.on("set_url", (e, url, lang) => {
   localStorage.setItem("app_url", url);
@@ -125,16 +125,6 @@ type RmeType = {
   userName?: string;
   password?: string;
 };
-
-onMounted(() => {
-  if (localStorage.getItem("remember")) {
-    const tempRem: RmeType = JSON.parse(localStorage.getItem("remember")!);
-    isRememberMe.value = tempRem.isRememberMe;
-    // 空值合并，可选链的写法
-    userName.value = tempRem.userName ?? "";
-    password.value = tempRem.password || "";
-  }
-});
 
 const changePasFlag = () => {
   pasFlag.value = !pasFlag.value;
@@ -182,6 +172,21 @@ const loginTo = async () => {
     })
     .catch((err: any) => {});
 };
+
+onMounted(() => {
+  if (localStorage.getItem("remember")) {
+    const tempRem: RmeType = JSON.parse(localStorage.getItem("remember")!);
+    isRememberMe.value = tempRem.isRememberMe;
+    // 空值合并，可选链的写法
+    userName.value = tempRem.userName ?? "";
+    password.value = tempRem.password || "";
+  }
+  document.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      loginTo();
+    }
+  });
+});
 </script>
 <style scoped lang="less">
 :deep(.ivu-input) {
