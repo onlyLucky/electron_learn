@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-24 14:03:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 13:46:33
+ * @LastEditTime: 2023-04-12 14:24:10
  * @Description: 会议列表
 -->
 <template>
@@ -210,7 +210,13 @@ const columns = reactive<any[]>([
           ),
           h(
             resolveComponent("Dropdown"),
-            { trigger: "click", placement: "bottom-start" },
+            {
+              trigger: "click",
+              placement:
+                params.index >= tableData.value.length - 2
+                  ? "top-start"
+                  : "bottom-start",
+            },
             {
               default: () =>
                 h(

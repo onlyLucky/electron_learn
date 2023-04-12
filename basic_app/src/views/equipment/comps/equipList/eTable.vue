@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 13:51:20
+ * @LastEditTime: 2023-04-12 14:26:12
  * @Description: 设备列表
 -->
 <template>
@@ -176,7 +176,13 @@ const columns = [
               ),
               h(
                 resolveComponent("Dropdown"),
-                { trigger: "click", placement: "bottom-start" },
+                {
+                  trigger: "click",
+                  placement:
+                    params.index >= tData.length - 1
+                      ? "top-start"
+                      : "bottom-start",
+                },
                 {
                   default: () =>
                     h(

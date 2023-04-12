@@ -207,7 +207,13 @@ const columns = [
               ),
               h(
                 resolveComponent("Dropdown"),
-                { trigger: "click", placement: "bottom-start" },
+                {
+                  trigger: "click",
+                  placement:
+                    params.index >= tData.length - 2
+                      ? "top-start"
+                      : "bottom-start",
+                },
                 {
                   default: () =>
                     h(
