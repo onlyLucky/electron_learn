@@ -1,13 +1,23 @@
 {
+  "version": "1.0.2",
   "basic": {
     "name": "basic",
     "description": "基础设置",
     "show": true,
+    "fontFamily": {
+      "index": 0,
+      "value": "HarmonyOS_Sans"
+    },
+    "fontSize": {
+      "index": 1,
+      "value": "14px"
+    },
     "children": [
       {
         "name": "fontFamily",
         "parent": "basic",
         "description": "字体",
+        "isNeedReload": false,
         "type": "Select",
         "value": "HarmonyOS_Sans",
         "props": {
@@ -15,6 +25,26 @@
             {
               "label": "华为鸿蒙系统字体",
               "value": "HarmonyOS_Sans"
+            },
+            {
+              "label": "小米MIUI系统字体",
+              "value": "MiSans"
+            },
+            {
+              "label": "思源黑体旧字形",
+              "value": "SourceHanSansSC"
+            },
+            {
+              "label": "YanSui宋体",
+              "value": "YanSui"
+            },
+            {
+              "label": "刻黑体",
+              "value": "KeHeiTi"
+            },
+            {
+              "label": "思源宋体",
+              "value": "SourceHanSerifCN"
             }
           ]
         }
@@ -23,6 +53,7 @@
         "name": "fontSize",
         "parent": "basic",
         "description": "字体大小",
+        "isNeedReload": false,
         "type": "Select",
         "value": "14px",
         "props": {
@@ -49,12 +80,16 @@
     "description": "窗口设置",
     "show": true,
     "closeAppMode": 0,
-    "winsNum": 3,
+    "winsNum": {
+      "index": 0,
+      "value": 3
+    },
     "children": [
       {
         "name": "closeAppMode",
         "parent": "windows",
         "description": "关闭主窗口",
+        "isNeedReload": true,
         "type": "RadioGroup",
         "value": 0,
         "props": {
@@ -75,6 +110,7 @@
         "parent": "windows",
         "description": "窗口个数",
         "type": "Slider",
+        "isNeedReload": true,
         "value": 3,
         "props": {
           "min": 1,
@@ -95,14 +131,16 @@
     "name": "language",
     "description": "语言与文字",
     "show": true,
-    "isShowReset": false,
-    "isNeedReload": true,
-    "lang": "zh-CN",
+    "lang": {
+      "index": 0,
+      "value": "zh-CN"
+    },
     "children": [
       {
         "name": "lang",
         "parent": "language",
         "description": "切换语言",
+        "isNeedReload": true,
         "type": "Select",
         "value": "zh-CN",
         "props": {
@@ -148,14 +186,21 @@
     "name": "network",
     "description": "网络配置",
     "show": false,
-    "baseUrl": "http://192.168.19.161:8888",
-    "timeOut": 7200,
+    "baseUrl": {
+      "index": 0,
+      "value": "http://192.168.19.161:8888"
+    },
+    "timeOut": {
+      "index": 1,
+      "value": 7200
+    },
     "children": [
       {
         "name": "baseUrl",
         "parent": "network",
         "value": "http://192.168.19.161:8888",
         "description": "代理网络",
+        "isNeedReload": false,
         "type": "Input",
         "props": {}
       },
@@ -164,6 +209,7 @@
         "parent": "network",
         "value": 7200,
         "description": "超时时长",
+        "isNeedReload": false,
         "type": "Text",
         "props": {}
       }
@@ -173,13 +219,17 @@
     "name": "download",
     "description": "下载配置",
     "show": true,
-    "downloadPath": "",
+    "downloadPath": {
+      "index": 0,
+      "value": ""
+    },
     "children": [
       {
         "name": "downloadPath",
         "parent": "network",
         "value": "",
         "description": "保存地址",
+        "isNeedReload": false,
         "type": "PathSelect",
         "props": {}
       }

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-26 16:10:58
  * @LastEditors: fg
- * @LastEditTime: 2023-04-07 14:45:58
+ * @LastEditTime: 2023-04-12 15:48:16
  * @Description: 请求接口封装
  */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from "axios"
@@ -34,8 +34,9 @@ enum RequestEnums {
   SUCCESS = 200,//请求成功
   TIMEOUT = 20000,//超时时间
 }
-// const URL: string = '/api' Config.network.baseUrl
-const URL: string = Config.network.baseUrl
+// const URL: string = '/api' Config.network.baseUrl.value
+console.log('Config.network.baseUrl.value:', Config.network.baseUrl.value)
+const URL: string = Config.network.baseUrl.value
 const config = {
   // 默认地址
   baseURL: URL as string,

@@ -105,7 +105,7 @@ export default defineConfig({
     host: "0.0.0.0",
     proxy: {
       '/api': {
-        target: Config.network.baseUrl, //跨域地址
+        target: Config.network.baseUrl.value, //跨域地址
         changeOrigin: true, //支持跨域
         rewrite: (path) => path.replace(/^\/api/, "")//重写路径,替换/api
       }
@@ -118,7 +118,7 @@ export default defineConfig({
       port: +url.port,
       proxy: {
         '/api': {
-          target: Config.baseUrl, //跨域地址
+          target: Config.baseUrl.value, //跨域地址
           changeOrigin: true, //支持跨域
           rewrite: (path) => path.replace(/^\/api/, "")//重写路径,替换/api
         }

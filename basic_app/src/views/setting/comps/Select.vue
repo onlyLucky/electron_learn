@@ -2,15 +2,15 @@
  * @Author: fg
  * @Date: 2023-01-16 13:37:32
  * @LastEditors: fg
- * @LastEditTime: 2023-01-16 16:13:18
+ * @LastEditTime: 2023-04-13 10:13:23
  * @Description: content
 -->
 
 <template>
   <div class="select">
     <Select
-      style="width: 300px"
-      placeholder="请选择设备"
+      style="width: 200px"
+      placeholder="请选择"
       v-model="selectVal"
       @on-change="onChange"
     >

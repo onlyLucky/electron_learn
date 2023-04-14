@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 17:38:41
+ * @LastEditTime: 2023-04-13 11:32:01
  * @Description: 设置
 -->
 <template>
@@ -67,7 +67,7 @@
       </div>
       <div class="optBox f-row-e-c">
         <Button type="text">取消</Button>
-        <Button type="primary">保存</Button>
+        <Button type="primary" v-debounce="onload">保存</Button>
       </div>
     </div>
   </div>
@@ -75,9 +75,11 @@
 <script setup lang="ts">
 import SystemOpt from "@/commons/system_opt";
 import SettingComps from "./comps/index.vue";
-import hdObj from "./handleData";
-const menuData = reactive(hdObj.menu);
-const searchData = reactive(hdObj.mList);
+import { ipcRenderer } from "electron";
+import { useSetting } from "./useSetting";
+
+const { menuData, searchData, copyData } = useSetting();
+
 let searchConfig = ref<string>("");
 onMounted(async () => {
   await nextTick();
@@ -102,6 +104,12 @@ const menuMouseLeave = (index: number, item: any) => {
   if (!item.select) {
     menuData[index].hover = false;
   }
+};
+
+const onload = () => {
+  document.body.style.fontFamily = "KeHeiTi";
+  ipcRenderer.send("set_config", "fontFamily", "KeHeiTi");
+  console.log("KeHeiTi--:");
 };
 </script>
 <style scoped lang="less">

@@ -23,7 +23,7 @@ let Config = require(join(process.env.PUBLIC, 'config/index.json'))
 const STORE_PATH = app.getPath('userData') // 获取应用的用户目录 C:\Users\XXX\AppData\Roaming\basic-app
 if (!fs.existsSync(join(STORE_PATH, '/config.json'))) {
   // 配置默认缓存地址  C:\Users\feynman\Downloads\kelipi downloads
-  Config.download.downloadPath = join(app.getPath('downloads'), '/kelipi')
+  Config.download.downloadPath.value = join(app.getPath('downloads'), '/kelipi')
   Config.download.children.map(item => {
     if (item.name == "downloadPath") {
       item.value = join(app.getPath('downloads'), '/kelipi')
@@ -32,14 +32,25 @@ if (!fs.existsSync(join(STORE_PATH, '/config.json'))) {
   fs.writeFileSync(join(STORE_PATH, '/config.json'), JSON.stringify(Config))
 } else {
   const data = JSON.parse(fs.readFileSync(join(STORE_PATH, '/config.json'), { encoding: "utf8" }))
-  Config = data
+  // 检测当前版本是否为最新的
+  if (data.version && Config.version == data.version) {
+    Config = data
+  } else {
+    Config.download.downloadPath.value = join(app.getPath('downloads'), '/kelipi')
+    Config.download.children.map(item => {
+      if (item.name == "downloadPath") {
+        item.value = join(app.getPath('downloads'), '/kelipi')
+      }
+    })
+    fs.writeFileSync(join(STORE_PATH, '/config.json'), JSON.stringify(Config))
+  }
 }
 const url = require("url")
 
 // 引入国际化
-const lang = require(join(process.env.PUBLIC, 'lang/' + Config.language.lang + '.json'))
+const lang = require(join(process.env.PUBLIC, 'lang/' + Config.language.lang.value + '.json'))
 
-// Disable GPU Acceleration for Windowsb 7
+// Disable GPU Acceleration for Window 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
 // Set application name for Windows 10+ notifications
@@ -144,7 +155,7 @@ function createWindow() {
       ...temp,
       downloadItem: item
     })
-    item.setSavePath(join(Config.download.downloadPath, `/${temp.directory}/${temp.fileName}`))
+    item.setSavePath(join(Config.download.downloadPath.value, `/${temp.directory}/${temp.fileName}`))
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
         console.log('Download is interrupted but can be resumed')
@@ -215,7 +226,7 @@ function createLoginWin() {
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     loginWin.loadURL(urlPath)
     // Open devTool if the app is not packaged
-    // loginWin.webContents.openDevTools()
+    loginWin.webContents.openDevTools()
   } else {
     loginWin.loadFile(indexHtml)
   }
@@ -374,7 +385,7 @@ ipcMain.on('on_login', (event, arg) => {
   loginWin = null;
   tokenTimer = setInterval(() => {
     tokenTime = tokenTime + 10;
-    if (tokenTime >= Config.network.timeOut - 60 * 10) {
+    if (tokenTime >= Config.network.timeOut.value - 60 * 10) {
       BrowserWindow.getFocusedWindow().webContents.send('timeout')
     }
   }, 10000)
@@ -382,12 +393,12 @@ ipcMain.on('on_login', (event, arg) => {
 })
 //  关闭定时器
 ipcMain.on('clear_timeout', (event, arg) => {
-  // Config.network.timeOut - 60*10
+  // Config.network.timeOut.value - 60*10
   tokenTime = 0
   clearInterval(tokenTimer)
   tokenTimer = setInterval(() => {
     tokenTime = tokenTime + 10;
-    if (tokenTime >= Config.network.timeOut - 60 * 10) {
+    if (tokenTime >= Config.network.timeOut.value - 60 * 10) {
       BrowserWindow.getFocusedWindow().webContents.send('timeout')
     }
   }, 10000)
@@ -418,11 +429,13 @@ ipcMain.on('window_close', function (e) {
 
 // 初始化传递app_url 语言
 ipcMain.on('get_app', function (event) {
-  BrowserWindow.getFocusedWindow().webContents.send('set_url', STORE_PATH, Config.language.lang)
+  BrowserWindow.getFocusedWindow().webContents.send('set_url', STORE_PATH, Config.language.lang.value)
 })
-ipcMain.on('set_config', function (event, config) {
+ipcMain.on('set_config', function (event, key, value) {
   // console.log(url, arg)
-  Config = config
+  BrowserWindow.getAllWindows().forEach(v => {
+    v.webContents.send("config_change", key, value)
+  })
 })
 // 下载触发
 ipcMain.on('download', function (event, list) {
@@ -450,7 +463,7 @@ ipcMain.on('showSaveFile', function (event, data) {
   // console.log(data, 'data')
   dialog.showSaveDialog({
     title: '另存为',
-    defaultPath: join(Config.download.downloadPath, data.name),
+    defaultPath: join(Config.download.downloadPath.value, data.name),
     buttonLabel: "保存",
     filters: data.filters || [],
     properties: ['showHiddenFiles']
@@ -525,7 +538,7 @@ function createModelWin(
     return tempItem.win
   }
   // 判断当前窗口配置
-  if (modelWins.length >= Config.windows.winsNum) {
+  if (modelWins.length >= Config.windows.winsNum.value) {
     modelWins[modelWins.length - 1].win.close()
   }
   let modelWin = new BrowserWindow({
@@ -585,7 +598,7 @@ function createModelWin(
       ...temp,
       downloadItem: item
     })
-    item.setSavePath(join(Config.download.downloadPath, `/${temp.directory}/${temp.fileName}`))
+    item.setSavePath(join(Config.download.downloadPath.value, `/${temp.directory}/${temp.fileName}`))
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
         console.log('Download is interrupted but can be resumed')

@@ -17,6 +17,9 @@ ipcRenderer.on("set_url", (e, url, lang) => {
   // Config.json 读取的地址找不到， 项目进入先运行App.vue => main.ts
   import("@/apis/login").then((res) => {
     goRefresh = res.goRefresh;
+    import("_v/setting/handleData").then((cRes) => {
+      console.log(cRes, "cRes");
+    });
   });
 });
 const { locale } = useI18n();
@@ -27,7 +30,11 @@ onMounted(() => {
   document.body.style.fontSize = "14px";
   // document.getElementById("app")!.className = "theme_basic";
   // 判断当前是否有config配置
-
+  ipcRenderer.on("config_change", (e, key, value) => {
+    if (key == "fontFamily") {
+      document.body.style.fontFamily = value;
+    }
+  });
   ipcRenderer.on("timeout", (e) => {
     goRefresh({ oldToken: localStorage.getItem("token") || "" }).then(
       (res: any) => {

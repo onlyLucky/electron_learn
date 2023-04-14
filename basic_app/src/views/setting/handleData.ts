@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-04-07 14:02:53
+ * @LastEditTime: 2023-04-13 11:21:56
  * @Description: 处理动态数据
  */
 
@@ -62,6 +62,8 @@ class HandleData {
   toLine(data: any[]): any[] {
     return data.reduce((arr, { name, description, children = [] }) => arr.concat([{ name, description }], this.toLine(children)), [])
   }
+
+  // 
 
   saveFile() {
     console.log(this.config, 'config')
