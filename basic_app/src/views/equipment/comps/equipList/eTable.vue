@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-14 10:26:32
  * @LastEditors: fg
- * @LastEditTime: 2023-04-12 14:26:12
+ * @LastEditTime: 2023-04-18 16:30:22
  * @Description: 设备列表
 -->
 <template>
@@ -179,7 +179,9 @@ const columns = [
                 {
                   trigger: "click",
                   placement:
-                    params.index >= tData.length - 1
+                    tData.length <= 6 - 1
+                      ? "bottom-start"
+                      : params.index >= tData.length - 1
                       ? "top-start"
                       : "bottom-start",
                 },

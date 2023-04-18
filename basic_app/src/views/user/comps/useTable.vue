@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-17 14:52:20
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 14:31:59
+ * @LastEditTime: 2023-04-18 16:30:46
  * @Description: 用户列表表格组件
 -->
 <template>
@@ -210,7 +210,9 @@ const columns = [
                 {
                   trigger: "click",
                   placement:
-                    params.index >= tData.length - 2
+                    tData.length <= 8 - 2
+                      ? "bottom-start"
+                      : params.index >= tData.length - 2
                       ? "top-start"
                       : "bottom-start",
                 },
