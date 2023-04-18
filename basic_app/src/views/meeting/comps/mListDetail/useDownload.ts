@@ -14,7 +14,7 @@ import { Message } from "view-ui-plus"
 const fs = require('fs')
 
 // 文件存在
-const downloadPath = hdObj.getConfigItem('download').downloadPath
+const downloadPath = hdObj.getConfigItem('download').downloadPath.value
 
 export const useDownload = (meetId: number, meetName: string) => {
   let resData = reactive<any>({})

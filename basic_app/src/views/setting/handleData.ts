@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-04-13 11:21:56
+ * @LastEditTime: 2023-04-18 17:02:49
  * @Description: 处理动态数据
  */
 
@@ -46,7 +46,7 @@ class HandleData {
     let key: keyof ConfigType
     for (key in this.config) {
       if (this.config.hasOwnProperty(key)) {
-        if (this.config[key].show) {
+        if ((this.config[key] as any).show) {
           let temp = JSON.parse(JSON.stringify(this.config[key]))
           temp.select = false
           temp.hover = false
@@ -68,7 +68,7 @@ class HandleData {
   saveFile() {
     console.log(this.config, 'config')
     // zh-CN en-US
-    this.config.language.lang = 'zh-CN'
+    this.config.language.lang.value = 'zh-CN'
     fs.writeFileSync(join(this.app_url, '/config.json'), JSON.stringify(this.config))
     ipcRenderer.send('set_config', this.config)
     /* fs.readFile(join(localStorage.getIt), 'utf-8', function (err: any, data: any) {
@@ -76,7 +76,7 @@ class HandleData {
         console.log(err)// eslint-disable-line
       } else {
         console.log(JSON.parse(data).basic)// eslint-disable-line
-        // config.language.lang = ""
+        // config.language.lang.value = ""
         // fs.writeFileSync('public/config/config.backup.json', JSON.stringify(config))
       }
     }) */

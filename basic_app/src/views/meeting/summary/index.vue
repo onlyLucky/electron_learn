@@ -248,7 +248,7 @@ import { shell } from "electron";
 const fs = require("fs");
 
 // 文件存在
-const downloadPath = hdObj.getConfigItem("download").downloadPath;
+const downloadPath = hdObj.getConfigItem("download").downloadPath.value;
 
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);

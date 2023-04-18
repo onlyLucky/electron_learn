@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-08 15:07:47
  * @LastEditors: fg
- * @LastEditTime: 2023-02-16 15:42:26
+ * @LastEditTime: 2023-04-18 17:05:08
  * @Description: electron 文件下载处理
  */
 import hdObj from "_v/setting/handleData"
@@ -13,7 +13,7 @@ const fs = require('fs')
 import { Blob, Buffer } from 'node:buffer';
 
 // 文件存在
-const downloadPath = hdObj.getConfigItem('download').downloadPath
+const downloadPath = hdObj.getConfigItem('download').downloadPath.value
 // 需要下载的file
 let needDownloadArr = reactive<any[]>([])
 // 文件列表

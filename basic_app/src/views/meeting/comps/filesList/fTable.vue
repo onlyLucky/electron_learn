@@ -37,7 +37,7 @@ import { join } from "path";
 import { shell } from "electron";
 import _ from "lodash";
 const fs = require("fs");
-const downloadPath = hdObj.getConfigItem("download").downloadPath;
+const downloadPath = hdObj.getConfigItem("download").downloadPath.value;
 const route = useRoute();
 const queryParams = reactive<FileQPType>(route.query as FileQPType);
 let emit = defineEmits<{

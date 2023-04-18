@@ -11,7 +11,7 @@ import { Message } from "view-ui-plus"
 const fs = require('fs')
 
 // 文件储存地址
-const downloadPath = hdObj.getConfigItem('download').downloadPath
+const downloadPath = hdObj.getConfigItem('download').downloadPath.value
 
 type FileType = {
   name: string,

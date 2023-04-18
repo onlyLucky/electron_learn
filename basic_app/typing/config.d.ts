@@ -1,73 +1,149 @@
-export type ConfigType = {
+export interface ConfigType {
+  version: string;
   basic: {
     name: string;
     description: string;
     show: boolean;
-    children: never[];
+    fontFamily: {
+      index: number;
+      value: string;
+    };
+    fontSize: {
+      index: number;
+      value: string;
+    };
+    children: Array<{
+      name: string;
+      parent: string;
+      description: string;
+      isNeedReload: boolean;
+      type: string;
+      value: string;
+      props: {
+        option: Array<{
+          label: string;
+          value: string;
+        }>;
+      };
+    }>;
   };
   windows: {
     name: string;
     description: string;
     show: boolean;
     closeAppMode: number;
-    winsNum: number;
-    children: ({
+    winsNum: {
+      index: number;
+      value: number;
+    };
+    children: Array<{
       name: string;
+      parent: string;
       description: string;
-      type: string;
-      value: string;
-      props: {
-        data: {
-          label: string;
-          value: number;
-        }[];
-      };
-    } | {
-      name: string;
-      description: string;
+      isNeedReload: boolean;
       type: string;
       value: number;
-      props?: undefined;
-    })[];
+      props: {
+        data?: Array<{
+          label: string;
+          value: number;
+        }>;
+        min?: number;
+        max?: number;
+        showInput?: boolean;
+        showTip?: boolean;
+        marks?: {
+          1: string;
+          5: string;
+          10: string;
+          15: string;
+        };
+      };
+    }>;
   };
   language: {
     name: string;
     description: string;
     show: boolean;
-    isShowReset: boolean;
-    isNeedReload: boolean;
-    lang: string;
-    children: {
+    lang: {
+      index: number;
+      value: string;
+    };
+    children: Array<{
       name: string;
+      parent: string;
+      description: string;
+      isNeedReload: boolean;
+      type: string;
+      value: string;
+      props: {
+        option: Array<{
+          value: string;
+          label: string;
+        }>;
+        filterable: boolean;
+      };
+    }>;
+  };
+  keyboard: {
+    name: string;
+    description: string;
+    show: boolean;
+    downloadPath: string;
+    children: Array<{
+      name: string;
+      parent: string;
+      value: string;
       description: string;
       type: string;
-      props: {};
-    }[];
+      props: {
+        list: Array<{
+          name: string;
+          keyArr: any[];
+        }>;
+      };
+    }>;
   };
   network: {
     name: string;
     description: string;
     show: boolean;
-    baseUrl: string;
-    children: {
+    baseUrl: {
+      index: number;
+      value: string;
+    };
+    timeOut: {
+      index: number;
+      value: number;
+    };
+    children: Array<{
       name: string;
+      parent: string;
+      value: string | number;
       description: string;
+      isNeedReload: boolean;
       type: string;
-      props: {};
-    }[];
+      props: {
+      };
+    }>;
   };
   download: {
     name: string;
     description: string;
     show: boolean;
-    downloadPath: string;
-    children: {
+    downloadPath: {
+      index: number;
+      value: string;
+    };
+    children: Array<{
       name: string;
+      parent: string;
+      value: string;
       description: string;
+      isNeedReload: boolean;
       type: string;
-      props: {};
-    }[];
+      props: {
+      };
+    }>;
   };
-};
-
-
+}
