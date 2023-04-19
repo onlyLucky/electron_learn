@@ -79,9 +79,12 @@
     "name": "windows",
     "description": "窗口设置",
     "show": true,
-    "closeAppMode": 0,
-    "winsNum": {
+    "closeAppMode": {
       "index": 0,
+      "value": 0
+    },
+    "winsNum": {
+      "index": 1,
       "value": 3
     },
     "children": [
@@ -163,12 +166,15 @@
     "name": "keyboard",
     "description": "快捷键",
     "show": true,
-    "downloadPath": "",
+    "keyboardList": {
+      "value": [],
+      "index": 0
+    },
     "children": [
       {
-        "name": "downloadPath",
+        "name": "keyboardList",
         "parent": "keyboard",
-        "value": "",
+        "value": [],
         "description": "键盘快捷键",
         "type": "Keyboard",
         "props": {

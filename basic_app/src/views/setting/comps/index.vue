@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-16 10:10:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-12 15:52:06
+ * @LastEditTime: 2023-04-19 19:31:00
  * @Description: content
 -->
 <template>
@@ -20,6 +20,7 @@ comps.set("Slider", SliderComps);
 const props = withDefaults(
   defineProps<{
     data?: DataType;
+    index: number[];
   }>(),
   {
     data: () => {
@@ -32,6 +33,7 @@ const props = withDefaults(
         props: {},
       };
     },
+    index: () => [0, 0],
   }
 );
 const compName = comps.get(props.data.type) || "";

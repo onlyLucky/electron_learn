@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-04-13 10:44:46
  * @LastEditors: fg
- * @LastEditTime: 2023-04-19 15:24:33
+ * @LastEditTime: 2023-04-19 19:44:59
  * @Description: 设置处理逻辑
  */
 /* 
@@ -18,17 +18,19 @@ export const useSetting = () => {
   let menuData = reactive(hdObj.menu);
   let searchData = reactive(hdObj.mList);
 
-  console.log(menuData, 'menuData')
+  console.log(copyData, 'menuData')
   // 检测json对象 配置 更新
   const compareJson = () => {
     let res: any[] = []
     menuData.map((menu, menuIndex) => {
       menu.children.map((item: any, index: number) => {
-        if (copyData[item.parent][item.name].value != item.value) {
+        console.log(copyData[item.parent][item.name], item.parent)
+        /* if (copyData[item.parent][item.name].value != item.value) {
           res.push(item)
-        }
+        } */
       })
     })
+    console.log('compareJson:', res)
   }
   // 计算当前点击搜索配置项属于在menuData中的的下标
   const computedSearchIndex = (searchKey: string) => {
@@ -55,6 +57,7 @@ export const useSetting = () => {
     menuData,
     searchData,
     copyData,
+    compareJson,
     computedSearchIndex
   }
 }

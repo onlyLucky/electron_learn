@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-16 13:37:32
  * @LastEditors: fg
- * @LastEditTime: 2023-04-13 10:13:23
+ * @LastEditTime: 2023-04-19 19:37:34
  * @Description: content
 -->
 
@@ -11,7 +11,7 @@
     <Select
       style="width: 200px"
       placeholder="请选择"
-      v-model="selectVal"
+      v-model="props.compData.value"
       @on-change="onChange"
     >
       <Option
@@ -50,10 +50,12 @@ const props = withDefaults(
   }
 );
 const options = props.compData.props?.option;
-let selectVal = ref<string>(props.compData.value);
+
+const onChange = () => {};
+/* let selectVal = ref<string>(props.compData.value);
 const onChange = (val: any) => {
   selectVal.value = val;
-};
+}; */
 </script>
 <style lang="less" scoped>
 .select {

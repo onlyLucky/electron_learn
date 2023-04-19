@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-19 17:49:50
+ * @LastEditTime: 2023-04-19 19:40:24
  * @Description: 设置
 -->
 <template>
@@ -61,7 +61,10 @@
             >
               <h4>{{ item.description }}</h4>
               <div class="settingCon">
-                <SettingComps :data="item"></SettingComps>
+                <SettingComps
+                  :data="item"
+                  :index="[menuIndex, index]"
+                ></SettingComps>
               </div>
             </div>
           </div>
@@ -84,7 +87,8 @@ import { useTools } from "@/hooks/useTools";
 
 const { useValueInArr } = useTools();
 
-const { menuData, searchData, copyData, computedSearchIndex } = useSetting();
+const { menuData, searchData, copyData, computedSearchIndex, compareJson } =
+  useSetting();
 // 记录每个菜单项的高度
 let menuItemH: number[] = [];
 // 是否触发滚动
@@ -155,7 +159,6 @@ const onSearchChange = () => {
 // 右侧滚动检测
 const onRightScroll = (e: any) => {
   if (isTriggerScrollEvent) {
-    console.log(e.target.scrollTop);
     _.debounce(() => {
       let index = useValueInArr(menuItemH, e.target.scrollTop || 0);
       setMenuActive(index);
@@ -173,9 +176,11 @@ const setMenuActive: any = (index: number) => {
 };
 
 const onload = () => {
-  document.body.style.fontFamily = "KeHeiTi";
-  ipcRenderer.send("set_config", "fontFamily", "KeHeiTi");
-  console.log("KeHeiTi--:");
+  // document.body.style.fontFamily = "KeHeiTi";
+  // ipcRenderer.send("set_config", "fontFamily", "KeHeiTi");
+  // console.log("KeHeiTi--:");
+  compareJson();
+  console.log("onload", menuData);
 };
 
 onMounted(async () => {
