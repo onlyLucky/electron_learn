@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-13 11:32:01
+ * @LastEditTime: 2023-04-19 17:49:50
  * @Description: 设置
 -->
 <template>
@@ -16,8 +16,10 @@
         <Select
           class="searchBox"
           filterable
+          clearable
           placeholder="搜索设置项"
           v-model="searchConfig"
+          @on-change="onSearchChange"
         >
           <Option
             v-for="(item, index) in searchData"
@@ -44,7 +46,7 @@
             {{ item.description }}
           </div>
         </div>
-        <div class="rightCon">
+        <div class="rightCon" @scroll="onRightScroll">
           <div
             class="menuCom"
             v-for="(menu, menuIndex) in menuData"
@@ -77,23 +79,39 @@ import SystemOpt from "@/commons/system_opt";
 import SettingComps from "./comps/index.vue";
 import { ipcRenderer } from "electron";
 import { useSetting } from "./useSetting";
+import _ from "lodash";
+import { useTools } from "@/hooks/useTools";
 
-const { menuData, searchData, copyData } = useSetting();
+const { useValueInArr } = useTools();
+
+const { menuData, searchData, copyData, computedSearchIndex } = useSetting();
+// 记录每个菜单项的高度
+let menuItemH: number[] = [];
+// 是否触发滚动
+let isTriggerScrollEvent: boolean = true;
 
 let searchConfig = ref<string>("");
-onMounted(async () => {
-  await nextTick();
-  console.log(document.getElementsByClassName("menuItem")[1], "getElementById");
-});
+
+//计算右侧menuCom 的高度 范围
+const computedMenuH = () => {
+  menuItemH = [];
+  let temp = 0;
+  for (let dom of document.getElementsByClassName("menuCom") as any) {
+    temp = temp + dom.clientHeight;
+    menuItemH.push(temp);
+  }
+};
+// 左侧菜单点击处理
 const menuTap = (index: number, item: any) => {
-  menuData.map((item) => {
-    item.hover = false;
-    item.select = false;
-  });
-  menuData[index].select = true;
+  setMenuActive(index);
+  // 设置缓动滚动
+  isTriggerScrollEvent = false;
   document.getElementsByClassName("menuCom")[index]!.scrollIntoView({
     behavior: "smooth",
   });
+  setTimeout(() => {
+    isTriggerScrollEvent = true;
+  }, 800);
 };
 const menuMouseEnter = (index: number, item: any) => {
   if (!item.select) {
@@ -105,12 +123,68 @@ const menuMouseLeave = (index: number, item: any) => {
     menuData[index].hover = false;
   }
 };
+// 搜索设置项更改
+const onSearchChange = () => {
+  let indexs = unref(searchConfig)
+    ? computedSearchIndex(unref(searchConfig))
+    : [0];
+
+  setMenuActive(indexs[0]);
+  isTriggerScrollEvent = false;
+  nextTick(() => {
+    if (indexs.length == 1) {
+      console.log(document.getElementsByClassName("menuCom")[indexs[0]]);
+      document.getElementsByClassName("menuCom")[indexs[0]]!.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+    if (indexs.length == 2) {
+      document
+        .getElementsByClassName("menuCom")
+        [indexs[0]].getElementsByClassName("menuComChild")
+        [indexs[1]]!.scrollIntoView({
+          behavior: "smooth",
+        });
+    }
+    setTimeout(() => {
+      isTriggerScrollEvent = true;
+    }, 800);
+  });
+};
+
+// 右侧滚动检测
+const onRightScroll = (e: any) => {
+  if (isTriggerScrollEvent) {
+    console.log(e.target.scrollTop);
+    _.debounce(() => {
+      let index = useValueInArr(menuItemH, e.target.scrollTop || 0);
+      setMenuActive(index);
+    }, 300)();
+  }
+};
+
+// 设置选中的menu Item
+const setMenuActive: any = (index: number) => {
+  menuData.map((item) => {
+    item.hover = false;
+    item.select = false;
+  });
+  menuData[index].select = true;
+};
 
 const onload = () => {
   document.body.style.fontFamily = "KeHeiTi";
   ipcRenderer.send("set_config", "fontFamily", "KeHeiTi");
   console.log("KeHeiTi--:");
 };
+
+onMounted(async () => {
+  await nextTick();
+  computedMenuH();
+  window.onresize = () => {
+    computedMenuH();
+  };
+});
 </script>
 <style scoped lang="less">
 :deep(.searchBox .ivu-select-selection) {
@@ -181,7 +255,7 @@ const onload = () => {
         overflow: auto;
         .menuCom {
           .size(100%, auto);
-          margin-bottom: 30px;
+          padding-bottom: 30px;
           h3 {
             height: 24px;
             line-height: 24px;

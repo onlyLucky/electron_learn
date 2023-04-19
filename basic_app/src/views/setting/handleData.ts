@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-04-18 17:02:49
+ * @LastEditTime: 2023-04-19 15:07:13
  * @Description: 处理动态数据
  */
 
@@ -59,9 +59,20 @@ class HandleData {
     console.log(this.config, 'menu', this.mList)
   }
   // 树状数据扁平化
-  toLine(data: any[]): any[] {
+  /* toLine(data: any[]): any[] {
     return data.reduce((arr, { name, description, children = [] }) => arr.concat([{ name, description }], this.toLine(children)), [])
+  } */
+
+  toLine(data: any[]): any[] {
+    return data.reduce(
+      (arr, { name, description, children = [], show = true }) => {
+        let temp: any[] = show ? [{ name, description }] : [];
+        return arr.concat(temp, this.toLine(children))
+      },
+      []
+    )
   }
+
 
   // 
 

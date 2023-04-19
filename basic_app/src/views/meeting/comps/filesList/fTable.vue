@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-04-10 17:27:25
+ * @LastEditTime: 2023-04-18 17:18:12
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -158,7 +158,15 @@ const columns = [
             [
               h(
                 resolveComponent("Dropdown"),
-                { trigger: "click", placement: "bottom-start" },
+                {
+                  trigger: "click",
+                  placement:
+                    tData.value.length <= 6 - 2
+                      ? "bottom-start"
+                      : params.index >= tData.value.length - 2
+                      ? "top-start"
+                      : "bottom-start",
+                },
                 {
                   default: () =>
                     h(

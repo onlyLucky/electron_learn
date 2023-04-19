@@ -110,6 +110,28 @@ export const useTools = () => {
     return m;
   }
 
+  /**
+   * @description: 获取value在数组arr中的范围下标
+   * @param {number} arr 数组是index（是数组下标） index+1 为一个范围 比如 index为0，index+1为10，范围 0~10
+   * @param {number} value
+   * @return {*} 范围下标
+   */
+  const useValueInArr = (arr: number[], value: number) => {
+    let resIndex: number = 1;
+    if (arr.length > 0) {
+      if (value >= arr[arr.length - 1]) {
+        return arr.length - 1
+      }
+      for (let index in arr) {
+        if (Number(arr[index]) >= value) {
+          resIndex = Number(index);
+          break;
+        }
+      }
+    }
+    return resIndex
+  }
+
   return {
     useBytesUnit,
     useArrRemoveJson,
@@ -118,6 +140,7 @@ export const useTools = () => {
     useArrJsonNoOverlap,
     useArrJsonHandleAttr,
     useDateGetDay,
-    doHandleMonth
+    doHandleMonth,
+    useValueInArr
   }
 }
