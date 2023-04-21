@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 17:50:16
  * @LastEditors: fg
- * @LastEditTime: 2023-04-18 14:27:49
+ * @LastEditTime: 2023-04-20 13:34:00
  * @Description: 用户信息处理
  */
 import { getUserInfo, postUploadAvatar } from "@/apis/user"
@@ -92,12 +92,12 @@ const useUserInfo = () => {
     let temp: any[] = []
     let tempFile = []
     try {
-      tempFile = fs.readdirSync(Config.download.downloadPath, { encoding: 'utf8' }) || []
+      tempFile = fs.readdirSync(Config.download.downloadPath.value, { encoding: 'utf8' }) || []
     } catch (error) {
 
     }
     tempFile.map((item: any, index: number) => {
-      if (fs.statSync(join(Config.download.downloadPath, item)).isDirectory()) {
+      if (fs.statSync(join(Config.download.downloadPath.value, item)).isDirectory()) {
         temp.push(item)
       }
     })

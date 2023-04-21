@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-11 14:17:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-19 19:40:24
+ * @LastEditTime: 2023-04-21 18:05:00
  * @Description: 设置
 -->
 <template>
@@ -71,13 +71,14 @@
         </div>
       </div>
       <div class="optBox f-row-e-c">
-        <Button type="text">取消</Button>
+        <Button type="text" v-debounce="onQuit">退出</Button>
         <Button type="primary" v-debounce="onload">保存</Button>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import { Modal } from "view-ui-plus";
 import SystemOpt from "@/commons/system_opt";
 import SettingComps from "./comps/index.vue";
 import { ipcRenderer } from "electron";
@@ -87,8 +88,17 @@ import { useTools } from "@/hooks/useTools";
 
 const { useValueInArr } = useTools();
 
-const { menuData, searchData, copyData, computedSearchIndex, compareJson } =
-  useSetting();
+const {
+  menuData,
+  searchData,
+  copyData,
+  isNeedReload,
+  handleCancel,
+  handleReload,
+  computedSearchIndex,
+  compareJson,
+  computedUpdateConfig,
+} = useSetting();
 // 记录每个菜单项的高度
 let menuItemH: number[] = [];
 // 是否触发滚动
@@ -179,8 +189,23 @@ const onload = () => {
   // document.body.style.fontFamily = "KeHeiTi";
   // ipcRenderer.send("set_config", "fontFamily", "KeHeiTi");
   // console.log("KeHeiTi--:");
-  compareJson();
-  console.log("onload", menuData);
+  computedUpdateConfig();
+  if (isNeedReload.value) {
+    Modal.confirm({
+      title: "保存设置，需要重启应用",
+      okText: "重启",
+      cancelText: "我知道",
+      onOk: () => {},
+      onCancel: () => {
+        handleCancel();
+      },
+    });
+  }
+};
+
+// 退出
+const onQuit = () => {
+  ipcRenderer.send("window_close");
 };
 
 onMounted(async () => {

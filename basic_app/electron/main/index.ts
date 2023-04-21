@@ -19,6 +19,8 @@ import _ from 'lodash';
 const fs = require('fs')
 const { setTimeout, setInterval, clearTimeout, clearInterval } = require('timers');
 
+
+
 let Config = require(join(process.env.PUBLIC, 'config/index.json'))
 const STORE_PATH = app.getPath('userData') // 获取应用的用户目录 C:\Users\XXX\AppData\Roaming\basic-app
 if (!fs.existsSync(join(STORE_PATH, '/config.json'))) {
@@ -325,6 +327,33 @@ app.on('activate', () => {
   } else {
     createWindow()
   }
+})
+
+// 全局对象
+global.system = {
+  config: {
+    isNeedUpload: false,
+    data: Config
+  }
+}
+
+// 获取全局对象
+ipcMain.handle('get_global', (e, keys) => {
+  let temp = global
+  keys.map(item => {
+    temp = temp[item]
+  })
+  return temp
+})
+// 设置全局对象
+ipcMain.on('set_global', (e, keys, value) => {
+  let temp = 'global'
+  // let tempValue = JSON.parse(value)
+  keys.map(item => {
+    temp = `${temp}["${item}"]`
+  })
+  eval(`${temp}=${value}`)
+  console.log(global.system.config.isNeedUpload, 'isNeedUpload', global.system.config.data.version)
 })
 
 let tokenTimer = null;
