@@ -257,12 +257,15 @@ app.whenReady().then(() => {
       label: '打开应用',
       icon: join(process.env.PUBLIC, 'resources/icons/icon1.png'),
       click: () => {
+        winActive()
       }
     },
     {
-      label: '退出',
+      label: '应用重启',
       icon: join(process.env.PUBLIC, 'resources/icons/icon1.png'),
       click: () => {
+        app.relaunch()
+        app.exit()
       }
     },
     {
@@ -306,6 +309,14 @@ function winActive() {
     }
   }, 300)
 }
+
+// 在应用程序退出时发出
+app.on('quit', (e) => {
+  if (global.system.config.isNeedUpload) {
+    fs.writeFileSync(join(STORE_PATH, '/config.json'), JSON.stringify(global.system.config.data))
+  }
+  console.log('quit')
+})
 
 // 当所有的窗口都被关闭时触发
 app.on('window-all-closed', (e) => {

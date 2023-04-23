@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-04-13 10:44:46
  * @LastEditors: fg
- * @LastEditTime: 2023-04-21 18:01:49
+ * @LastEditTime: 2023-04-23 15:48:36
  * @Description: 设置处理逻辑
  */
 /* 
@@ -12,6 +12,7 @@
   是否需要系统重启，发送消息更改
 */
 import hdObj from "./handleData";
+import { Modal } from "view-ui-plus";
 import { ipcRenderer } from "electron";
 export const useSetting = () => {
   // 备份数据
@@ -30,12 +31,17 @@ export const useSetting = () => {
     menuData.map((menu, menuIndex) => {
       menu.children.map((item: any, index: number) => {
         if (copyData[item.parent] && copyData[item.parent][item.name]) {
-          if (copyData[item.parent][item.name].value != item.value) {
+          // 内部value值 与 外部value不一致
+          if (JSON.stringify(configData[item.parent][item.name].value) != JSON.stringify(configData[item.parent].children[index].value)) {
+            configData[item.parent][item.name].value = configData[item.parent].children[index].value
+          }
+          if (JSON.stringify(copyData[item.parent][item.name].value) != JSON.stringify(item.value)) {
             res.push(item)
           }
         }
       })
     })
+    console.log('compareJson', res)
     return res
   }
   // 计算当前点击搜索配置项属于在menuData中的的下标
@@ -60,18 +66,22 @@ export const useSetting = () => {
   // 计算备份数据处理
   const computedUpdateConfig = () => {
     isNeedReload.value = false
+    let resNoReload: any[] = []
     let tempDiff: any[] = compareJson()
     if (tempDiff.length > 0) {
       tempDiff.map((item: any) => {
         let tempIndex = configData[item.parent][item.name].index
         configData[item.parent][item.name].value = item.value
         configData[item.parent].children[tempIndex] = item
+        console.log(configData[item.parent][item.name].value, 'configData[item.parent][item.name].value')
         if (item.isNeedReload) {
           isNeedReload.value = true
+        } else {
+          resNoReload.push(item)
         }
       })
     }
-    console.log(copyData, 'copyData')
+    return resNoReload
   }
 
   const toLine: (data: any[]) => any[] = (data) => {
@@ -84,19 +94,33 @@ export const useSetting = () => {
     )
   }
 
-  // 取消
-  const handleCancel = () => {
-    ipcRenderer.send(
-      "set_global",
-      ["system", "config"],
-      JSON.stringify({
-        data: copyData,
-        isNeedUpload: isNeedReload.value,
-      })
-    );
-  }
-  // 重启
-  const handleReload = () => {
+  // 保存处理
+  const onSaveConfig = () => {
+    let noLoadArr = computedUpdateConfig();
+    console.log(isNeedReload.value, 'isNeedReload.value', configData)
+    if (isNeedReload.value) {
+      Modal.confirm({
+        title: "保存设置，需要重启应用",
+        okText: "重启",
+        cancelText: "我知道",
+        onOk: () => {
+          ipcRenderer.send('win_reset')
+        },
+        onCancel: () => {
+        },
+      });
+    } else {
+      console.log(noLoadArr, "noLoadArr");
+      // hdObj
+      noLoadArr.map((item) => {
+        ipcRenderer.send("set_config", item.name, item.value);
+      });
+      // 保存数据
+      hdObj.saveFile(configData)
+      // 更新数据
+      Object.assign(copyData, hdObj.getConfigItem())
+    }
+    // 修改global配置
     ipcRenderer.send(
       "set_global",
       ["system", "config"],
@@ -135,7 +159,6 @@ export const useSetting = () => {
     compareJson,
     computedUpdateConfig,
     computedSearchIndex,
-    handleCancel,
-    handleReload
+    onSaveConfig
   }
 }

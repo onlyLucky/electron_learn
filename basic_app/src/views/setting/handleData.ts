@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-01-12 16:30:40
  * @LastEditors: fg
- * @LastEditTime: 2023-04-19 15:07:13
+ * @LastEditTime: 2023-04-23 11:01:31
  * @Description: 处理动态数据
  */
 
@@ -10,7 +10,6 @@ const fs = require("fs");
 import { join } from 'path'
 import type { ConfigType } from 'typing/config'
 import { ipcRenderer } from 'electron'
-// import { ConfigType } from "
 
 class HandleData {
   private config: ConfigType;
@@ -36,6 +35,11 @@ class HandleData {
 
   init() {
     this.readFile()
+  }
+
+  uploadGetConfigItem(key?: ConfigKey): any {
+    this.readFile();
+    this.getConfigItem()
   }
 
   readFile() {
@@ -74,23 +78,13 @@ class HandleData {
   }
 
 
-  // 
-
-  saveFile() {
-    console.log(this.config, 'config')
+  // 保存文件
+  saveFile(config: ConfigType) {
+    console.log(config, 'config')
     // zh-CN en-US
-    this.config.language.lang.value = 'zh-CN'
-    fs.writeFileSync(join(this.app_url, '/config.json'), JSON.stringify(this.config))
-    ipcRenderer.send('set_config', this.config)
-    /* fs.readFile(join(localStorage.getIt), 'utf-8', function (err: any, data: any) {
-      if (err) {
-        console.log(err)// eslint-disable-line
-      } else {
-        console.log(JSON.parse(data).basic)// eslint-disable-line
-        // config.language.lang.value = ""
-        // fs.writeFileSync('public/config/config.backup.json', JSON.stringify(config))
-      }
-    }) */
+    fs.writeFileSync(join(this.app_url, '/config.json'), JSON.stringify(config))
+    // 更新数据
+    this.readFile()
   }
 }
 
