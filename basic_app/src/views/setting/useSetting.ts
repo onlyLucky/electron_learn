@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-04-13 10:44:46
  * @LastEditors: fg
- * @LastEditTime: 2023-04-23 15:48:36
+ * @LastEditTime: 2023-04-23 17:49:43
  * @Description: 设置处理逻辑
  */
 /* 
@@ -12,7 +12,7 @@
   是否需要系统重启，发送消息更改
 */
 import hdObj from "./handleData";
-import { Modal } from "view-ui-plus";
+import { Message, Modal } from "view-ui-plus";
 import { ipcRenderer } from "electron";
 export const useSetting = () => {
   // 备份数据
@@ -119,6 +119,9 @@ export const useSetting = () => {
       hdObj.saveFile(configData)
       // 更新数据
       Object.assign(copyData, hdObj.getConfigItem())
+      // 更新系统配置
+      ipcRenderer.send("upload_config", toRaw(configData))
+      Message.success('应用设置更改成功')
     }
     // 修改global配置
     ipcRenderer.send(

@@ -1,5 +1,6 @@
 export interface ConfigType {
   version: string;
+  appName: string;
   basic: {
     name: string;
     description: string;
@@ -31,7 +32,10 @@ export interface ConfigType {
     name: string;
     description: string;
     show: boolean;
-    closeAppMode: number;
+    closeAppMode: {
+      index: number;
+      value: number;
+    };
     winsNum: {
       index: number;
       value: number;
@@ -89,11 +93,14 @@ export interface ConfigType {
     name: string;
     description: string;
     show: boolean;
-    downloadPath: string;
+    keyboardList: {
+      value: any[];
+      index: number;
+    };
     children: Array<{
       name: string;
       parent: string;
-      value: string;
+      value: any[];
       description: string;
       type: string;
       props: {

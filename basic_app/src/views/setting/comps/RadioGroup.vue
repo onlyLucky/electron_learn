@@ -2,12 +2,12 @@
  * @Author: fg
  * @Date: 2023-01-16 16:08:05
  * @LastEditors: fg
- * @LastEditTime: 2023-01-16 16:21:56
+ * @LastEditTime: 2023-04-23 16:15:10
  * @Description: content
 -->
 <template>
   <div class="radio">
-    <RadioGroup v-model="radioVal">
+    <RadioGroup v-model="props.compData.value">
       <Radio
         v-for="(item, index) in radioList"
         :key="index"
@@ -42,7 +42,6 @@ const props = withDefaults(
     },
   }
 );
-let radioVal = ref<number>(props.compData.value);
 const radioList = props.compData.props?.data;
 </script>
 <style lang="less" scoped>

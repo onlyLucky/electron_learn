@@ -281,7 +281,7 @@ app.whenReady().then(() => {
     },
   ])
   tray.setContextMenu(contextMenu)
-  tray.setToolTip('basic app')
+  tray.setToolTip(Config.appName)
   tray.setTitle('This is my title')
   // 任务栏点击事件
 
@@ -365,6 +365,10 @@ ipcMain.on('set_global', (e, keys, value) => {
   })
   eval(`${temp}=${value}`)
   console.log(global.system.config.isNeedUpload, 'isNeedUpload', global.system.config.data.version)
+})
+// 更新系统配置文件
+ipcMain.on('upload_config', (e, value) => {
+  Config = value
 })
 
 let tokenTimer = null;
@@ -578,8 +582,20 @@ function createModelWin(
     return tempItem.win
   }
   // 判断当前窗口配置
+  let closeWinArr = []
+  let tempModelWins = []
   if (modelWins.length >= Config.windows.winsNum.value) {
-    modelWins[modelWins.length - 1].win.close()
+    modelWins.map((item, indexs) => {
+      if (indexs >= Config.windows.winsNum.value - 1) {
+        closeWinArr.push(indexs)
+      } else {
+        tempModelWins.push(item)
+      }
+    })
+    closeWinArr.map(item => {
+      modelWins[item].win.close()
+    })
+    modelWins = tempModelWins
   }
   let modelWin = new BrowserWindow({
     width,
@@ -620,14 +636,14 @@ function createModelWin(
   });
 
   modelWin.on('close', () => {
-    modelWins.map((item: ModelItemType, index: number) => {
+    /* modelWins.map((item: ModelItemType, index: number) => {
       if (item.id == modelWin.id) {
         modelWins.splice(index, 1)
       }
-    })
+    }) */
     // modelWins.delete(modelWin);
-    console.log(modelWins.length, 'len modelWins-closed id', modelWin.id)
-    modelWin = null;
+    /* console.log(modelWins.length, 'len modelWins-closed id', modelWin.id)
+    modelWin = null; */
   });
   modelWin.webContents.session.on('will-download', (event, item, webContents) => {
     downloadTotal += item.getTotalBytes()
