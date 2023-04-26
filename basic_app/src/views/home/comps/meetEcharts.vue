@@ -243,8 +243,5 @@ defineExpose({
 <style scoped lang="less">
 .Echarts {
   .size(100%,100%);
-  h1 {
-    font-size: 30px;
-  }
 }
 </style>

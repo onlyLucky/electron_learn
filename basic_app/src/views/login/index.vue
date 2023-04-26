@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-16 17:43:05
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 16:44:11
+ * @LastEditTime: 2023-04-26 13:38:59
  * @Description: content
 -->
 <template>
@@ -28,7 +28,6 @@
           </div>
           <Input
             :placeholder="t('login.user_placeholder')"
-            style="font-size: 16px"
             v-model="userName"
             clearable
           ></Input>
@@ -191,7 +190,7 @@ onMounted(() => {
 <style scoped lang="less">
 :deep(.ivu-input) {
   height: 40px;
-  font-size: 16px;
+  .fontSizePx2Em(16);
 }
 :deep(.ivu-input-wrapper) {
   display: flex;
@@ -220,7 +219,7 @@ onMounted(() => {
         margin-bottom: 8px;
       }
       h3 {
-        font-size: 16px;
+        .fontSizePx2Em(16);
         color: @f_color_h3;
         margin-bottom: 8px;
       }
@@ -247,7 +246,7 @@ onMounted(() => {
       height: auto;
       -webkit-app-region: no-drag;
       .rHeader {
-        font-size: 20px;
+        .fontSizePx2Em(20);
         color: @f_color_h3;
         font-weight: 500;
         margin-bottom: 30px;
@@ -277,7 +276,7 @@ onMounted(() => {
             margin-right: 10px;
           }
           span {
-            font-size: 16px;
+            .fontSizePx2Em(16);
             color: @f_color_h3;
             font-weight: 400;
             line-height: 20px;
@@ -298,7 +297,7 @@ onMounted(() => {
           margin-right: 8px;
         }
         span {
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @fontColor;
           line-height: 20px;
         }
@@ -312,7 +311,7 @@ onMounted(() => {
         border-radius: 21px;
         background-color: @f_color_active;
         color: @bg;
-        font-size: 16px;
+        .fontSizePx2Em(16);
         font-weight: 500;
         cursor: pointer;
       }

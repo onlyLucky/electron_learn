@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-04-06 10:34:03
  * @LastEditors: fg
- * @LastEditTime: 2023-04-07 16:31:46
+ * @LastEditTime: 2023-04-26 14:30:09
  * @Description: 消息列表
 -->
 <template>
@@ -325,7 +325,7 @@ defineExpose({
   .mTitle {
     height: 50px;
     line-height: 50px;
-    font-size: 16px;
+    .fontSizePx2Em(16);
     // @fontColor
     color: @f_color_h6;
   }
@@ -334,7 +334,7 @@ defineExpose({
     .cTitle {
       .size(100%,24px);
       line-height: 24px;
-      font-size: 16px;
+      .fontSizePx2Em(16);
       margin-bottom: 6px;
     }
     .conBox {
@@ -354,7 +354,7 @@ defineExpose({
               span {
                 margin-left: 10px;
                 flex-shrink: 0;
-                font-size: 14px;
+                .fontSizePx2Em(14);
                 color: @fontColor;
                 cursor: pointer;
               }
@@ -371,7 +371,7 @@ defineExpose({
             }
             span {
               margin-left: 4px;
-              font-size: 14px;
+              .fontSizePx2Em(14);
               color: @f_color_h3;
             }
           }
@@ -402,7 +402,7 @@ defineExpose({
                   margin-bottom: 6px;
                   margin-left: 24px;
                   h1 {
-                    font-size: 16px;
+                    .fontSizePx2Em(16);
                   }
                   .tRead {
                     position: absolute;
@@ -415,13 +415,13 @@ defineExpose({
                 }
 
                 span {
-                  font-size: 14px;
+                  .fontSizePx2Em(14);
                   color: @fontColor;
                   opacity: 0.8;
                 }
               }
               p {
-                font-size: 14px;
+                .fontSizePx2Em(14);
                 color: @fontColor;
                 text-indent: 2em;
               }
@@ -439,7 +439,7 @@ defineExpose({
           }
           .conLoadingTxt {
             text-align: center;
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @f_color_active;
           }
         }
@@ -451,14 +451,14 @@ defineExpose({
             margin-bottom: 10px;
           }
           span {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @fontColor;
           }
         }
         .conFooter {
           .size(100%,20px);
           span {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             padding: 0px 10px;
           }
           span.conFooterLink {
@@ -486,13 +486,14 @@ defineExpose({
     }
     .ivu-modal-body {
       padding: 0px 16px;
+      .fontSizePx2Em(14);
       .ivu-form-item-error .ivu-input,
       .ivu-input {
         // border: none;
         border-radius: 30px;
       }
       .ivu-input {
-        font-size: 14px;
+        .fontSizePx2Em(14);
       }
       .ivu-form-item-error .ivu-input:focus,
       .ivu-date-picker-focused input:not([disabled]),
@@ -501,7 +502,7 @@ defineExpose({
       }
       .ivu-form-item-error-tip {
         padding-left: 10px;
-        font-size: 12px;
+        .fontSizePx2Em(12);
       }
       .ivu-form-item {
         margin-bottom: 0px;

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-30 10:14:25
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 14:48:51
+ * @LastEditTime: 2023-04-26 13:42:34
  * @Description: 首页
 -->
 <template>
@@ -473,15 +473,15 @@ onMounted(() => {
 :deep(.HomeUser) {
   .userName .ivu-typography {
     color: @f_color_h3;
-    font-size: 16px;
+    .fontSizePx2Em(16);
   }
   .deptName .ivu-typography {
-    font-size: 14px;
+    .fontSizePx2Em(14);
     color: @fontColor;
   }
   .msgBox .msgItem {
     .ivu-count-up {
-      font-size: 28px;
+      .fontSizePx2Em(28);
       color: @home_num_t;
       font-weight: bold;
     }
@@ -491,7 +491,7 @@ onMounted(() => {
     .historyTxt {
       .ivu-typography {
         color: @home_num_t;
-        font-size: 16px;
+        .fontSizePx2Em(16);
       }
     }
   }
@@ -499,7 +499,7 @@ onMounted(() => {
 :deep(.HomeMeet) {
   .totalBox {
     .ivu-count-up {
-      font-size: 30px;
+      .fontSizePx2Em(30);
       color: @home_num_t;
       font-weight: bold;
     }
@@ -514,7 +514,7 @@ onMounted(() => {
 }
 :deep(.circleCon) {
   .ivu-count-up {
-    font-size: 30px;
+    .fontSizePx2Em(30);
     color: @home_num_t;
     font-weight: bold;
   }
@@ -528,7 +528,7 @@ onMounted(() => {
     .hTitleTxt {
       .size(120px, 40px);
       font-weight: bold;
-      font-size: 14px;
+      .fontSizePx2Em(14);
       color: @fontColor;
       padding-left: 20px;
       box-sizing: border-box;
@@ -552,7 +552,7 @@ onMounted(() => {
         .conTip {
           white-space: nowrap;
           width: max-content;
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @f_color_h3;
           animation: roll 18s infinite linear;
         }
@@ -575,7 +575,7 @@ onMounted(() => {
           } */
           span {
             margin-left: 4px;
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @f_color_h3;
             border: 1px solid @fontColor;
           }
@@ -607,7 +607,7 @@ onMounted(() => {
             border-radius: 50%;
             background-color: @f_color_active;
             span {
-              font-size: 18px;
+              .fontSizePx2Em(16);
               color: @bg;
             }
           }
@@ -636,7 +636,7 @@ onMounted(() => {
             cursor: pointer;
             span.noGender {
               display: inline-block;
-              font-size: 12px;
+              .fontSizePx2Em(12);
               width: 30px;
               text-align: center;
               color: @fontColor;
@@ -664,7 +664,7 @@ onMounted(() => {
             border-right: none;
           }
           .msgItemTitle {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @fontColor;
           }
         }
@@ -685,7 +685,7 @@ onMounted(() => {
           // border-bottom: 1px solid @search_bottom_border;
           .historyTxt {
             .size(100%, auto);
-            font-size: 16px;
+            .fontSizePx2Em(16);
             .optIcon {
               flex-shrink: 0;
               margin-right: 10px;
@@ -695,7 +695,7 @@ onMounted(() => {
             .size(auto,auto);
             flex-shrink: 0;
             margin-left: 10px;
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @fontColor;
             span {
               color: @f_color_active;
@@ -728,7 +728,7 @@ onMounted(() => {
             }
           }
           .labelTitle {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @fontColor;
           }
         }
@@ -741,7 +741,7 @@ onMounted(() => {
         .circleItem {
           .size(100px,auto);
           .circleLabel {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             margin-top: 4px;
             color: @fontColor;
           }
@@ -798,16 +798,16 @@ onMounted(() => {
         .size(100%,calc(100% - 60px));
         overflow: auto;
         .meetTime {
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @f_color_active;
           .rTime {
             margin-left: 10px;
-            font-size: 12px;
+            .fontSizePx2Em(12);
             color: @fontColor;
           }
         }
         .meetName {
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @fontColor;
         }
       }
@@ -818,7 +818,7 @@ onMounted(() => {
       margin-right: 14px;
     }
     span {
-      font-size: 14px;
+      .fontSizePx2Em(14);
       color: @f_color_h3;
     }
   }
@@ -830,7 +830,7 @@ onMounted(() => {
       margin-bottom: 10px;
     }
     span {
-      font-size: 14px;
+      .fontSizePx2Em(14);
       color: @fontColor;
     }
   }

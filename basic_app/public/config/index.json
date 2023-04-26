@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.2",
   "appName": "可立批",
   "basic": {
     "name": "basic",
@@ -11,7 +11,7 @@
     },
     "fontSize": {
       "index": 1,
-      "value": "14px"
+      "value": 14
     },
     "children": [
       {
@@ -56,20 +56,20 @@
         "description": "字体大小",
         "isNeedReload": false,
         "type": "Select",
-        "value": "14px",
+        "value": 14,
         "props": {
           "option": [
             {
               "label": "偏小",
-              "value": "14px"
+              "value": 12
             },
             {
               "label": "标准",
-              "value": "16px"
+              "value": 14
             },
             {
               "label": "偏大",
-              "value": "28px"
+              "value": 16
             }
           ]
         }

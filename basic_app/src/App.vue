@@ -17,22 +17,33 @@ ipcRenderer.on("set_url", (e, url, lang) => {
   // Config.json 读取的地址找不到， 项目进入先运行App.vue => main.ts
   import("@/apis/login").then((res) => {
     goRefresh = res.goRefresh;
-    import("_v/setting/handleData").then((cRes) => {
-      console.log(cRes, "cRes");
-    });
   });
 });
 const { locale } = useI18n();
 
-onMounted(() => {
-  // 主题初始化
+// 初始化
+
+onMounted(async () => {
+  const result = await ipcRenderer.invoke("get_global", ["system", "config"]);
+  let config = result.data;
+  // 主体设置
   document.body.setAttribute("class", "theme_basic");
-  document.body.style.fontSize = "14px";
+  // 字体大小设置
+  document.body.style.fontSize = config.basic.fontSize.value + "px";
+  /* document.documentElement.style.setProperty(
+    "--fontUnit",
+    config.basic.fontSize.value.toString()
+  ); */
+  // 字体设置
+  document.body.style.fontFamily = config.basic.fontFamily.value;
   // document.getElementById("app")!.className = "theme_basic";
   // 判断当前是否有config配置
   ipcRenderer.on("config_change", (e, key, value) => {
     if (key == "fontFamily") {
       document.body.style.fontFamily = value;
+    }
+    if (key == "fontSize") {
+      document.body.style.fontSize = value + "px";
     }
   });
   ipcRenderer.on("timeout", (e) => {

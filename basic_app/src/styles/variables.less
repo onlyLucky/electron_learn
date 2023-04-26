@@ -68,3 +68,14 @@
 @home_color1: var(--home_color1);
 @home_color2: var(--home_color2);
 @home_b_color: var(--home_b_color);
+
+// 字体大小设置
+/* :root {
+  // 文字大小单元
+  --fontUnit: 14;
+}
+
+@fontUnit: var(--fontUnit); */
+.fontSizePx2Em(@num) {
+  font-size: calc((@num / 14) * 1em);
+}

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-31 16:57:19
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 14:47:54
+ * @LastEditTime: 2023-04-26 14:31:40
  * @Description: 设备echarts
 -->
 <template>
@@ -47,7 +47,7 @@ const init = () => {
       bottom: "0px",
       left: "center",
       textStyle: {
-        fontSize: "14px",
+        fontSize: "1em",
         color: "#666",
       },
     },
@@ -69,7 +69,7 @@ const init = () => {
         emphasis: {
           label: {
             show: true,
-            fontSize: 16,
+            fontSize: "1.142em",
             fontWeight: "bold",
             color: "var(--home_num_t)",
           },
@@ -113,8 +113,5 @@ defineExpose({
 <style scoped lang="less">
 .Echarts {
   .size(100%,100%);
-  h1 {
-    font-size: 30px;
-  }
 }
 </style>
