@@ -13,8 +13,5 @@
 <script setup lang="ts"></script>
 <style scoped lang="less">
 .meetListCon {
-  h1 {
-    font-size: 30px;
-  }
 }
 </style>

@@ -341,7 +341,7 @@ onMounted(() => {
 :deep(.hTitle) {
   .ivu-typography {
     color: @bg;
-    font-size: 16px;
+    .fontSizePx2Em(16);
     font-weight: bold;
   }
 }
@@ -355,7 +355,7 @@ onMounted(() => {
     background-color: @video_header;
     -webkit-app-region: drag;
     .hTitle {
-      font-size: 16px;
+      .fontSizePx2Em(16);
       color: @bg;
     }
   }
@@ -428,7 +428,7 @@ onMounted(() => {
     left: 0px;
     z-index: 10;
     .msgItem {
-      font-size: 14px;
+      .fontSizePx2Em(14);
       color: #fff;
       opacity: 0.8;
       margin-bottom: 2px;
@@ -448,14 +448,14 @@ onMounted(() => {
         margin-right: 14px;
       }
       span {
-        font-size: 14px;
+        .fontSizePx2Em(14);
         color: @bg;
       }
     }
     .progress {
       .size(260px,30px);
       .proTxt {
-        font-size: 14px;
+        .fontSizePx2Em(14);
         color: @bg;
       }
     }

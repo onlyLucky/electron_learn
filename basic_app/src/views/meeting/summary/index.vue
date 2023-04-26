@@ -463,7 +463,7 @@ onMounted(async () => {
     background-color: @f_color_active;
     -webkit-app-region: drag;
     h1 {
-      font-size: 16px;
+      .fontSizePx2Em(16);
       color: @bg;
     }
   }
@@ -480,7 +480,7 @@ onMounted(async () => {
         .meetName {
           .size(100%,26px);
           line-height: 26px;
-          font-size: 18px;
+          .fontSizePx2Em(18);
           font-weight: bold;
           color: @f_color_h3;
           margin-bottom: 6px;
@@ -491,7 +491,7 @@ onMounted(async () => {
         }
         .timeCon {
           span {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @fontColor;
             margin-left: 5px;
           }
@@ -508,7 +508,7 @@ onMounted(async () => {
           z-index: 2;
         }
         span {
-          font-size: 14px;
+          .fontSizePx2Em(14);
           z-index: 2;
         }
         .downloadBg {
@@ -545,7 +545,7 @@ onMounted(async () => {
             margin-bottom: 0;
           }
           span {
-            font-size: 16px;
+            .fontSizePx2Em(16);
             color: @fontColor;
             margin-right: 20px;
           }
@@ -563,7 +563,7 @@ onMounted(async () => {
         .conFooter {
           .size(100%,20px);
           span {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             padding: 0px 10px;
           }
           span.conFooterLink {
@@ -582,7 +582,7 @@ onMounted(async () => {
           margin-bottom: 10px;
         }
         .conLoadingTxt {
-          font-size: 14px;
+          .fontSizePx2Em(14);
         }
       }
       .noDataCon {
@@ -593,7 +593,7 @@ onMounted(async () => {
           margin-bottom: 10px;
         }
         span {
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @fontColor;
         }
       }
@@ -606,7 +606,7 @@ onMounted(async () => {
     background-size: 100% 100%;
     .fTotal {
       .size(100%,20px);
-      font-size: 14px;
+      .fontSizePx2Em(14);
       line-height: 4px;
       color: @f_color_active;
     }
@@ -644,7 +644,7 @@ onMounted(async () => {
         .size(100px,100%);
         margin-left: 10px;
         flex-shrink: 0;
-        font-size: 14px;
+        .fontSizePx2Em(14);
         color: @f_color_active;
       }
     }

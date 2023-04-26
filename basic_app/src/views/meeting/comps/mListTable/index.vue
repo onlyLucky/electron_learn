@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-24 14:03:33
  * @LastEditors: fg
- * @LastEditTime: 2023-04-18 16:27:07
+ * @LastEditTime: 2023-04-26 19:10:32
  * @Description: 会议列表
 -->
 <template>
@@ -132,14 +132,14 @@ const columns = reactive<any[]>([
         },
       ];
       return h("div", { class: "meetNameBox f-row-b-c" }, [
-        h("div", { class: "mNameLeft f-col-b-s" }, [
+        h("div", { class: "mNameLeft f-col-c-s" }, [
           h(
             resolveComponent("Text"),
             {
               ellipsis: true,
-              class: "mNameTxt",
               "ellipsis-config": { tooltip: true },
               placement: "bottom-start",
+              class: "mNameTxt",
               onClick: _.debounce(function () {
                 emit("detail", params.row, false);
               }, 300),
@@ -516,6 +516,9 @@ defineExpose({
   color: @fontColor;
   font-weight: 400;
 }
+:deep(.ivu-table) {
+  .fontSizePx2Em(14);
+}
 :deep(.ivu-table td) {
   border-bottom: none;
 }
@@ -523,28 +526,27 @@ defineExpose({
   display: none;
 }
 :deep(.ivu-tooltip-rel) {
-  font-size: 16px;
+  .fontSizePx2Em(16);
 }
 :deep(.ivu-table-body) {
   .ivu-table-cell {
-    font-size: 16px;
+    // .fontSizePx2Em(16);
   }
 }
 :deep(.meetNameBox) {
   .size(100%, 70px);
   .mNameLeft {
     height: 100%;
-    padding: 10px 0px;
+    // padding: 10px 0px;
     box-sizing: border-box;
-    .mNameTxt {
-      font-size: 16px;
-      cursor: pointer;
-    }
     .mNameTxt.ivu-typography {
       color: @f_color_active;
+      .fontSizePx2Em(16);
+      cursor: pointer;
     }
     .meetLeftBottom {
       width: 100%;
+      margin-top: 6px;
       .mStatus {
         width: 72px;
         flex-shrink: 0;
@@ -554,7 +556,7 @@ defineExpose({
           margin-right: 4px;
         }
         .statusTxt {
-          font-size: 14px;
+          .fontSizePx2Em(14);
         }
       }
       .equipmentBox {
@@ -564,7 +566,7 @@ defineExpose({
           margin-right: 6px;
         }
         .equipTxt {
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @fontColor;
         }
       }

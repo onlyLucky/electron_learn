@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-06 11:43:09
  * @LastEditors: fg
- * @LastEditTime: 2023-04-18 17:18:12
+ * @LastEditTime: 2023-04-26 15:44:09
  * @Description: 文件列表的块状组件
 -->
 <template>
@@ -129,7 +129,6 @@ const columns = [
                     {
                       placement: "bottom-start",
                       ellipsis: true,
-                      style: { fontSize: "16px" },
                       "ellipsis-config": { tooltip: true },
                     },
                     () => params.row.realName
@@ -337,6 +336,9 @@ defineExpose({
 });
 </script>
 <style scoped lang="less">
+:deep(.ivu-table) {
+  .fontSizePx2Em(14);
+}
 :deep(.ivu-table th) {
   background-color: @bg;
   border-bottom: none;
@@ -367,9 +369,12 @@ defineExpose({
     }
     .fileInfo {
       .fileStatus {
-        font-size: 12px;
+        .fontSizePx2Em(12);
         margin-top: 6px;
         color: @fontColor;
+      }
+      .ivu-typography {
+        .fontSizePx2Em(16);
       }
     }
     .fileInfo.fileActive {
@@ -398,9 +403,6 @@ defineExpose({
 }
 .table {
   .size(100%,100%);
-  h1 {
-    font-size: 30px;
-  }
 }
 .conLoadingTxt {
   margin-top: 10px;

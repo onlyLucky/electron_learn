@@ -214,7 +214,7 @@ const onAnalectaChange = (index: number) => {
     .tHItem {
       padding: 10px 40px;
       margin-right: 20px;
-      font-size: 14px;
+      .fontSizePx2Em(14);
       border-radius: 6px;
       color: @fontColor;
       font-weight: bold;
@@ -256,7 +256,7 @@ const onAnalectaChange = (index: number) => {
         box-sizing: border-box;
         margin-right: 10px;
         margin-bottom: 10px;
-        font-size: 18px;
+        .fontSizePx2Em(18);
         color: @fontColor;
         background: rgba(0, 0, 0, 0.5);
         cursor: pointer;
@@ -299,7 +299,7 @@ const onAnalectaChange = (index: number) => {
               background-color: @f_color_active;
               margin-bottom: 8px;
               span {
-                font-size: 16px;
+                .fontSizePx2Em(16);
                 color: @bg;
               }
               .userSelect {
@@ -313,7 +313,7 @@ const onAnalectaChange = (index: number) => {
               width: 100%;
               text-align: center;
               color: @fontColor;
-              font-size: 16px;
+              .fontSizePx2Em(16);
             }
           }
         }
@@ -326,7 +326,7 @@ const onAnalectaChange = (index: number) => {
           margin-bottom: 10px;
         }
         span {
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @fontColor;
           margin-top: 200px;
         }
@@ -336,9 +336,6 @@ const onAnalectaChange = (index: number) => {
     .tConItem.useDraw {
       align-content: baseline;
     }
-  }
-  h1 {
-    font-size: 30px;
   }
 }
 </style>

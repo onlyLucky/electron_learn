@@ -657,7 +657,7 @@ defineExpose({
     border: none;
     font-weight: 600;
     padding: 4px 0px;
-    font-size: 16px;
+    .fontSizePx2Em(16);
   }
   .ivu-input:focus {
     box-shadow: none;
@@ -711,7 +711,7 @@ defineExpose({
       .size(100%, 45px);
       border-bottom: 1px solid @search_bottom_border;
       h1 {
-        font-size: 18px;
+        .fontSizePx2Em(18);
         font-weight: 400;
       }
     }
@@ -735,7 +735,7 @@ defineExpose({
               width: calc(100% - 30px);
               height: 100%;
               line-height: 30px;
-              font-size: 16px;
+              .fontSizePx2Em(16);
               font-weight: 600;
             }
             .meetInput {
@@ -756,7 +756,7 @@ defineExpose({
           .meetEq {
             .size(100%,20px);
             line-height: 20px;
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @f_color_h3;
             span {
               color: @f_color_active;
@@ -772,7 +772,7 @@ defineExpose({
               margin-bottom: 0px;
             }
             h3 {
-              font-size: 14px;
+              .fontSizePx2Em(14);
               height: 24px;
               line-height: 24px;
               margin-bottom: 6px;
@@ -781,7 +781,7 @@ defineExpose({
               display: inline-block;
               .size(100%, 30px);
               line-height: 30px;
-              font-size: 14px;
+              .fontSizePx2Em(14);
               color: @fontColor;
             }
             .itemValue.jumpTxt {
@@ -807,14 +807,14 @@ defineExpose({
             border-bottom: none;
           }
           h3 {
-            font-size: 14px;
+            .fontSizePx2Em(14);
           }
         }
       }
       .linkInfo {
         .linkInfoItem {
           span {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @f_color_active;
             cursor: pointer;
           }
@@ -828,7 +828,7 @@ defineExpose({
             width: 260px;
             cursor: pointer;
             .proTxt {
-              font-size: 14px;
+              .fontSizePx2Em(14);
               color: @fontColor;
             }
             span {
@@ -847,7 +847,7 @@ defineExpose({
         .userHeader {
           .size(100%,50px);
           h3 {
-            font-size: 14px;
+            .fontSizePx2Em(14);
           }
           .iconUseSearch {
             cursor: pointer;
@@ -866,27 +866,27 @@ defineExpose({
                 .size(40px,40px);
                 background-color: @f_color_active;
                 border-radius: 4px;
-                font-size: 14px;
+                .fontSizePx2Em(14);
                 color: @bg;
                 flex-shrink: 0;
               }
               .userName {
                 .size(60px,20px);
                 line-height: 20px;
-                font-size: 12px;
+                .fontSizePx2Em(12);
                 text-align: center;
                 cursor: pointer;
               }
             }
           }
           .noData {
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @fontColor;
           }
           .pageTap {
             margin-top: 10px;
             .size(100%, auto);
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @f_color_active;
             span {
               padding: 0 14px;

@@ -93,7 +93,7 @@ const goFile = () => {
     }
     .meetName {
       width: calc(100% - 30px);
-      font-size: 14px;
+      .fontSizePx2Em(14);
       font-weight: bold;
       color: @bg;
     }

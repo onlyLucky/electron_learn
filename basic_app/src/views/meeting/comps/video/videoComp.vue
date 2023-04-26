@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-03-03 11:13:32
  * @LastEditors: fg
- * @LastEditTime: 2023-04-10 15:31:29
+ * @LastEditTime: 2023-04-26 14:45:01
  * @Description: video audio canvas comp 
 -->
 <template>
@@ -229,9 +229,6 @@ defineExpose({
 .mediaBox {
   .size(100%,100%);
   position: relative;
-  h1 {
-    font-size: 30px;
-  }
   audio {
     position: absolute;
     top: 0;

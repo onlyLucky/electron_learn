@@ -636,14 +636,14 @@ function createModelWin(
   });
 
   modelWin.on('close', () => {
-    /* modelWins.map((item: ModelItemType, index: number) => {
+    modelWins.map((item: ModelItemType, index: number) => {
       if (item.id == modelWin.id) {
         modelWins.splice(index, 1)
       }
-    }) */
+    })
     // modelWins.delete(modelWin);
-    /* console.log(modelWins.length, 'len modelWins-closed id', modelWin.id)
-    modelWin = null; */
+    console.log(modelWins.length, 'len modelWins-closed id', modelWin.id)
+    modelWin = null;
   });
   modelWin.webContents.session.on('will-download', (event, item, webContents) => {
     downloadTotal += item.getTotalBytes()

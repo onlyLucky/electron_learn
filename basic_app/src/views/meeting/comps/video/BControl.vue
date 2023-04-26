@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2023-02-28 10:30:12
  * @LastEditors: fg
- * @LastEditTime: 2023-04-10 15:40:06
+ * @LastEditTime: 2023-04-26 16:22:24
  * @Description: content
 -->
 <template>
@@ -268,14 +268,29 @@ defineExpose({
     background-color: rgba(255, 255, 255, 0.3);
   }
 }
+:deep(.ivu-slider-wrap) {
+  .ivu-slider-button-wrap {
+    .size(18px,18px);
+    top: -6px;
+    .ivu-tooltip {
+      .size(18px,18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .ivu-tooltip-rel {
+        .size(18px,18px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
 .Control {
   .size(100%,100%);
   background-color: rgba(0, 0, 0, 0.9);
   padding: 10px;
   box-sizing: border-box;
-  h1 {
-    font-size: 30px;
-  }
   .controlTop {
     .size(100%,auto);
     // background-color: pink;
@@ -283,7 +298,7 @@ defineExpose({
       text-align: center;
       .size(80px, 100%);
       flex-shrink: 0;
-      font-size: 14px;
+      .fontSizePx2Em(14);
       color: @bg;
     }
     .cenSlider {
@@ -304,7 +319,7 @@ defineExpose({
       }
       span {
         color: @bg;
-        font-size: 14px;
+        .fontSizePx2Em(14);
       }
     }
     .ctrlIcon.active {

@@ -2,7 +2,7 @@
  * @Author: fg
  * @Date: 2022-12-15 16:22:27
  * @LastEditors: fg
- * @LastEditTime: 2023-04-11 11:13:57
+ * @LastEditTime: 2023-04-26 19:17:28
  * @Description: content
 -->
 <template>
@@ -272,9 +272,15 @@ onUnmounted(() => {
 <style scoped lang="less">
 :deep(.ivu-input) {
   border-radius: 50px;
+  .fontSizePx2Em(14);
 }
 :deep(.fileLink) {
   color: pink;
+}
+:deep(.ivu-select-dropdown-list) {
+  .ivu-select-item {
+    .fontSizePx2Em(14);
+  }
 }
 :deep(.hLeftItem) {
   .ivu-select {
@@ -288,7 +294,7 @@ onUnmounted(() => {
       background-color: @menu_item_hover;
     } */
     .ivu-select-input {
-      font-size: 14px;
+      .fontSizePx2Em(12);
     }
   }
   .ivu-select-visible .ivu-select-selection {
@@ -323,12 +329,12 @@ onUnmounted(() => {
         margin-right: 20px;
         .label {
           flex-shrink: 0;
-          font-size: 1em;
+          .fontSizePx2Em(14);
           color: @fontColor;
           margin-right: 12px;
         }
         .hLItemValue {
-          font-size: 16px;
+          .fontSizePx2Em(16);
           cursor: pointer;
           color: @f_color_h3;
         }
@@ -347,7 +353,7 @@ onUnmounted(() => {
         }
         span {
           margin-left: 4px;
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @f_color_h3;
         }
       }
@@ -368,7 +374,7 @@ onUnmounted(() => {
           span {
             margin-left: 10px;
             flex-shrink: 0;
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @fontColor;
             cursor: pointer;
           }
@@ -382,7 +388,7 @@ onUnmounted(() => {
         margin-left: 10px;
         span {
           margin-left: 4px;
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @bg;
         }
       }
@@ -398,7 +404,7 @@ onUnmounted(() => {
 }
 .menuTitle {
   .size(100%,32px);
-  font-size: 12px;
+  .fontSizePx2Em(12);
   padding: 0px 18px 2px;
   box-sizing: border-box;
   line-height: 30px;

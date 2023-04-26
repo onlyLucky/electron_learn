@@ -192,7 +192,7 @@ defineExpose({
     display: inline-block;
     text-align: center;
     padding: 6px 12px;
-    font-size: 16px;
+    .fontSizePx2Em(16);
     color: @bg;
     background-color: rgba(0, 0, 0, 0.5);
   }

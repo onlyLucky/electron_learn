@@ -242,7 +242,7 @@ watch(
   box-sizing: border-box;
   position: relative;
   h1 {
-    font-size: 30px;
+    .fontSizePx2Em(30);
   }
   .header {
     .size(100%, 50px);
@@ -252,7 +252,7 @@ watch(
     .breadcrumb {
       width: calc(100% - 100px);
       height: 100%;
-      font-size: 16px;
+      .fontSizePx2Em(16);
       .breadcrumbItem {
         color: @f_color_h3;
       }
@@ -284,13 +284,13 @@ watch(
       .filterItem {
         .size(auto,100%);
         .labelName {
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @fontColor;
           margin-right: 10px;
         }
         .valueName {
           border-radius: 4px;
-          font-size: 14px;
+          .fontSizePx2Em(14);
           padding: 6px 10px;
           cursor: pointer;
           color: @f_color_h3;
@@ -315,7 +315,7 @@ watch(
         }
         span {
           margin-left: 4px;
-          font-size: 14px;
+          .fontSizePx2Em(14);
           color: @f_color_h3;
         }
       }

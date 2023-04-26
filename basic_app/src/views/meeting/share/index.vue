@@ -205,6 +205,9 @@ onMounted(() => {
 });
 </script>
 <style scoped lang="less">
+:deep(.ivu-table) {
+  .fontSizePx2Em(14);
+}
 :deep(.ivu-table th) {
   background-color: @bg;
   border-bottom: none;
@@ -225,7 +228,7 @@ onMounted(() => {
   .menuItem {
     .size(140px,100%);
     .label {
-      font-size: 14px;
+      .fontSizePx2Em(14);
     }
   }
 }
@@ -238,7 +241,7 @@ onMounted(() => {
     background-color: @f_color_active;
     -webkit-app-region: drag;
     h1 {
-      font-size: 16px;
+      .fontSizePx2Em(16);
       color: @bg;
     }
   }
@@ -254,7 +257,7 @@ onMounted(() => {
       box-sizing: border-box;
       .conTitle {
         .size(100%,100%);
-        font-size: 16px;
+        .fontSizePx2Em(16);
         color: @f_color_h3;
         line-height: 40px;
         font-weight: bold;
@@ -273,7 +276,7 @@ onMounted(() => {
           }
           span {
             margin-left: 4px;
-            font-size: 14px;
+            .fontSizePx2Em(14);
             color: @f_color_h3;
           }
         }
